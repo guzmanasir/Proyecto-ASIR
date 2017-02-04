@@ -1,0 +1,12 @@
+//
+   Created by guzman on 4/02/17.
+
+md-content(layout-gt-sm='row', layout-padding='')
+    div
+        md-input-container
+            label Username
+            input(ng-model=' lc.username')
+        md-input-container
+            label Password
+            input(ng-model='lc.password', type='password')
+        md-button(ng-click="lc.login()") Login
