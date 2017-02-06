@@ -1,11 +1,18 @@
 //
    Created by guzman on 4/02/17.
 
+
+
+style.
+    input.ng-invalid {
+        background-color: indianred;
+    }
+
 md-content(layout-gt-sm='row', layout-padding='')
     div
         md-input-container
             label Username
-            input(ng-model=' lc.username')
+            input(ng-model=' lc.username', required='')
         md-input-container
             label Password
             input(ng-model='lc.password', type='password')
