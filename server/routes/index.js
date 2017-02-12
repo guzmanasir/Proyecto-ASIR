@@ -20,7 +20,7 @@ router.post('/loginForm', function(req, res, next) {
     // aqui query
 
     console.log(usuario,password);
-    res.statusCode(200);
+    res.status(200).send({respuesta:"todo ok"});
 
 });
 
