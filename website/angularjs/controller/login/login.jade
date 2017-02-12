@@ -17,3 +17,4 @@ md-content(layout-gt-sm='row', layout-padding='')
             label Password
             input(ng-model='lc.password', type='password')
         md-button(ng-click="lc.login()") Login
+        p {{ lc.status }}

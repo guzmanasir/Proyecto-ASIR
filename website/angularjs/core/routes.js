@@ -9,14 +9,14 @@
         $locationProvider.html5Mode(true);
         $stateProvider
             .state('login',{
-                url: "/login",
+                url: "/inicio",
                 controller: 'loginCtrl',
                 controllerAs: 'lc',
                 templateUrl: '/login'
             })
 
             .state('registro',{
-                url: "/registroc",
+                url: "/signup",
                 controller: 'registroCtrl',
                 controllerAs: 'rc',
                 templateUrl: '/registro'

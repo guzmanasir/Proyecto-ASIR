@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   res.render('views/layout', { title: 'Express !' });
 });
 
@@ -14,9 +14,13 @@ router.get('/login', function(req, res, next) {
     res.render('angularjs/controller/login/login');
 });
 
-router.get('/loginForm', function(req, res, next) {
-    var usuario = req.headers('username');
-    //res.render('angularjs/controller/login/login');
+router.post('/loginForm', function(req, res, next) {
+    var usuario = req.body.username;
+    var password = req.body.password;
+    // aqui query
+
+    console.log(usuario,password);
+    res.statusCode(200);
 
 });
 
