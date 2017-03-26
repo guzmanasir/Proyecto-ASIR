@@ -17,9 +17,7 @@
                 password : vm.password
             };
 
-            $http.post(
-                '/loginForm',
-                json)
+            $http.post('/loginForm',json)
                 .then(function(response){
                         console.log("respuesta",response);
                         vm.status = "OK";

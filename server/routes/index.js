@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var query = require('../mysql')
 /* GET home page. */
 router.get('/', function(req, res) {
   res.render('views/layout', { title: 'Express !' });
@@ -20,7 +20,8 @@ router.post('/loginForm', function(req, res, next) {
     // aqui query
 
     console.log(usuario,password);
-    res.status(200).send({respuesta:"todo ok"});
+    query.login()
+    //res.status(200).send({respuesta:"todo ok"});
 
 });
 
