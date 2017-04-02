@@ -1,5 +1,16 @@
 //
    Created by guzman on 4/02/17.
 
-div
-    p REGISTRO
+md-content(layout-gt-sm='row', layout-padding='')
+    div
+        md-input-container
+            label Username
+            input(ng-model=' rc.usernameModel', ng-required='true')
+        md-input-container
+            label Password
+            input(ng-model='rc.passwordModel', type='password')
+        md-input-container
+            label Email
+            input(ng-model='rc.emailModel', ng-required='true')
+        md-button(ng-click="rc.registro()") Registro
+        p {{ rc.status }}

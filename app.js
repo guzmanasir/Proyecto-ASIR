@@ -29,9 +29,15 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'private')));
 
+/**
+ * RUTAS A PARTIR DE AQUI
+ */
 app.use('/', index);
 app.use('/admin', admins);
 app.use('/users', users);
+
+
+
 // catch 404 and forward to error handler
 /**
  * Middleware: modifican las peticiones (añaden campos nuevos/modifican/etc) antes de enviarse

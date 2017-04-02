@@ -8,23 +8,39 @@
         var vm = this;
         vm.login = function(){
 
-            console.log("Info login", vm.username, vm.password)
+            console.log("Info login", vm.usernameModel, vm.passwordModel)
             /**
              * TODO: Llamada al servidor
              */
             var json = {
-                username : vm.username,
-                password : vm.password
+                usernameServer : vm.usernameModel,
+                passwordServer : vm.passwordModel
             };
 
             $http.post('/loginForm',json)
                 .then(function(response){
+                        if (response.data.codigo === 500)
+                            swal(
+                                'Oops...',
+                                'Error al iniciar sesión',
+                                'error'
+                            )
+                        else
+                            swal(
+                                ' ',
+                                'Has iniciado sesion',
+                                'success'
+                            )
                         console.log("respuesta",response);
                         vm.status = "OK";
 
                     },
                     function(response) {
-                        vm.status = "Fallo";
+                        swal(
+                            'Oops...',
+                            'Error de servidor',
+                            'error'
+                        )
 
                     });
         }
