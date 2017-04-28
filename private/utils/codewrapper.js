@@ -44,6 +44,6 @@ exports.responseOk = function(res,data){
 };
 
 exports.responseFail = function(res,err,body){
-    var httpCode = err >= 10000 ? 400 : 200
+    var httpCode = err >= 10000 ? 400 : 200;
     response(res,httpCode,errCode(err,null))
 };

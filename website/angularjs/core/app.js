@@ -7,5 +7,10 @@
  */
 angular.module("proyecto", [
     'ui.router',
-    'ngMaterial'
-]);
+    'ngMaterial',
+    'satellizer'
+]).config(function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+        .primaryPalette('red')
+        .accentPalette('blue');
+});

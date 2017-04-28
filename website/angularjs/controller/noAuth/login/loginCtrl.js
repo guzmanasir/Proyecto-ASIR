@@ -3,8 +3,9 @@
  */
 
 
+
 (function() {
-    function loginCtrl($http){
+    function loginCtrl($http,$auth,$state){
         var vm = this;
         vm.login = function(){
 
@@ -16,8 +17,7 @@
                 usernameServer : vm.usernameModel,
                 passwordServer : vm.passwordModel
             };
-
-            $http.post('/loginForm',json)
+            $auth.login(json)
                 .then(function(response){
                         if (response.data.codigo === 500)
                             swal(
@@ -25,14 +25,9 @@
                                 'Error al iniciar sesión',
                                 'error'
                             )
-                        else
-                            swal(
-                                ' ',
-                                'Has iniciado sesion',
-                                'success'
-                            )
-                        console.log("respuesta",response);
-                        vm.status = "OK";
+                        else{
+                            $state.go('main')
+                        }
 
                     },
                     function(response) {
@@ -47,6 +42,6 @@
     }
 
     angular.module('proyecto')
-        .controller('loginCtrl',['$http',loginCtrl]);
+        .controller('loginCtrl',['$http','$auth','$state',loginCtrl]);
 
 })();

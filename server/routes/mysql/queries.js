@@ -6,7 +6,7 @@ var mysql = require('../../../private/database/connection.js')
  */
 exports.login = function(datosLogin,callback){
     var query =
-        'SELECT nombre FROM usuario WHERE nombre = ? AND password = ?';
+        'SELECT nombre, id FROM usuario WHERE nombre = ? AND password = ?';
 
     var values = [datosLogin.usernameQuery, datosLogin.passwordQuery];
     mysql.query(query,values,function(err,results){
