@@ -12,6 +12,10 @@ router.get('/403', function(req, res, next) {
     res.render('views/403');
 });
 
+router.get('/frameNoAuth', function(req, res, next) {
+    res.render('angularjs/controller/noAuth/views/frameNoAuth');
+});
+
 router.get('/login', function(req, res, next) {
     res.render('angularjs/controller/noAuth/login/login');
 });

@@ -13,15 +13,7 @@ html(ng-app="proyecto")
   body(ng-cloak)
     div(flex layout="row")
 
-      div(flex=30 layout="column")
-      div(flex=30 layout="column")
-       md-card
-        md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
-          md-nav-item(md-nav-sref="login") Login
-          md-nav-item(md-nav-sref="registro") Registro
-
-        div(ui-view="")
-      div(flex=30 layout="column")
+      div(ui-view="")
 
   script(src = "https://code.jquery.com/jquery-3.1.1.min.js",integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=",crossorigin="anonymous")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.9/angular.min.js")

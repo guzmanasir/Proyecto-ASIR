@@ -11,14 +11,20 @@
         $authProvider.tokenName = 'token';
         $authProvider.tokenPrefix = 'satellizer';
         $stateProvider
-            .state('login',{
-                url: "/inicio",
+
+            .state('home',{
+                abstract: true,
+                templateUrl: '/frameNoAuth'
+            })
+
+            .state('home.login',{
+                url: "/",
                 controller: 'loginCtrl',
                 controllerAs: 'lc',
                 templateUrl: '/login'
             })
 
-            .state('registro',{
+            .state('home.registro',{
                 url: "/signup",
                 controller: 'registroCtrl',
                 controllerAs: 'rc',
@@ -26,11 +32,17 @@
             })
 
             .state('main',{
-                url: "/index",
-                controller: 'frameCtrl',
-                controllerAs: 'fc',
+                abstract: true,
                 templateUrl: '/users/frame'
             })
+
+            .state('main.index',{
+                url: "/principal",
+                // controller: 'indexController',
+                // controllerAs: 'ic',
+                templateUrl: '/users/index'
+            })
+
     }
 
     angular.module('proyecto')

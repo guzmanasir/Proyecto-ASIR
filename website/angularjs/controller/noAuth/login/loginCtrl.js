@@ -26,7 +26,7 @@
                                 'error'
                             )
                         else{
-                            $state.go('main')
+                            $state.go('main.index')
                         }
 
                     },
