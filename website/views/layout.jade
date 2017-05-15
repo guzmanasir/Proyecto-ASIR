@@ -1,0 +1,28 @@
+doctype html
+html(ng-app="proyecto")
+  head
+    title= title
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Passion+One', type='text/css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Passion+One',type='text/css')
+    link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Oxygen',type='text/css')
+    link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css')
+    link(rel='stylesheet', href='https://cdn.jsdelivr.net/sweetalert2/6.5.4/sweetalert2.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+
+    base(href="/")
+  body(ng-cloak)
+    div(flex layout="row")
+
+      div(ui-view="")
+
+  script(src = "https://code.jquery.com/jquery-3.1.1.min.js",integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=",crossorigin="anonymous")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.9/angular.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js")
+  script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular-animate.min.js")
+  script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular-aria.min.js")
+  script(src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.9/angular-messages.min.js")
+  script(src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js")
+  script(src="https://cdn.jsdelivr.net/sweetalert2/6.5.4/sweetalert2.min.js")
+  script(src="https://cdn.jsdelivr.net/satellizer/0.15.5/satellizer.min.js")
+
+  script(src="/dist/app.min.js")
