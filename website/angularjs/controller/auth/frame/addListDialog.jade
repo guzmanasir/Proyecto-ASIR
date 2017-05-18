@@ -1,0 +1,21 @@
+md-dialog(flex=40)
+    form(ng-cloak, name="miForm")
+
+        md-toolbar
+            .md-toolbar-tools
+                span.md-headline Nueva Playlist
+
+        md-dialog-content
+            .md-dialog-content
+                div(layout='column')
+                    md-input-container
+                        label Name
+                        input( ng-model='mc.nombre', type='text', maxlength='15', name="name", required)
+                    md-chips(ng-model='mc.tags' placeholder="Añade tags")
+                    md-input-container
+                        label Enlaces
+                        input( ng-model='mc.nombre', type='text', maxlength='15', name="name", required)
+
+        md-dialog-actions(layout="row")
+            md-button(type='button') Cancelar
+            md-button( type='submit' ng-click="mc.answer(miForm)") Guardar

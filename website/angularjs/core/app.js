@@ -11,6 +11,6 @@ angular.module("proyecto", [
     'satellizer'
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
-        .primaryPalette('red')
+        .primaryPalette('grey')
         .accentPalette('blue');
 });

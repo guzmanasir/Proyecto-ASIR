@@ -5,7 +5,7 @@
 
 
 (function() {
-    function loginCtrl($http,$auth,$state){
+    function loginCtrl($http,$auth,$state,$rootScope){
         var vm = this;
         vm.login = function(){
 
@@ -20,28 +20,30 @@
             $auth.login(json)
                 .then(function(response){
                         if (response.data.codigo === 500)
-                            swal(
-                                'Oops...',
-                                'Error al iniciar sesión',
-                                'error'
-                            )
+                            // swal(
+                            //     'Oops...',
+                            //     'Error al iniciar sesión',
+                            //     'error'
+                            // )
+                            $rootScope.$emit("Loginfail",response)
                         else{
-                            $state.go('main.index')
+                            $state.go('main.nuevos')
                         }
 
                     },
                     function(response) {
-                        swal(
-                            'Oops...',
-                            'Error de servidor',
-                            'error'
-                        )
+                        // swal(
+                        //     'Oops...',
+                        //     'Error de servidor',
+                        //     'error'
+                        // )
+                        $rootScope.$emit("Loginfail",response)
 
                     });
         }
     }
 
     angular.module('proyecto')
-        .controller('loginCtrl',['$http','$auth','$state',loginCtrl]);
+        .controller('loginCtrl',['$http','$auth','$state', '$rootScope', loginCtrl]);
 
 })();

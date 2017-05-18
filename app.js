@@ -1,6 +1,6 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
+// var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./server/routes/index');
 var users = require('./server/routes/users/users');
 var admins = require('./server/routes/admins/admins');
+var middlewareToken = require('./private/middleware/middlewareToken');
 
 
 var app = express();

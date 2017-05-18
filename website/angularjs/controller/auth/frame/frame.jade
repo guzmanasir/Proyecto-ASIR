@@ -1,21 +1,23 @@
 //
    Created by guzman on 4/02/17.
 
-div(layout='column', style='height:500px;', ng-cloak='')
-    section(layout='row', flex='')
-        md-sidenav.md-sidenav-left(md-component-id='left', md-is-locked-open="$mdMedia('gt-md')", md-whiteframe='4')
-            md-toolbar.md-theme-indigo
-                h1.md-toolbar-tools Sidenav Left
-            md-content(layout-padding='')
-                md-button.md-primary(ng-click='close()', hide-gt-md='')
-                    | Close Sidenav Left
-                p(hide='', show-gt-md='')
-                    | This sidenav is locked open on your device. To go back to the default behavior,
-                    | narrow your display.
-        md-content(flex='', layout-padding='')
-            div(layout='column', layout-align='top center')
-                div(ui-view="")
 
-            div(flex='')
+div(layout= "row")
+    md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
+        md-nav-item(md-nav-sref="main.nuevos") Nuevas
+        md-nav-item(md-nav-sref="main.populares") Populares
+        md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
+        md-nav-item(md-nav-sref="main.recomendaciones") Mis listas
+        md-nav-item(md-nav-sref="main.recomendaciones") Directorio listas
+        div(flex)
+        //md-nav-item(md-nav-sref="#")
+        md-button(ng-click="fc.showAdvanced()")
+            i.material-icons playlist-add
+        md-nav-item(md-nav-sref="main.logout") Cerrar sesion
+div(layour= "row")
+    div(ui-view="")
+
+
+
 
 

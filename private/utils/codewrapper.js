@@ -19,6 +19,10 @@ function errCode(errCode,data){
         // === ERRORES A PARTIR DE AQUI === //
         case 10000 : descripcion = "Error en query login"; break;
         case 10001 : descripcion = "Error en query registro"; break;
+        case 10002 : descripcion = "Error no existe token"; break;
+        case 10003 : descripcion = "Error sesión caducada"; break;
+
+
 
     }
 
@@ -45,5 +49,10 @@ exports.responseOk = function(res,data){
 
 exports.responseFail = function(res,err,body){
     var httpCode = err >= 10000 ? 400 : 200;
+    response(res,httpCode,errCode(err,null))
+};
+
+exports.responseForbiden = function(res,err,body){
+    var httpCode = 403
     response(res,httpCode,errCode(err,null))
 };

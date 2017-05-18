@@ -9,7 +9,7 @@
         $locationProvider.html5Mode(true);
         $authProvider.loginUrl = '/loginForm';
         $authProvider.tokenName = 'token';
-        $authProvider.tokenPrefix = 'satellizer';
+        $authProvider.tokenPrefix = 'miApp';
         $stateProvider
 
             .state('home',{
@@ -33,15 +33,49 @@
 
             .state('main',{
                 abstract: true,
+                controller: 'frameCtrl',
+                controllerAs: 'fc',
                 templateUrl: '/users/frame'
             })
 
-            .state('main.index',{
-                url: "/principal",
-                // controller: 'indexController',
-                // controllerAs: 'ic',
-                templateUrl: '/users/index'
+
+            .state('main.nuevos',{
+                url: "/nuevos",
+                //controller: 'indexController',
+                //controllerAs: 'ic',
+                templateUrl: '/users/tempNuevos',
+                params: {requireLogin : true}
             })
+
+            .state('main.populares',{
+                url: "/populares",
+                //controller: 'indexController',
+                //controllerAs: 'ic',
+                templateUrl: '/users/tempPopulares',
+                params: {requireLogin : true}
+            })
+
+            .state('main.recomendaciones',{
+                url: "/recomendaciones",
+                //controller: 'indexController',
+                //controllerAs: 'ic',
+                templateUrl: '/users/tempRecomendaciones',
+                params: {requireLogin : true}
+            })
+
+            .state('main.logout',{
+                url: "/logout",
+                controller: 'logoutCtrl',
+                controllerAs: 'lgc',
+                template: '<p>Logout</p>'
+            })
+
+            .state('403',{
+                url: "/403",
+                templateUrl: '/403'
+            })
+
+
 
     }
 
