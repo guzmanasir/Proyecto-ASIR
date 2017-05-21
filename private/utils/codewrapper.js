@@ -21,6 +21,8 @@ function errCode(errCode,data){
         case 10001 : descripcion = "Error en query registro"; break;
         case 10002 : descripcion = "Error no existe token"; break;
         case 10003 : descripcion = "Error sesión caducada"; break;
+        case 10005 : descripcion = "Error en query insert list"; break;
+        case 10006 : descripcion = "Error en query insert tag"; break;
 
 
 

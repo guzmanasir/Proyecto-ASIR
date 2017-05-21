@@ -19,6 +19,7 @@ exports.middlewareToken = function(req, res, next){
             return error.responseForbiden(res, 10003);
         }
         console.log("hay token ",payload.id)
+        req.idUser = payload.id;
         next()
 
     } catch(err) {
