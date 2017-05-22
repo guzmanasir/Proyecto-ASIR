@@ -10,6 +10,8 @@
         $authProvider.loginUrl = '/loginForm';
         $authProvider.tokenName = 'token';
         $authProvider.tokenPrefix = 'miApp';
+        $authProvider.tokenHeader = 'token';
+
         $stateProvider
 
             .state('home',{

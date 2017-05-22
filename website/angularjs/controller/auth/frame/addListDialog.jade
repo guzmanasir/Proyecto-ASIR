@@ -10,15 +10,21 @@ md-dialog(flex=40)
                 div(layout='column')
                     md-input-container
                         label Name
-                        input( ng-model='mc.nombre', type='text', maxlength='15',  required)
+                        input( ng-model='mc.nombre', type='text',  required)
                     p {{ mc.nombre }}
                     md-chips(ng-model='mc.tags' placeholder="Añade tags" required)
                     div(layout='column')
                         div(layout='row')
                             md-input-container
                                 label Enlaces
-                                input( ng-model='mc.url', type='text', maxlength='15',  required)
+                                input( ng-model='mc.url', type='text',  required)
                             md-button(ng-click="mc.addUrl()") Añadir
+                            md-button(ng-click="mc.searchUrl(mc.url)") Buscar
+
+                    md-list
+                        md-list-item(ng-repeat="video in mc.videoIds track by $index")
+                            youtube-video(video-id="video.id.videoId")
+
                     md-list
                         md-list-item(ng-repeat="url in mc.urls track by $index")
                             p {{ url }}

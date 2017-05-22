@@ -25,7 +25,7 @@
                         $mdDialog.hide();
                     }
 
-                    vmd.addUrl = function() {
+                    vmd.addUrl = function(obj) {
                         vmd.urls.push({
                             url: vmd.url,
                             artista: "unknown",
@@ -33,6 +33,26 @@
                         })
 
                         vmd.url = "";
+                    }
+
+                    vmd.searchUrl = function(value) {
+
+                        var q = url;
+                        var key = 'AIzaSyC9I0Tx3qzCLnyqUdIx7jIBuw4OP4XA3yU'
+                        var url = 'https://content.googleapis.com/youtube/v3/search?' +
+                            '&key='+key+'&part=snippet' +
+                            '&q='+value+'&type=video' +
+                            '&videoEmbeddable=true'
+
+
+
+                        $http.get(url).then(function (data) {
+                            vmd.videoIds = data.data.items
+                            console.info('videos from search by query', data);
+                        },function(err){
+                            console.error(err.data)
+                        });
+
                     }
 
 
@@ -71,6 +91,6 @@
     }
 
     angular.module('proyecto')
-        .controller('frameCtrl',['$http','$state', '$auth','$mdDialog', frameCtrl]);
+        .controller('frameCtrl',['$http','$state', '$auth','$mdDialog' , frameCtrl]);
 
 })();

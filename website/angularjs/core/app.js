@@ -8,7 +8,8 @@
 angular.module("proyecto", [
     'ui.router',
     'ngMaterial',
-    'satellizer'
+    'satellizer',
+    'youtube-embed'
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('grey')
