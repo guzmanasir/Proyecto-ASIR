@@ -7,7 +7,7 @@
 (function() {
     function frameCtrl($http,$state,$auth, $mdDialog){
         var vm = this;
-        vm.name = "asdd"
+        vm.name = ""
         vm.cualquiera = "aa"
         vm.showAdvanced = function(ev) {
             $mdDialog.show({
@@ -54,16 +54,18 @@
                         tagsServer: vm.tags,
                         urlsServer: vm.urls
                     }
-                    $http.post('/users/addList', dataList)
-                    .then(function(responseOk){
-                        console.log(responseOk)
-                    },function(responseFail){
-                        console.error(responseFail);
-                    })
+                    if(dataList.nombreServer != "" && dataList.tagsServer.length >= 1 && dataList.urlsServer.length >=1) {
+                        $http.post('/users/addList', dataList)
+                            .then(function(responseOk){
+                                console.log(responseOk)
+                            },function(responseFail){
+                                console.error(responseFail);
+                            })
+                    }
 
                 }, function() {
-                    console.log("asdal")
-;                });
+                    console.log("asdal");
+                });
         };
 
     }

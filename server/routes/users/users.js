@@ -38,7 +38,8 @@ router.post('/addList', function(req, res, next){
     json.id = req.idUser;
     if ( !json.id || json.id <= 0 || _.isUndefined(json.nombreServer)
         || _.isUndefined(json.tagsServer)
-        || _.isUndefined(json.urlsServer) )
+        || _.isUndefined(json.urlsServer)
+        || json.nombreServer == "")
         return codigos.responseFail(res,10010)
     //console.log(json);
 
@@ -68,10 +69,10 @@ router.get('/getLists', function(req, res, next) {
 
         console.log(nombreListas)
         _.forEach(nombreListas, function(item){
-            listas.listas.push({nombre:item})
-            var urlLista = _.find(resultado,function(o){
-                return o.nombrelista = item
-            })
+            listas.listas.push({nombre:item,
+                url:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'nombre'))]})
+
 
         })
         codigos.responseOk(res, listas)

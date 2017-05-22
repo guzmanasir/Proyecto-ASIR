@@ -63,6 +63,24 @@
                 params: {requireLogin : true}
             })
 
+            .state('main.mislistas',{
+                url: "/mislistas",
+                controller: 'mislistasCtrl',
+                controllerAs: 'mlc',
+                templateUrl: '/users/tempMisListas',
+                params: {requireLogin : true},
+                resolve : {
+                    listas: ['$http',function($http){
+                        return $http.get('/users/getLists')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }]
+                }
+            })
+
             .state('main.logout',{
                 url: "/logout",
                 controller: 'logoutCtrl',
