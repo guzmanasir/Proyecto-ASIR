@@ -76,13 +76,13 @@ exports.addList = function(datosList,callback){
                 datosList.urlsServer = [datosList.urlsServer]
 
             var queryUrl =
-                'INSERT INTO enlace(URL,artista,cancion) VALUES (?,?,?)'
+                'INSERT INTO enlace(URL,artista,cancion, thumbnail) VALUES (?,?,?,?)'
 
             var urlOk = []
             var urlFail = []
 
             async.each(datosList.urlsServer, function(item, cb) {
-                var valuestemp = [item.url, item.artista, item.cancion]
+                var valuestemp = [item.url, item.artista, item.cancion, item.thumbnail]
                 mysql.query(queryUrl, valuestemp, function (err, result) {
                     if (err) {
                         //console.error("ERROR AL INSERTAR ENLACE ",err)

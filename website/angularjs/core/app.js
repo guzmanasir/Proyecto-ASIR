@@ -9,7 +9,9 @@ angular.module("proyecto", [
     'ui.router',
     'ngMaterial',
     'satellizer',
-    'youtube-embed'
+    'youtube-embed',
+    'ngLodash',
+    'ngYoutubeEmbed'
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('grey')

@@ -1,33 +1,57 @@
-md-dialog(flex=40)
-    form(ng-cloak, name="miForm")
+md-dialog(flex=60)
+    md-toolbar
+        .md-toolbar-tools
+            span.md-headline Nueva Playlist
+    div(layout="row")
+        div(layout="column", flex=60)
+            form( ng-cloak, name="miForm")
 
-        md-toolbar
-            .md-toolbar-tools
-                span.md-headline Nueva Playlist
 
-        md-dialog-content
-            .md-dialog-content
-                div(layout='column')
-                    md-input-container
-                        label Name
-                        input( ng-model='mc.nombre', type='text',  required)
-                    p {{ mc.nombre }}
-                    md-chips(ng-model='mc.tags' placeholder="Añade tags" required)
-                    div(layout='column')
-                        div(layout='row')
+
+                md-dialog-content
+                    .md-dialog-content
+                        div(layout='column')
                             md-input-container
-                                label Enlaces
-                                input( ng-model='mc.url', type='text',  required)
-                            md-button(ng-click="mc.addUrl()") Añadir
-                            md-button(ng-click="mc.searchUrl(mc.url)") Buscar
+                                label Name
+                                input( ng-model='mc.nombre', type='text',  required)
+                            p {{ mc.nombre }}
+                            md-chips(ng-model='mc.tags' placeholder="Añade tags" required)
+                            div(layout='column')
+                                div(layout='row')
+                                    md-input-container
+                                        label Enlaces
+                                        input( ng-model='mc.url', type='text',  required)
+                                    //md-button(ng-click="mc.addUrl()") Añadir
+                                    md-button(ng-click="mc.searchUrl(mc.url)") Buscar
 
-                    md-list
-                        md-list-item(ng-repeat="video in mc.videoIds track by $index")
-                            youtube-video(video-id="video.id.videoId")
 
-                    md-list
-                        md-list-item(ng-repeat="url in mc.urls track by $index")
-                            p {{ url }}
-        md-dialog-actions(layout="row")
+                            div(ng-show="mc.videoIds")
+                                md-list(layout="row" layout-wrap)
+                                    md-list-item.md-2-line(flex=33 ng-repeat="video in mc.videoIds track by $index")
+                                        md-card
+                                            //md-card-title
+                                                md-card-title-text
+                                                    strong {{ video.snippet.title }}
+                                            md-card-content
+                                                youtube-video(flex=100 player-height="'50%'" video-id="video.id.videoId")
+                                                //iframe(src="https://www.youtube.com/embed/ " + {{ video.id.videoID }})
+                                                md-button(ng-click="mc.addUrl(video)") Añadir
+                                                    md-tooltip {{ video.snippet.title }}
+
+                                    md-button(ng-click="mc.searchUrl(mc.url,0)" ng-disabled="mc.firstPage") Anterior
+                                    md-button(ng-click="mc.searchUrl(mc.url,1)") Siguiente
+
+        div(layout="column", flex=40)
+
+            md-list
+                md-subheader.md-no-sticky Canciones de {{mc.nombre}}
+                md-list-item.md-3-line(ng-repeat="url in mc.urls track by $index", ng-click='null')
+                    img.md-avatar(ng-src='{{url.thumbnail}}')
+                    .md-list-item-text(layout='column')
+                        h3 {{ url.artista }}
+                        h4 {{ url.cancion }}
+
+    div(layout="row")
+        md-dialog-actions
             md-button( ng-click="mc.close()") Cancelar
             md-button( ng-click="mc.answer()") Guardar
