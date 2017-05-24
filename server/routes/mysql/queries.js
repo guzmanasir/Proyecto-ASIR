@@ -56,6 +56,10 @@ exports.addList = function(datosList,callback){
         if(!_.isArray(datosList.tagsServer))
             datosList.tagsServer = [datosList.tagsServer]
 
+        datosList.tagsServer = _.map(datosList.tagsServer, "idetiqueta")
+
+        console.log(datosList.tagsServer)
+
         _.forEach(datosList.tagsServer,function(item){
             item = parseInt(item)
             valuesTags.push( result.insertId, datosList.id, item )
@@ -159,6 +163,16 @@ exports.getList = function(id, callback){
     })
 }
 
+
+exports.getTags = function(callback){
+    var query =
+        'select idetiqueta, nombre from etiqueta'
+
+    mysql.query(query,function(err,results){
+        if(err) {console.error(err);return callback(100011,null)}
+        callback(null,results);
+    })
+}
 
 
 

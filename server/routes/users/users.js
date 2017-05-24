@@ -10,7 +10,7 @@ router.use(middlewareToken.middlewareToken);
 
 
 router.get('/frame', function(req, res, next) {
-  res.render('angularjs/controller/auth/frame/frame')
+    res.render('angularjs/controller/auth/frame/frame')
 });
 
 router.get('/index', function(req, res, next) {
@@ -83,6 +83,17 @@ router.get('/getLists', function(req, res, next) {
 
     })
 
+});
+
+/**
+ * Obtiene lista de etiquetas
+ */
+router.get('/getTags', function(req, res, next) {
+    console.log("entrando gettags")
+    query.getTags(function(err,resultado){
+        if(err) return codigos.responseFail(res, err)
+        codigos.responseOk(res, resultado)
+    })
 });
 
 router.get('/tempMisListas', function(req, res, next) {

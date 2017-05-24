@@ -5,7 +5,7 @@
 
 
 (function() {
-    function frameCtrl($http,$state,$auth, $mdDialog, lodash){
+    function frameCtrl($http,$state,$auth, $mdDialog, lodash, tags){
         var vm = this;
         vm.name = ""
         vm.cualquiera = "aa"
@@ -13,13 +13,38 @@
             $mdDialog.show({
                 controller: function($mdDialog){
                     var vmd = this;
+                    vmd.allTags = tags.data.data
                     vmd.urls = [];
-                    vmd.tags = [];
+                    vmd.tagsSelected = [];
                     vmd.page = "";
                     vmd.pagePrev = "";
                     vmd.pageNext = "";
                     vmd.artista = "";
                     vmd.cancion = "";
+
+                    vmd.createFilterFor = function(query) {
+
+                        var lowercaseQuery = angular.lowercase(query);
+                        console.log("lower" , lowercaseQuery)
+
+                        return function filterFn(contact) {
+                            //console.log("tagsSelected ",tagsSelected)
+                            return (contact.nombre.indexOf(lowercaseQuery) !== -1);
+                        };
+
+                    }
+
+
+                    vmd.filter = function(criteria) {
+                        console.log(criteria)
+                        //return criteria ? vmd.allTags.filter(createFilterFor(criteria)) : [];
+                        return criteria ? vmd.allTags.filter(vmd.createFilterFor(criteria)) : [];
+
+                    }
+
+
+
+
 
                     vmd.answer = function(){
                         vm.name = vmd.nombre;
@@ -42,6 +67,8 @@
                     }
 
 
+
+
                     vmd.editSong = function(index) {
                         $mdDialog.show({
                             controller: function(){
@@ -51,6 +78,10 @@
                                   vmd.urls[index].cancion = vme.cancion
                                   $mdDialog.hide();
                               }
+
+                                vme.close = function() {
+                                    $mdDialog.hide();
+                                }
                             },
                             multiple: true,
                             controllerAs: "mc",
@@ -76,12 +107,12 @@
 
                         var key = 'AIzaSyBX1ayzZTlapJWNuhSYZRlkSUhU-NlOrCA'
                         var url = 'https://content.googleapis.com/youtube/v3/search?' +
-                            '&key='+key+'&part=snippet&maxResults=6' +
+                            '&key='+key+'&part=snippet&maxResults=3' +
                             '&q='+value+'&type=video' +
                             '&videoEmbeddable=true&pageToken='+vmd.page
 
 
-
+                        console.log("primer then")
                         $http.get(url).then(function (data) {
 
                             if(!data.data.prevPageToken){
@@ -114,7 +145,8 @@
 
 
                     vm.urls = vmd.urls;
-                    vm.tags = vmd.tags;
+                    vm.tags = vmd.tagsSelected
+                    //vm.tags = lodash.map(vmd.tagsSelected, "idetiquetas")
 
                 },
                 controllerAs: "mc",
@@ -126,12 +158,13 @@
                 // clickOutsideToClose:true
             })
                 .then(function() {
-                    console.log("vm.name ",vm.name)
+
                     var dataList = {
                         nombreServer: vm.name,
                         tagsServer: vm.tags,
                         urlsServer: vm.urls
                     }
+                    console.log(dataList.tagsServer)
                     if(dataList.nombreServer != "" && dataList.tagsServer.length >= 1 && dataList.urlsServer.length >=1) {
                         $http.post('/users/addList', dataList)
                             .then(function(responseOk){
@@ -149,6 +182,6 @@
     }
 
     angular.module('proyecto')
-        .controller('frameCtrl',['$http','$state', '$auth','$mdDialog' , 'lodash', frameCtrl]);
+        .controller('frameCtrl',['$http','$state', '$auth','$mdDialog' , 'lodash', 'tags', frameCtrl]);
 
 })();

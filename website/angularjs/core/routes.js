@@ -37,7 +37,19 @@
                 abstract: true,
                 controller: 'frameCtrl',
                 controllerAs: 'fc',
-                templateUrl: '/users/frame'
+                templateUrl: '/users/frame',
+                resolve : {
+                    tags: ['$http',function($http){
+                        return $http.get('/users/getTags')
+                            .then(function(response){
+                                console.log("query tags")
+                                return response;
+                            },function(response) {
+                                console.log("error query tags")
+                                return response;
+                            })
+                    }]
+                }
             })
 
 
