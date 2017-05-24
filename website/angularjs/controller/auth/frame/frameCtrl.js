@@ -11,13 +11,15 @@
         vm.cualquiera = "aa"
         vm.showAdvanced = function(ev) {
             $mdDialog.show({
-                controller: function(){
+                controller: function($mdDialog){
                     var vmd = this;
                     vmd.urls = [];
                     vmd.tags = [];
                     vmd.page = "";
                     vmd.pagePrev = "";
                     vmd.pageNext = "";
+                    vmd.artista = "";
+                    vmd.cancion = "";
 
                     vmd.answer = function(){
                         vm.name = vmd.nombre;
@@ -37,6 +39,27 @@
                             cancion: _.isUndefined(obj.snippet.title.split("-")[1]) ? "unknown" : obj.snippet.title.split("-")[1]
                         })
                         console.log(vmd.urls)
+                    }
+
+
+                    vmd.editSong = function(index) {
+                        $mdDialog.show({
+                            controller: function(){
+                              var vme = this;
+                              vme.save = function() {
+                                  vmd.urls[index].artista = vme.artista
+                                  vmd.urls[index].cancion = vme.cancion
+                                  $mdDialog.hide();
+                              }
+                            },
+                            multiple: true,
+                            controllerAs: "mc",
+                            templateUrl: '/users/editSongDialog',
+                            preserveScope: true,
+                            skipHide: true
+
+                        })
+
                     }
 
 
@@ -97,7 +120,9 @@
                 controllerAs: "mc",
                 templateUrl: '/users/addListDialog',
                 parent: angular.element(document.body),
-                targetEvent: ev
+                targetEvent: ev,
+                autoWrap: false,
+                bindToController: true
                 // clickOutsideToClose:true
             })
                 .then(function() {

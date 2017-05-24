@@ -33,6 +33,10 @@ router.get('/addListDialog', function(req, res, next) {
     res.render('angularjs/controller/auth/frame/addListDialog')
 });
 
+router.get('/editSongDialog', function(req, res, next) {
+    res.render('angularjs/controller/auth/frame/editSongDialog')
+});
+
 router.post('/addList', function(req, res, next){
     var json = req.body;
     json.id = req.idUser;
