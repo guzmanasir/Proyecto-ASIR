@@ -149,7 +149,7 @@ exports.addList = function(datosList,callback){
 
 exports.getList = function(id, callback){
     var query =
-    'SELECT l.nombre as listanombre, e.URL, et.nombre ' +
+    'SELECT l.nombre as listanombre, e.URL, e.artista, e.cancion, e.thumbnail, et.nombre ' +
     'FROM lista l ' +
     'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
     'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +

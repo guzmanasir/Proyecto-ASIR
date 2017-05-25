@@ -66,16 +66,30 @@ router.get('/getLists', function(req, res, next) {
     query.getList(id, function(err,resultado){
 
         if(err) return codigos.responseFail(res, err)
-        console.log("resultado ",resultado)
+        //console.log("resultado ",resultado)
         var listas = {listas : [
         ]}
+        var index = 0
         var nombreListas = _.map(_.uniqBy(resultado,'listanombre' ),'listanombre')
 
-        console.log(nombreListas)
         _.forEach(nombreListas, function(item){
             listas.listas.push({nombre:item,
-                url:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
-                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'nombre'))]})
+                //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+                info:[],
+                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'nombre'))]}
+            )
+            //console.log("antes de url")
+
+            var urls = _.uniqBy(_.filter(resultado,function(o){return o.listanombre == item}),'URL')
+            _.forEach(urls, function(item2){
+                listas.listas[index].info.push({url: item2.URL,
+                artista: item2.artista,
+                cancion: item2.cancion,
+                thumbnail: item2.thumbnail
+                })
+            })
+            index++
+            console.log("urls ",urls)
 
 
         })
