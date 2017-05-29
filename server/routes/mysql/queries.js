@@ -163,6 +163,22 @@ exports.getList = function(id, callback){
     })
 }
 
+exports.newLists = function(callback){
+    var query =
+        'SELECT l.nombre as listanombre, e.URL, e.artista, e.cancion, e.thumbnail, et.nombre ' +
+        'FROM lista l ' +
+        'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+        'ORDER BY l.idlista'
+
+    mysql.query(query, function(err,results){
+        if(err) {console.error(err);return callback(100010,null)}
+        callback(null,results);
+    })
+}
+
 
 exports.getTags = function(callback){
     var query =

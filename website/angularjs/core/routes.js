@@ -55,10 +55,20 @@
 
             .state('main.nuevos',{
                 url: "/nuevos",
-                //controller: 'indexController',
-                //controllerAs: 'ic',
+                controller: 'nuevosCtrl',
+                controllerAs: 'nc',
                 templateUrl: '/users/tempNuevos',
-                params: {requireLogin : true}
+                params: {requireLogin : true},
+                resolve : {
+                    nuevos: ['$http',function($http){
+                        return $http.get('/users/newLists')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }]
+                }
             })
 
             .state('main.populares',{
