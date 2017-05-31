@@ -61,6 +61,7 @@ router.post('/addList', function(req, res, next){
 
 router.post('/addSongs', function(req, res, next){
     var json = req.body;
+    json.id = req.idUser;
     if ( _.isUndefined(json.urlsServer))
         return codigos.responseFail(res,10010)
     //console.log(json);

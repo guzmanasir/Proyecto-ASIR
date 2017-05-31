@@ -6,6 +6,8 @@ md-list
         div.md-list-item.text(layout='column')
             span {{ info.artista }}
             span {{ info.cancion }}
+
         md-checkbox.md-secondary(aria-label="row" ng-model="elc.editList.info[$index].seleccionado")
+        md-button(ng-click="") Editar
     md-button(ng-click = 'elc.eliminar()') Elminiar seleccionados
     md-button(ng-click = 'elc.addNew()') Añadir

@@ -3,10 +3,12 @@
  */
 (function() {
     function editListCtrl($http,$auth,$state,$rootScope, $stateParams, $mdDialog, lodash){
+        if(lodash.isNull($stateParams.lista)) return $state.go("main.mislistas")
         console.log("entreo aqui")
         var vm = this;
         vm.editList = $stateParams.lista
-        if(lodash.isNull($stateParams.lista)) $state.go("main.mislistas")
+        vm.firstPosition = vm.editList.info.length
+        console.log("primera posicion", vm.firstPosition)
         console.log("toda ls lista", $stateParams.lista)
 
         vm.eliminar = function(){
@@ -46,6 +48,9 @@
                     }
 
                     vmd.close = function() {
+                        vm.editList.info = vm.editList.info.slice(0,vm.firstPosition)
+                        vmd.urls = []
+                        console.log("borrando",vm.firstPosition)
                         $mdDialog.hide();
                     }
 
@@ -58,6 +63,12 @@
                             cancion: _.isUndefined(obj.snippet.title.split("-")[1]) ? "unknown" : obj.snippet.title.split("-")[1]
                         })
                         console.log(vmd.urls)
+                        vm.editList.info.push({
+                            thumbnail: obj.snippet.thumbnails.default.url ,
+                            url: "https://www.youtube.com/watch?v="+obj.id.videoId,
+                            artista: obj.snippet.title.split("-")[0],
+                            cancion: _.isUndefined(obj.snippet.title.split("-")[1]) ? "unknown" : obj.snippet.title.split("-")[1]
+                        })
                     }
 
                     vmd.searchUrl = function(value , index) {
@@ -120,7 +131,7 @@
 
                     var dataList = {
                         urlsServer: vm.urls,
-                        idlista: vm.editlist.idlista
+                        idlista: vm.editList.idlista
                     }
                     if(dataList.urlsServer.length >=1) {
                         $http.post('/users/addSongs', dataList)

@@ -58,15 +58,11 @@ exports.addList = function(datosList,callback){
 
         datosList.tagsServer = _.map(datosList.tagsServer, "idetiqueta")
 
-        console.log(datosList.tagsServer)
-
         _.forEach(datosList.tagsServer,function(item){
             item = parseInt(item)
             valuesTags.push( result.insertId, datosList.id, item )
             interrogaciones.push('(?,?,?)')
         })
-        console.log("interrogaciones ",interrogaciones.join(','))
-        console.log("valores ",valuesTags)
 
         var queryTag =
             'INSERT INTO pertenece(lista_idlista,lista_usuario_id,etiqueta_idetiqueta) VALUES '+interrogaciones.join(',')+';'
@@ -80,53 +76,53 @@ exports.addList = function(datosList,callback){
                 datosList.urlsServer = [datosList.urlsServer]
 
             var queryUrl =
-                'INSERT INTO enlace(URL,artista,cancion, thumbnail) VALUES (?,?,?,?)'
+                'INSERT INTO enlace(URL, thumbnail) VALUES (?,?)'
 
             var urlOk = []
-            var urlFail = []
+            var urlFail = {urlFail:[]}
 
             async.each(datosList.urlsServer, function(item, cb) {
-                var valuestemp = [item.url, item.artista, item.cancion, item.thumbnail]
+                var valuestemp = [item.url, item.thumbnail]
                 mysql.query(queryUrl, valuestemp, function (err, result) {
                     if (err) {
-                        //console.error("ERROR AL INSERTAR ENLACE ",err)
-                        urlFail.push(item.url)
+                        console.error("ERROR AL INSERTAR ENLACE ",err)
+                        urlFail.urlFail.push({url: item.url, artista: item.artista, cancion: item.cancion})
                         cb()
                     } else {
-                        urlOk.push(result.insertId);
+                        urlOk.push({url: result.insertId, artista: item.artista, cancion:item.cancion});
                         cb()
                     }
                 })
             },function(err,datos){
-                console.log(urlFail)
-
 
                 var queryUrlFail = _.isEmpty(urlFail) ? 'SELECT 1+1' :
                     'SELECT idenlace FROM enlace WHERE URL IN (?)'
-                mysql.query(queryUrlFail, urlFail, function(err, result){
-                    if(err){
-                        console.error("ERROR AL OBTENER IDs",urlFail,err)
-                        //return callback(err, null)
-                    }
+                var indexFail = 0;
+                var urlsInFail = _.map(urlFail.urlFail,'url')
 
-                    var duplicadas = _.map(result,"idenlace")
-
-                    console.log("resultado query duplicada", result)
-
-                    var urlTotal = _.concat(urlOk, duplicadas)
+                async.each(urlsInFail, function(item, cb){
+                        mysql.query(queryUrlFail, [item], function (err, result) {
+                            if (err) {
+                                console.error("ERROR AL OBTENER IDs", item, err)
+                                cb()
+                            } else {
+                                if(!_.isEmpty(result)) urlFail.urlFail[indexFail].url = result[0].idenlace
+                                cb()
+                            }
+                            indexFail++
+                        })
+                },function(err,datos){
+                    var urlTotal = _.concat(urlOk, urlFail.urlFail)
                     interrogaciones = []
                     var valuesContiene = []
                     _.forEach(urlTotal,function(item){
-                        item = parseInt(item)
-                        valuesContiene.push( item, listaId, datosList.id )
-                        interrogaciones.push('(?,?,?)')
+                        item.url = parseInt(item.url)
+                        valuesContiene.push( item.url, listaId, datosList.id, item.cancion, item.artista  )
+                        interrogaciones.push('(?,?,?,?,?)')
                     })
 
-                    console.log("values contiene", valuesContiene)
-
-
                     var queryContiene =
-                        'INSERT INTO contiene(enlace_idenlace, lista_idlista, lista_usuario_id) values'+interrogaciones.join(',')+';'
+                        'INSERT INTO contiene(enlace_idenlace, lista_idlista, lista_usuario_id, cancion, artista) values'+interrogaciones.join(',')+';'
 
                     mysql.query(queryContiene, valuesContiene, function(err, result){
                         if(err){
@@ -141,15 +137,87 @@ exports.addList = function(datosList,callback){
 
             })
 
-
-            // ===== Query Insert ====== //
-
-
-
         })
+
+
+        // ===== Query Insert ====== //
+
+
+
+
     })
 
 }
+
+exports.addSongs = function(datosList,callback){
+
+    if(!_.isArray(datosList.urlsServer))
+        datosList.urlsServer = [datosList.urlsServer]
+
+    var queryUrl =
+        'INSERT INTO enlace(URL,artista,cancion, thumbnail) VALUES (?,?,?,?)'
+
+    var urlOk = []
+    var urlFail = []
+
+    async.each(datosList.urlsServer, function(item, cb) {
+        var valuestemp = [item.url, item.artista, item.cancion, item.thumbnail]
+        mysql.query(queryUrl, valuestemp, function (err, result) {
+            if (err) {
+                //console.error("ERROR AL INSERTAR ENLACE ",err)
+                urlFail.push(item.url)
+                cb()
+            } else {
+                urlOk.push(result.insertId);
+                cb()
+            }
+        })
+    },function(err,datos){
+        console.log(urlFail)
+
+
+        var queryUrlFail = _.isEmpty(urlFail) ? 'SELECT 1+1' :
+            'SELECT idenlace FROM enlace WHERE URL IN (?)'
+        mysql.query(queryUrlFail, urlFail, function(err, result){
+            if(err){
+                console.error("ERROR AL OBTENER IDs",urlFail,err)
+                //return callback(err, null)
+            }
+
+            var duplicadas = _.map(result,"idenlace")
+
+            console.log("resultado query duplicada", result)
+
+            var urlTotal = _.concat(urlOk, duplicadas)
+            interrogaciones = []
+            var valuesContiene = []
+            _.forEach(urlTotal,function(item){
+                item = parseInt(item)
+                valuesContiene.push( item, datosList.idlista, datosList.id )
+                interrogaciones.push('(?,?,?)')
+            })
+
+            console.log("values contiene", valuesContiene)
+
+
+            var queryContiene =
+                'INSERT INTO contiene(enlace_idenlace, lista_idlista, lista_usuario_id) values'+interrogaciones.join(',')+';'
+
+            mysql.query(queryContiene, valuesContiene, function(err, result){
+                if(err){
+                    console.log("error en contiene", err)
+                    return callback(err, null)
+                }
+                callback(null,result)
+            })
+
+
+        })
+
+    })
+
+}
+
 
 exports.editList = function(json, callback){
 
