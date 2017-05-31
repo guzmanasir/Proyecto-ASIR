@@ -8,4 +8,4 @@ md-list
             span {{ info.cancion }}
         md-checkbox.md-secondary(aria-label="row" ng-model="elc.editList.info[$index].seleccionado")
     md-button(ng-click = 'elc.eliminar()') Elminiar seleccionados
-    md-button() Añadir
+    md-button(ng-click = 'elc.addNew()') Añadir

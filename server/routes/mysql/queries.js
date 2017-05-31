@@ -151,6 +151,22 @@ exports.addList = function(datosList,callback){
 
 }
 
+exports.editList = function(json, callback){
+
+    var valuesEdit = [json.idurls, json.idlista]
+
+    var query =
+        'UPDATE contiene SET DELETED = 1 WHERE enlace_idenlace IN (?) AND lista_idlista = ?'
+
+    mysql.query(query, valuesEdit, function(err, result){
+        if(err){
+            return callback(err, null)
+        }
+        callback(null, result)
+    })
+
+}
+
 
 exports.getList = function(id, callback){
     var query =

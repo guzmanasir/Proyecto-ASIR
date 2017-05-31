@@ -37,6 +37,10 @@ router.get('/editSongDialog', function(req, res, next) {
     res.render('angularjs/controller/auth/frame/editSongDialog')
 });
 
+router.get('/addSongDialog', function(req, res, next) {
+    res.render('angularjs/controller/auth/editList/addSongDialog')
+});
+
 router.post('/addList', function(req, res, next){
     var json = req.body;
     json.id = req.idUser;
@@ -54,6 +58,38 @@ router.post('/addList', function(req, res, next){
 
     })
 })
+
+router.post('/addSongs', function(req, res, next){
+    var json = req.body;
+    if ( _.isUndefined(json.urlsServer))
+        return codigos.responseFail(res,10010)
+    //console.log(json);
+
+    query.addSongs(json, function(err,resultado){
+        if(err) return codigos.responseFail(res, err)
+        console.log(resultado)
+        codigos.responseOk(res, json)
+
+    })
+})
+
+router.post('/editList', function(req, res, next) {
+    var json = req.body
+    // aqui query
+
+    query.editList(json,function(err,resultados){
+        if(err){
+            return codigos.responseFail(res, err);
+        }
+        if(resultados.length !== 1)
+            return codigos.responseFail(res, 500)
+        else {
+            var token = {token:serviceToken.createToken(resultados[0])}
+            res.status(200).json(token)
+        }
+    })
+});
+
 
 /**
  * Obtiene lista de listas a partir de un id de usuario
@@ -74,6 +110,7 @@ router.get('/getLists', function(req, res, next) {
 
         _.forEach(nombreListas, function(item){
             listas.listas.push({nombre:item,
+                idlista:_.uniq( _.map(_.filter(resultado,function(o){return o.listanombre == item}),'idlista'))[0],
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                 info:[],
                 tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'nombre'))]}
