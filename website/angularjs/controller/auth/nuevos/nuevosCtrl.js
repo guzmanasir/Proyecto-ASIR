@@ -11,6 +11,6 @@
     }
 
     angular.module('proyecto')
-        .controller('nuevosCtrl',['$http','$auth','$state', '$rootScope','nuevos', nuevosCtrl]);
+        .controller('nuevosCtrl',['$http','$auth','$state', '$rootScope', 'nuevos', nuevosCtrl]);
 
 })();

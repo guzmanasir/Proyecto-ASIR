@@ -7,6 +7,13 @@
         var vm = this;
         vm.listas = listas.data.data.listas;
         console.log(listas)
+        vm.edit = function(lista){
+            console.log("llamando funcione edit", lista)
+            $state.go(
+                'main.editList',
+                {lista: lista}
+            )
+        }
 
     }
 

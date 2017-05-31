@@ -1,0 +1,11 @@
+p editar {{ elc.editList.nombre }}
+
+md-list
+    md-list-item(ng-repeat="info in elc.editList.info")
+        img.md-avatar(ng-src='{{info.thumbnail}}')
+        div.md-list-item.text(layout='column')
+            span {{ info.artista }}
+            span {{ info.cancion }}
+        md-checkbox.md-secondary(aria-label="row" ng-model="elc.editList.info[$index].seleccionado")
+    md-button(ng-click = 'elc.eliminar()') Elminiar seleccionados
+    md-button() Añadir

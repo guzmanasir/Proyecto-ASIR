@@ -85,8 +85,10 @@ router.get('/getLists', function(req, res, next) {
                 listas.listas[index].info.push({url: item2.URL,
                 artista: item2.artista,
                 cancion: item2.cancion,
-                thumbnail: item2.thumbnail
+                thumbnail: item2.thumbnail,
+                idenlace : item2.idenlace
                 })
+                console.log("onde ta el id", item2)
             })
             index++
             console.log("urls ",urls)
@@ -129,10 +131,11 @@ router.get('/newLists', function(req, res, next) {
                 })
             })
             index++
-            console.log("urls ",urls)
+            //console.log("urls nuevos",urls)
 
 
         })
+        console.log("nuevos", nuevos)
         codigos.responseOk(res, nuevos)
 
     })
@@ -156,6 +159,10 @@ router.get('/tempMisListas', function(req, res, next) {
 
 router.get('/tempNuevos', function(req, res, next) {
     res.render('angularjs/controller/auth/nuevos/nuevos')
+});
+
+router.get('/tempEditList', function(req, res, next) {
+    res.render('angularjs/controller/auth/editList/editList')
 });
 
 

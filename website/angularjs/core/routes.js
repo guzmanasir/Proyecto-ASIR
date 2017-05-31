@@ -5,7 +5,7 @@
 
 
 (function() {
-    function routes($stateProvider,$locationProvider,$authProvider){
+    function routes($stateProvider,$locationProvider,$authProvider,$urlRouterProvider){
         $locationProvider.html5Mode(true);
         $authProvider.loginUrl = '/loginForm';
         $authProvider.tokenName = 'token';
@@ -56,7 +56,7 @@
             .state('main.nuevos',{
                 url: "/nuevos",
                 controller: 'nuevosCtrl',
-                controllerAs: 'nc',
+                controllerAs: 'nct',
                 templateUrl: '/users/tempNuevos',
                 params: {requireLogin : true},
                 resolve : {
@@ -105,6 +105,14 @@
                 }
             })
 
+            .state('main.editList',{
+                url: "/mislistas/edit",
+                controller: 'editListCtrl',
+                controllerAs: 'elc',
+                templateUrl: '/users/tempEditList',
+                params: {requireLogin : true, lista: null}
+            })
+
             .state('main.logout',{
                 url: "/logout",
                 controller: 'logoutCtrl',
@@ -117,12 +125,19 @@
                 templateUrl: '/403'
             })
 
+            .state('404',{
+                url: "/404",
+                template: '<p>404</p>'
+            })
+
+        $urlRouterProvider.otherwise('/mislistas')
+
 
 
     }
 
     angular.module('proyecto')
-        .config(['$stateProvider', '$locationProvider', '$authProvider',routes]);
+        .config(['$stateProvider', '$locationProvider', '$authProvider', '$urlRouterProvider', routes]);
 
 })();
 

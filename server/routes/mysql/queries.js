@@ -99,11 +99,9 @@ exports.addList = function(datosList,callback){
                 })
             },function(err,datos){
                 console.log(urlFail)
-                if(_.isEmpty(urlFail)){
 
-                }
 
-                var queryUrlFail = _.isEmpty() ? 'SELECT 1+1' :
+                var queryUrlFail = _.isEmpty(urlFail) ? 'SELECT 1+1' :
                     'SELECT idenlace FROM enlace WHERE URL IN (?)'
                 mysql.query(queryUrlFail, urlFail, function(err, result){
                     if(err){
@@ -111,7 +109,11 @@ exports.addList = function(datosList,callback){
                         //return callback(err, null)
                     }
 
-                    var urlTotal = _.concat(urlOk, urlFail)
+                    var duplicadas = _.map(result,"idenlace")
+
+                    console.log("resultado query duplicada", result)
+
+                    var urlTotal = _.concat(urlOk, duplicadas)
                     interrogaciones = []
                     var valuesContiene = []
                     _.forEach(urlTotal,function(item){
@@ -120,12 +122,15 @@ exports.addList = function(datosList,callback){
                         interrogaciones.push('(?,?,?)')
                     })
 
+                    console.log("values contiene", valuesContiene)
+
 
                     var queryContiene =
                         'INSERT INTO contiene(enlace_idenlace, lista_idlista, lista_usuario_id) values'+interrogaciones.join(',')+';'
 
                     mysql.query(queryContiene, valuesContiene, function(err, result){
                         if(err){
+                            console.log("error en contiene", err)
                             return callback(err, null)
                         }
                         callback(null,result)
@@ -149,13 +154,13 @@ exports.addList = function(datosList,callback){
 
 exports.getList = function(id, callback){
     var query =
-    'SELECT l.nombre as listanombre, e.URL, e.artista, e.cancion, e.thumbnail, et.nombre ' +
+    'SELECT l.nombre as listanombre, l.idlista, e.idenlace, e.URL, e.artista, e.cancion, e.thumbnail, et.nombre ' +
     'FROM lista l ' +
     'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
     'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
     'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
     'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-    'WHERE l.usuario_id = ?;'
+    'WHERE l.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
 
     mysql.query(query,id,function(err,results){
         if(err) {console.error(err);return callback(100010,null)}
@@ -178,6 +183,11 @@ exports.newLists = function(callback){
         callback(null,results);
     })
 }
+
+/*exports.editList = function(callback){
+    var query =
+        ""
+}*/
 
 
 exports.getTags = function(callback){
