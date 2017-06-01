@@ -21,6 +21,7 @@ div(layout="row")
                             p Etiquetas
                             span(flex) {{ lista.tags }}
                             md-button(ng-click="mlc.edit(lista)") EDITAR
+                            md-button(ng-click="mlc.play(lista.info)") Reproducir
                         //md-card-content
                         //    md-list-item(ng-repeat="info in lista.info")
                         //        img.md-avatar(ng-src='{{info.thumbnail}}')

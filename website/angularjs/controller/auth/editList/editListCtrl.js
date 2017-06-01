@@ -154,20 +154,20 @@
                     vme.nuevoArtista = ""
                     vme.nuevaCancion = ""
                     vme.save = function(id) {
-                        vme.nuevoArtista = vme.artista
-                        vme.nuevaCancion = vme.cancion
-                        vme.idenlace = idenlace
-                        vme.idlista = id
+                        vm.nuevoArtista = vme.artista
+                        vm.nuevaCancion = vme.cancion
+                        vm.idenlace = idenlace
+                        vm.idlista = id
                         $mdDialog.hide();
                     }
 
                     vme.close = function() {
                         $mdDialog.hide();
                     }
-                    vm.nuevoArtista = vme.nuevoArtista
-                    vm.nuevaCancion = vme.nuevaCancion
-                    vm.idenlace = vme.idenlace
-                    vm.idlista = vme.idlista
+                    // vm.nuevoArtista = vme.nuevoArtista
+                    // vm.nuevaCancion = vme.nuevaCancion
+                    // vm.idenlace = vme.idenlace
+                    // vm.idlista = vme.idlista
                 },
                 controllerAs: "sec",
                 templateUrl: '/users/songEditDialog',

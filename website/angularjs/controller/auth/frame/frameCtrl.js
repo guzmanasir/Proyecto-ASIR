@@ -5,13 +5,13 @@
 
 
 (function() {
-    function frameCtrl($http,$state,$auth, $mdDialog, lodash, tags){
+    function frameCtrl($http,$state,$auth, $mdDialog, lodash, tags , $rootScope, $scope) {
         var vm = this;
         vm.name = ""
         vm.cualquiera = "aa"
-        vm.showAdvanced = function(ev) {
+        vm.showAdvanced = function (ev) {
             $mdDialog.show({
-                controller: function($mdDialog){
+                controller: function ($mdDialog) {
                     var vmd = this;
                     vmd.allTags = tags.data.data
                     vmd.urls = [];
@@ -22,10 +22,10 @@
                     vmd.artista = "";
                     vmd.cancion = "";
 
-                    vmd.createFilterFor = function(query) {
+                    vmd.createFilterFor = function (query) {
 
                         var lowercaseQuery = angular.lowercase(query);
-                        console.log("lower" , lowercaseQuery)
+                        console.log("lower", lowercaseQuery)
 
                         return function filterFn(contact) {
                             //console.log("tagsSelected ",tagsSelected)
@@ -35,7 +35,7 @@
                     }
 
 
-                    vmd.filter = function(criteria) {
+                    vmd.filter = function (criteria) {
                         console.log(criteria)
                         //return criteria ? vmd.allTags.filter(createFilterFor(criteria)) : [];
                         return criteria ? vmd.allTags.filter(vmd.createFilterFor(criteria)) : [];
@@ -43,23 +43,20 @@
                     }
 
 
-
-
-
-                    vmd.answer = function(){
+                    vmd.answer = function () {
                         vm.name = vmd.nombre;
                         $mdDialog.hide();
                     }
 
-                    vmd.close = function() {
+                    vmd.close = function () {
                         $mdDialog.hide();
                     }
 
-                    vmd.addUrl = function(obj) {
+                    vmd.addUrl = function (obj) {
 
                         vmd.urls.push({
-                            thumbnail: obj.snippet.thumbnails.default.url ,
-                            url: "https://www.youtube.com/watch?v="+obj.id.videoId,
+                            thumbnail: obj.snippet.thumbnails.default.url,
+                            url: "https://www.youtube.com/watch?v=" + obj.id.videoId,
                             artista: obj.snippet.title.split("-")[0],
                             cancion: _.isUndefined(obj.snippet.title.split("-")[1]) ? "unknown" : obj.snippet.title.split("-")[1]
                         })
@@ -67,19 +64,17 @@
                     }
 
 
-
-
-                    vmd.editSong = function(index) {
+                    vmd.editSong = function (index) {
                         $mdDialog.show({
-                            controller: function(){
-                              var vme = this;
-                              vme.save = function() {
-                                  vmd.urls[index].artista = vme.artista
-                                  vmd.urls[index].cancion = vme.cancion
-                                  $mdDialog.hide();
-                              }
+                            controller: function () {
+                                var vme = this;
+                                vme.save = function () {
+                                    vmd.urls[index].artista = vme.artista
+                                    vmd.urls[index].cancion = vme.cancion
+                                    $mdDialog.hide();
+                                }
 
-                                vme.close = function() {
+                                vme.close = function () {
                                     $mdDialog.hide();
                                 }
                             },
@@ -94,34 +89,33 @@
                     }
 
 
+                    vmd.searchUrl = function (value, index) {
 
-                    vmd.searchUrl = function(value , index) {
-
-                        if(index === 0){
+                        if (index === 0) {
                             vmd.page = vmd.pagePrev;
                             console.log("Vale", vmd.page)
-                            } else {
-                                vmd.page = vmd.pageNext;
-                                console.log("Vale2", vmd.page)
-                            }
+                        } else {
+                            vmd.page = vmd.pageNext;
+                            console.log("Vale2", vmd.page)
+                        }
 
                         var key = 'AIzaSyBX1ayzZTlapJWNuhSYZRlkSUhU-NlOrCA'
                         var url = 'https://content.googleapis.com/youtube/v3/search?' +
-                            '&key='+key+'&part=snippet&maxResults=3' +
-                            '&q='+value+'&type=video' +
-                            '&videoEmbeddable=true&pageToken='+vmd.page
+                            '&key=' + key + '&part=snippet&maxResults=3' +
+                            '&q=' + value + '&type=video' +
+                            '&videoEmbeddable=true&pageToken=' + vmd.page
 
 
                         console.log("primer then")
                         $http.get(url).then(function (data) {
 
-                            if(!data.data.prevPageToken){
+                            if (!data.data.prevPageToken) {
                                 vmd.pageNext = data.data.nextPageToken
                                 vmd.firstPage = true
-                                console.log("si no prev(primera)" )
+                                console.log("si no prev(primera)")
                             } else {
-                                 //vmd.page = (index == 0) ? data.data.prevPageToken : data.data.nextPageToken;
-                                if(!data.data.prevPageToken){
+                                //vmd.page = (index == 0) ? data.data.prevPageToken : data.data.nextPageToken;
+                                if (!data.data.prevPageToken) {
                                     vmd.pageNext = data.data.nextPageTokenS
 
                                 } else {
@@ -130,18 +124,17 @@
 
                                 }
                                 console.log("si hay prev")
-                                 console.log(vmd.page)
-                                 vmd.firstPage = false
+                                console.log(vmd.page)
+                                vmd.firstPage = false
                             }
                             vmd.videoIds = data.data.items
                             data = {}
                             console.info('videos from search by query', data);
-                        },function(err){
+                        }, function (err) {
                             console.error(err.data)
                         });
 
                     }
-
 
 
                     vm.urls = vmd.urls;
@@ -157,7 +150,7 @@
                 bindToController: true
                 // clickOutsideToClose:true
             })
-                .then(function() {
+                .then(function () {
 
                     var dataList = {
                         nombreServer: vm.name,
@@ -165,23 +158,46 @@
                         urlsServer: vm.urls
                     }
                     console.log(dataList.tagsServer)
-                    if(dataList.nombreServer != "" && dataList.tagsServer.length >= 1 && dataList.urlsServer.length >=1) {
+                    if (dataList.nombreServer != "" && dataList.tagsServer.length >= 1 && dataList.urlsServer.length >= 1) {
                         $http.post('/users/addList', dataList)
-                            .then(function(responseOk){
+                            .then(function (responseOk) {
                                 console.log(responseOk)
-                            },function(responseFail){
+                            }, function (responseFail) {
                                 console.error(responseFail);
                             })
                     }
 
-                }, function() {
+                }, function () {
                     console.log("asdal");
                 });
         };
+        vm.playerVars = {autoplay: 1}
+        vm.player = ""
+        vm.idVideo="null"
+        vm.youtube=false;
+        $scope.$on('youtube.player.ready', function (event, player) {
+            console.log("el reproductor esta listo");
+            vm.player = player
+        })
+        $scope.$on('playlist', function (event, lista) {
+            console.log("recibo el evento desde framectrl", event, lista)
+            //event.preventDefault();
+            //$state.go('404');
+            vm.playlist = lista;
 
+            vm.idVideos = lodash.map(vm.playlist, function(o){
+                return o.url.split("=")[1]
+            })
+            console.log("idvideos",vm.idVideos)
+            // vm.idVideos = vm.playlist[0].url.split("=")[1]
+            vm.youtube=true;
+            vm.player.loadPlaylist({playlist: vm.idVideos})
+
+
+        })
     }
 
     angular.module('proyecto')
-        .controller('frameCtrl',['$http','$state', '$auth','$mdDialog' , 'lodash', 'tags', frameCtrl]);
+        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', 'lodash', 'tags', '$rootScope', '$scope', frameCtrl]);
 
 })();

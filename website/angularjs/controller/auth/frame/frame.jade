@@ -2,26 +2,27 @@
    Created by guzman on 4/02/17.
 
 div(layout="column" layout-fill)
-    header
-        div(layout= "row")
-            md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
-                md-nav-item(md-nav-sref="main.nuevos") Nuevas
-                md-nav-item(md-nav-sref="main.populares") Populares
-                md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
-                md-nav-item(md-nav-sref="main.mislistas") Mis listas
-                md-nav-item(md-nav-sref="main.directorio") Directorio listas
-                div(flex)
-                //md-nav-item(md-nav-sref="#")
-                md-button(ng-click="fc.showAdvanced()")
-                    i.material-icons playlist-add
-                md-nav-item(md-nav-sref="main.logout") Cerrar sesion
-    main(flex)
+
+    div(layout= "row" layout-align="center start")
+        md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
+            md-nav-item(md-nav-sref="main.nuevos") Nuevas
+            md-nav-item(md-nav-sref="main.populares") Populares
+            md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
+            md-nav-item(md-nav-sref="main.mislistas") Mis listas
+            md-nav-item(md-nav-sref="main.directorio") Directorio listas
+            div(flex)
+            //md-nav-item(md-nav-sref="#")
+            md-button(ng-click="fc.showAdvanced()")
+                i.material-icons playlist-add
+            md-nav-item(md-nav-sref="main.logout") Cerrar sesion
+    div(layout= "row" layout-align="center center")
+
         div(ui-view="")
-        //div()
-    div.footer
-        md-toolbar.md-scroll-shrink
-            div(layout="row" flex)
-                span hola
+    //div()
+    div(layout= "row" layout-align="center end")
+        div(flex)
+            div(ng-show="fc.youtube")
+                youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'50%'")
 
 
 

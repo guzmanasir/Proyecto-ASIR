@@ -24,6 +24,8 @@
                     $state.go('404');
 
             })
+
+
     }
 
     angular.module('proyecto')
