@@ -33,8 +33,12 @@ router.get('/addListDialog', function(req, res, next) {
     res.render('angularjs/controller/auth/frame/addListDialog')
 });
 
-router.get('/editSongDialog', function(req, res, next) {
-    res.render('angularjs/controller/auth/frame/editSongDialog')
+router.get('/editSongDialog.jade', function(req, res, next) {
+    res.render('angularjs/controller/auth/frame/editSongDialog.jade')
+});
+
+router.get('/songEditDialog', function(req, res, next) {
+    res.render('angularjs/controller/auth/editList/songEditDialog')
 });
 
 router.get('/addSongDialog', function(req, res, next) {
@@ -90,6 +94,24 @@ router.post('/editList', function(req, res, next) {
         }
     })
 });
+
+router.post('/songEdit', function(req, res, next) {
+    var json = req.body
+    // aqui query
+
+    query.editSong(json,function(err,resultados){
+        if(err){
+            return codigos.responseFail(res, err);
+        }
+        if(resultados.length !== 1)
+            return codigos.responseFail(res, 500)
+        else {
+            var token = {token:serviceToken.createToken(resultados[0])}
+            res.status(200).json(token)
+        }
+    })
+});
+
 
 
 /**

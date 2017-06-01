@@ -85,7 +85,7 @@
                             },
                             multiple: true,
                             controllerAs: "mc",
-                            templateUrl: '/users/editSongDialog',
+                            templateUrl: '/users/editSongDialog.jade',
                             preserveScope: true,
                             skipHide: true
 
