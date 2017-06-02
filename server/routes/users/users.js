@@ -97,6 +97,7 @@ router.post('/editList', function(req, res, next) {
 
 router.post('/songEdit', function(req, res, next) {
     var json = req.body
+    console.log("json pa edita loco", json)
     // aqui query
 
     query.editSong(json,function(err,resultados){

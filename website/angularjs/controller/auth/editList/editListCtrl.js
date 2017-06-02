@@ -147,17 +147,22 @@
                 });
         }
 
-        vm.songEdit = function(idenlace, ev){
+        vm.songEdit = function(idenlace, idlista, index, ev){
             $mdDialog.show({
                 controller: function($mdDialog){
                     var vme = this;
                     vme.nuevoArtista = ""
                     vme.nuevaCancion = ""
-                    vme.save = function(id) {
+                    console.log("er index", index)
+                    vme.save = function() {
                         vm.nuevoArtista = vme.artista
                         vm.nuevaCancion = vme.cancion
                         vm.idenlace = idenlace
-                        vm.idlista = id
+                        vm.idlista = idlista
+
+                        vm.editList.info[index].artista = vm.nuevoArtista
+                        vm.editList.info[index].cancion = vm.nuevaCancion
+
                         $mdDialog.hide();
                     }
 

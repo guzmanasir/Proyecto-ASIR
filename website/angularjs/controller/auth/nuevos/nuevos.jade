@@ -1,4 +1,25 @@
 
 p NUEVOS
 
-p {{ nct.nuevos }}
+div(layout="row")
+    md-content.md-padding(layout-xs='column', layout='row')
+        md-list(layout="row" layout-wrap)
+            md-list-item(flex=25 ng-repeat="lista in nct.nuevos track by $index")
+                md-card(flex)
+                    md-card-title
+                        md-card-title-text
+                            span.md-headline(flex) {{ lista.nombre }}
+                    div(layout= "row")
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                    div(layout= "row")
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+
+                    //md-card-actions(layout='row', layout-align='start center')
+                    //    md-card-icon-actions
+                    p Etiquetas
+                    span(flex) {{ lista.tags }}
+                    md-button(ng-click="mlc.play(lista.info)") Reproducir
+                    md-button(ng-click="") Favorito
+                //md-card-content

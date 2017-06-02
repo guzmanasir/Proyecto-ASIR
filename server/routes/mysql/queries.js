@@ -236,10 +236,12 @@ exports.editList = function(json, callback){
 
 exports.editSong = function(json, callback){
 
-    var valuesEditSong = [json.artista, json.cancion, json.idlista, json.idenlace]
+    var valuesEditSong = [json.nuevoArtista, json.nuevaCancion, json.idlista, json.idenlace]
+
+    console.log("values pa la query", valuesEditSong)
 
     var query =
-        'UPDATE contiene SET artista = "?" , cancion = "?" WHERE lista_idlista = ? AND enlace_idenlace = ?'
+        'UPDATE contiene SET artista = ? , cancion = ? WHERE lista_idlista = ? AND enlace_idenlace = ?'
 
     mysql.query(query, valuesEditSong, function(err, result){
         if(err){
