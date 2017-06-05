@@ -195,6 +195,17 @@
 
 
         })
+        // vm.buscar = function(){
+        //     console.log(vm.busqueda)
+        //     var buscar = {busqueda: vm.busqueda}
+        //
+        //     $http.post('/users/search', buscar)
+        //         .then(function(responseOk){
+        //             console.log(responseOk)
+        //         }, function(responseFail){
+        //             console.log(responseFail)
+        //         })
+        // }
     }
 
     angular.module('proyecto')

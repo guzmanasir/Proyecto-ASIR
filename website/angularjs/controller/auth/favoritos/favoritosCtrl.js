@@ -14,7 +14,15 @@
     //
     //     }
     //
+        vm.play = function(lista){
+            //$rootScope.playlist = lista
+            $rootScope.$broadcast('playlist',lista);
      }
+
+
+
+    }
+
 
     angular.module('proyecto')
         .controller('favoritosCtrl',['$http','$auth','$state', '$rootScope','listas', favoritosCtrl]);

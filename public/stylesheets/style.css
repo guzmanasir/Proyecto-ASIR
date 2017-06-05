@@ -1,5 +1,11 @@
-a {
-  color: #00B7FF;
+
+md-content {
+  height: calc(100vh - 64px);
+}
+
+footer {
+  background: black;
+  height: 64px;
 }
 
 main {
