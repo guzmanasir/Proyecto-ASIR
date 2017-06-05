@@ -105,6 +105,24 @@
                 }
             })
 
+            .state('main.favoritos',{
+                url: "/favoritos",
+                controller: 'favoritosCtrl',
+                controllerAs: 'flc',
+                templateUrl: '/users/tempFavoritos',
+                params: {requireLogin : true},
+                resolve : {
+                    listas: ['$http',function($http){
+                        return $http.get('/users/misFavoritos')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }]
+                }
+            })
+
             .state('main.editList',{
                 url: "/mislistas/edit",
                 controller: 'editListCtrl',

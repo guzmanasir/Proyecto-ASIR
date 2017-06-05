@@ -269,15 +269,44 @@ exports.getList = function(id, callback){
     })
 }
 
+exports.favoritos = function(id, callback){
+    var query =
+        'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+        'FROM lista l ' +
+        'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+        'INNER JOIN favorito f ON l.idlista = f.lista_idlista ' +
+        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+        'WHERE f.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+
+    mysql.query(query,id,function(err,results){
+        if(err) {console.error(err);return callback(100010,null)}
+        callback(null,results);
+    })
+}
+
+exports.favorito = function(json, callback){
+    var valuesFavorito = [json.idUser, json.favoritoId ]
+    var query =
+        'INSERT INTO favorito(usuario_id, lista_idlista) values(?,?)'
+
+    mysql.query(query,valuesFavorito,function(err,results){
+        if(err) {console.error(err);return callback(100012,null)}
+        callback(null,results);
+    })
+}
+
+
 exports.newLists = function(callback){
     var query =
-        'SELECT l.nombre as listanombre, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
         'FROM lista l ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
         'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
         'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
         'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'ORDER BY l.idlista'
+        'ORDER BY l.fecha DESC'
 
     mysql.query(query, function(err,results){
         if(err) {console.error(err);return callback(100010,null)}

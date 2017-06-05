@@ -103,15 +103,29 @@ router.post('/songEdit', function(req, res, next) {
     query.editSong(json,function(err,resultados){
         if(err){
             return codigos.responseFail(res, err);
-        }
-        if(resultados.length !== 1)
-            return codigos.responseFail(res, 500)
-        else {
-            var token = {token:serviceToken.createToken(resultados[0])}
-            res.status(200).json(token)
+        } else {
+            codigos.responseOk(res)
+
         }
     })
 });
+
+router.post('/favorito', function(req, res, next) {
+
+    var json = {favoritoId: req.body.favoritoId, idUser: req.idUser}
+    // aqui query
+    console.log("datos favorito", json)
+
+    query.favorito(json,function(err,resultados){
+        if(err){
+            return codigos.responseFail(res, err);
+        }
+        else {
+            codigos.responseOk(res)
+        }
+    })
+});
+
 
 
 
@@ -130,18 +144,18 @@ router.get('/getLists', function(req, res, next) {
         var listas = {listas : [
         ]}
         var index = 0
-        var nombreListas = _.map(_.uniqBy(resultado,'listanombre' ),'listanombre')
+        var idListas = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
 
-        _.forEach(nombreListas, function(item){
-            listas.listas.push({nombre:item,
-                idlista:_.uniq( _.map(_.filter(resultado,function(o){return o.listanombre == item}),'idlista'))[0],
+        _.forEach(idListas, function(item){
+            listas.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
+                idlista:item,
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                 info:[],
-                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'nombre'))]}
+                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
             )
             //console.log("antes de url")
 
-            var urls = _.uniqBy(_.filter(resultado,function(o){return o.listanombre == item}),'URL')
+            var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
             _.forEach(urls, function(item2){
                 listas.listas[index].info.push({url: item2.URL,
                 artista: item2.artista,
@@ -162,28 +176,76 @@ router.get('/getLists', function(req, res, next) {
 
 });
 
+router.get('/misFavoritos', function(req, res, next) {
+    var id = req.idUser;
+    // var result = {
+    //     total: [{nombre:'lista1', urls: [], tags : []}]
+    // }
+    query.favoritos(id, function(err,resultado){
+
+        if(err) return codigos.responseFail(res, err)
+        //console.log("resultado ",resultado)
+        var listas = {listas : [
+        ]}
+        var index = 0
+        var idListas = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
+
+        _.forEach(idListas, function(item){
+            listas.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
+                idlista:item,
+                //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+                info:[],
+                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
+            )
+            //console.log("antes de url")
+
+            var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
+            _.forEach(urls, function(item2){
+                listas.listas[index].info.push({url: item2.URL,
+                    artista: item2.artista,
+                    cancion: item2.cancion,
+                    thumbnail: item2.thumbnail,
+                    idenlace : item2.idenlace
+                })
+                console.log("onde ta el id", item2)
+            })
+            index++
+            console.log("urls ",urls)
+
+
+        })
+        codigos.responseOk(res, listas)
+
+    })
+
+});
+
 router.get('/newLists', function(req, res, next) {
     // var result = {
     //     total: [{nombre:'lista1', urls: [], tags : []}]
     // }
     query.newLists(function(err,resultado){
 
+
         if(err) return codigos.responseFail(res, err)
         //console.log("resultado ",resultado)
         var nuevos = {listas : [
         ]}
         var index = 0
-        var nombreListas = _.map(_.uniqBy(resultado,'listanombre' ),'listanombre')
+        var idListas = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
 
-        _.forEach(nombreListas, function(item){
-            nuevos.listas.push({nombre:item,
+        _.forEach(idListas, function(item){
+            nuevos.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
+                listaid: item,
+                miusuarioid: req.idUser,
+                usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                 info:[],
-                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'nombre'))]}
+                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
             )
             //console.log("antes de url")
 
-            var urls = _.uniqBy(_.filter(resultado,function(o){return o.listanombre == item}),'URL')
+            var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
             _.forEach(urls, function(item2){
                 nuevos.listas[index].info.push({url: item2.URL,
                     artista: item2.artista,
@@ -220,6 +282,10 @@ router.get('/tempMisListas', function(req, res, next) {
 
 router.get('/tempNuevos', function(req, res, next) {
     res.render('angularjs/controller/auth/nuevos/nuevos')
+});
+
+router.get('/tempFavoritos', function(req, res, next) {
+    res.render('angularjs/controller/auth/favoritos/favoritos')
 });
 
 router.get('/tempEditList', function(req, res, next) {

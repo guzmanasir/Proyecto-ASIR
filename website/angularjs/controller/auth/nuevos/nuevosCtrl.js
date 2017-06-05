@@ -7,6 +7,26 @@
         var vm = this;
         vm.nuevos = nuevos.data.data.listas;
         console.log("nuevos" , vm.nuevos)
+        vm.favorito = function(listaid){
+            vm.favoritoId = listaid
+            $http.post('/users/favorito', {favoritoId: vm.favoritoId})
+                .then(function(responseOk){
+                    console.log(responseOk)
+                    swal(
+                         '',
+                         'OK',
+                         'success'
+                     )
+                }, function(responseFail){
+                    console.log(responseFail)
+                    swal(
+                         'Oops...',
+                         'Error',
+                         'error'
+                     )
+                })
+        }
+
 
     }
 

@@ -25,6 +25,7 @@ function errCode(errCode,data){
         case 10006 : descripcion = "Error en query insert tag"; break;
         case 10010 : descripcion = "Error en query get list"; break;
         case 10011 : descripcion = "Error en query get tags"; break;
+        case 10012 : descripcion = "Error en query favorito"; break;
 
 
 

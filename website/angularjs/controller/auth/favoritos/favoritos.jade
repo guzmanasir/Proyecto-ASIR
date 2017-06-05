@@ -1,10 +1,9 @@
-
-p NUEVOS
+p FAVORITOS
 
 div(layout="row")
     md-content.md-padding(layout-xs='column', layout='row')
         md-list(layout="row" layout-wrap)
-            md-list-item(flex=25 ng-repeat="lista in nct.nuevos track by $index")
+            md-list-item(flex=25 ng-repeat="lista in flc.listas track by $index")
                 md-card(flex)
                     md-card-title
                         md-card-title-text
@@ -20,7 +19,3 @@ div(layout="row")
                     //    md-card-icon-actions
                     p Etiquetas
                     span(flex) {{ lista.tags }}
-                    md-button(ng-click="") Reproducir
-                    div(ng-if="lista.usuarioid != lista.miusuarioid")
-                        md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                //md-card-content
