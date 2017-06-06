@@ -6,7 +6,7 @@
         console.log("entreo")
         var vm = this;
         vm.listas = $stateParams.resultado
-        console.log("mi busqueda premoh", vm.listas)
+        console.log("mi busqueda premoh", $stateParams.resultado)
 
         //     vm.play = function(lista){
         //         //$rootScope.playlist = lista

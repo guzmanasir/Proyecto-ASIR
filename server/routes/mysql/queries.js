@@ -273,14 +273,41 @@ exports.buscador = function(json, callback){
 
     var valuesBuscar = [json.busqueda]
 
-    var query =
-        'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
-        'FROM lista l ' +
-        'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'WHERE l.nombre LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+    console.log("los valoreh", valuesBuscar)
+
+    switch(json.tipo){
+        case "lista":
+            var query =
+                'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+                'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+                'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+                'WHERE l.nombre LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+            break;
+        case "cancion":
+            var query =
+                'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+                'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+                'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+                'WHERE c.cancion LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+            break;
+        case "artista":
+            var query =
+                'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+                'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+                'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+                'WHERE c.artista LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+    }
+
+
 
     mysql.query(query,valuesBuscar,function(err,results){
         if(err) {console.error(err);return callback(100010,null)}

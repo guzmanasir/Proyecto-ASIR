@@ -283,6 +283,7 @@ router.get('/newLists', function(req, res, next) {
         _.forEach(idListas, function(item){
             nuevos.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
                 listaid: item,
+                isfavorited: false,
                 miusuarioid: req.idUser,
                 usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
@@ -304,8 +305,19 @@ router.get('/newLists', function(req, res, next) {
 
 
         })
-        console.log("nuevos", nuevos)
-        codigos.responseOk(res, nuevos)
+        var id = req.idUser
+
+        query.favoritos(id, function(err, resultado){
+            var idFavoritos = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
+            _.forEach(idFavoritos, function(item){
+
+            })
+
+            console.log("nuevos", nuevos)
+            codigos.responseOk(res, nuevos)
+        })
+
+
 
     })
 

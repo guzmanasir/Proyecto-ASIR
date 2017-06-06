@@ -21,6 +21,11 @@ div(layout="column" layout-fill)
             label Buscador
             input(type='text' ng-model='fc.busqueda' search)
             md-button(ng-click="fc.buscar()" ) Buscar
+        md-select.md-no-underline(ng-model='fc.type')
+            md-option(value='lista' selected) Listas
+            md-option(value='artista') Artista
+            md-option(value='cancion') Cancion
+
     md-content(layout='column')
         main
             div(ui-view="")

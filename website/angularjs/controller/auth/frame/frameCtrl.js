@@ -197,13 +197,14 @@
         })
         vm.buscar = function(){
             console.log("%"+vm.busqueda+"%")
-            var buscador = {busqueda: "%"+vm.busqueda+"%"}
+
+            var buscador = {tipo: vm.type, busqueda: "%"+vm.busqueda+"%" }
 
              $http.post('/users/search/', buscador)
                  .then(function(responseOk){
                      console.log("datos brutos", responseOk)
-                     console.log("datos busqueda", responseOk.data)
-                     $state.go('main.buscador', responseOk.data.listas)
+                     console.log("datos busqueda", responseOk.data.data.listas)
+                     $state.go('main.buscador', {resultado: responseOk.data.data.listas})
 
                  }, function(responseFail){
                      console.log(responseFail)
