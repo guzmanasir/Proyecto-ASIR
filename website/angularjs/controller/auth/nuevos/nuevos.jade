@@ -21,7 +21,12 @@ div(layout="row")
                     p Etiquetas
                     span(flex) {{ lista.tags }}
                     md-button(ng-click="nct.play(lista.info)") Reproducir
+                    span {{ lista.numfavoritos }}
                     div(ng-if="lista.usuarioid != lista.miusuarioid")
-                        md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                        div(ng-if="lista.isfavorited == false")
+                            md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                        div(ng-if="lista.isfavorited == true")
+                            md-button(ng-click="") NO Favorito
+
 
                 //md-card-content

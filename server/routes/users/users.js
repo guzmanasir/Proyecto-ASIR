@@ -285,6 +285,7 @@ router.get('/newLists', function(req, res, next) {
                 listaid: item,
                 isfavorited: false,
                 miusuarioid: req.idUser,
+                numfavoritos:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
                 usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                 info:[],
@@ -307,9 +308,13 @@ router.get('/newLists', function(req, res, next) {
         })
         var id = req.idUser
 
+
+
         query.favoritos(id, function(err, resultado){
+            console.log(nuevos.listas)
             var idFavoritos = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
             _.forEach(idFavoritos, function(item){
+                _.find(nuevos.listas, {listaid: item}).isfavorited = true
 
             })
 
