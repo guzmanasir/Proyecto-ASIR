@@ -9,10 +9,7 @@
         console.log(listas)
         vm.edit = function(lista){
             console.log("llamando funcione edit", lista)
-            $state.go(
-                'main.editList',
-                {lista: lista}
-            )
+            $state.go('main.editList',{lista: lista})
         }
 
         vm.play = function(lista){

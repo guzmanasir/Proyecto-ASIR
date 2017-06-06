@@ -110,6 +110,52 @@ router.post('/songEdit', function(req, res, next) {
     })
 });
 
+router.post('/search', function(req, res, next) {
+    var json = req.body
+    console.log("json pa edita loco", json)
+    // aqui query
+
+    query.buscador(json,function(err,resultados){
+        if(err){
+            return codigos.responseFail(res, err);
+        } else {
+
+
+            var listas = {listas : [
+            ]}
+            var index = 0
+            var idListas = _.map(_.uniqBy(resultados,'idlista' ),'idlista')
+
+            _.forEach(idListas, function(item){
+                listas.listas.push({nombre:_.uniq( _.map(_.filter(resultados,function(o){return o.idlista == item}),'listanombre'))[0],
+                    idlista:item,
+                    //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+                    info:[],
+                    tags:[_.uniq(_.map(_.filter(resultados,function(o){return o.idlista == item}),'nombre'))]}
+                )
+                //console.log("antes de url")
+
+                var urls = _.uniqBy(_.filter(resultados,function(o){return o.idlista == item}),'URL')
+                _.forEach(urls, function(item2){
+                    listas.listas[index].info.push({url: item2.URL,
+                        artista: item2.artista,
+                        cancion: item2.cancion,
+                        thumbnail: item2.thumbnail,
+                        idenlace : item2.idenlace
+                    })
+                })
+                index++
+
+
+
+            })
+            console.log("los resultaos la query", listas)
+            codigos.responseOk(res, listas)
+
+        }
+    })
+});
+
 router.post('/favorito', function(req, res, next) {
 
     var json = {favoritoId: req.body.favoritoId, idUser: req.idUser}
@@ -291,6 +337,11 @@ router.get('/tempFavoritos', function(req, res, next) {
 router.get('/tempEditList', function(req, res, next) {
     res.render('angularjs/controller/auth/editList/editList')
 });
+
+router.get('/tempBuscador', function(req, res, next) {
+    res.render('angularjs/controller/auth/buscador/buscador')
+});
+
 
 
 

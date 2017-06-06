@@ -16,19 +16,19 @@ div(layout="column" layout-fill)
         md-button(ng-click="fc.showAdvanced()")
             i.material-icons playlist-add
         md-nav-item(md-nav-sref="main.logout") Cerrar sesion
-        div(layout="row")
-            md-input-container(flex='')
-                label Buscador
-                input(type='text' ng-model='fc.busqueda' search)
-                md-button(ng-click="fc.buscar()" ) Buscar
+    div(layout="row")
+        md-input-container(flex='')
+            label Buscador
+            input(type='text' ng-model='fc.busqueda' search)
+            md-button(ng-click="fc.buscar()" ) Buscar
     md-content(layout='column')
         main
             div(ui-view="")
         span(flex)
         footer
             p footer
-            //div(ng-show="fc.youtube")
-            //    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'50%'")
+            div(ng-show="fc.youtube")
+                youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'50%'")
 
 
 //div(layout="column" layout-fill)

@@ -123,6 +123,14 @@
                 }
             })
 
+            .state('main.buscador',{
+                url: "/buscar",
+                controller: 'buscadorCtrl',
+                controllerAs: 'blc',
+                templateUrl: '/users/tempBuscador',
+                params: {requireLogin : true, resultado: null}
+            })
+
             .state('main.editList',{
                 url: "/mislistas/edit",
                 controller: 'editListCtrl',

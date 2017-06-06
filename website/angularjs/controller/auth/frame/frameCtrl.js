@@ -195,17 +195,20 @@
 
 
         })
-        // vm.buscar = function(){
-        //     console.log(vm.busqueda)
-        //     var buscar = {busqueda: vm.busqueda}
-        //
-        //     $http.post('/users/search', buscar)
-        //         .then(function(responseOk){
-        //             console.log(responseOk)
-        //         }, function(responseFail){
-        //             console.log(responseFail)
-        //         })
-        // }
+        vm.buscar = function(){
+            console.log("%"+vm.busqueda+"%")
+            var buscador = {busqueda: "%"+vm.busqueda+"%"}
+
+             $http.post('/users/search/', buscador)
+                 .then(function(responseOk){
+                     console.log("datos brutos", responseOk)
+                     console.log("datos busqueda", responseOk.data)
+                     $state.go('main.buscador', responseOk.data.listas)
+
+                 }, function(responseFail){
+                     console.log(responseFail)
+                 })
+        }
     }
 
     angular.module('proyecto')
