@@ -278,33 +278,24 @@ exports.buscador = function(json, callback){
     switch(json.tipo){
         case "lista":
             var query =
-                'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+                'SELECT l.idlista ' +
                 'FROM lista l ' +
                 'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-                'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-                'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-                'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-                'WHERE l.nombre LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+                'WHERE l.nombre LIKE ? AND l.deleted <> 1 AND c.deleted <> 1;'
             break;
         case "cancion":
             var query =
-                'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+                'SELECT l.idlista ' +
                 'FROM lista l ' +
                 'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-                'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-                'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-                'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-                'WHERE c.cancion LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+                'WHERE c.cancion LIKE ? AND l.deleted <> 1 AND c.deleted <> 1;'
             break;
         case "artista":
             var query =
-                'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+                'SELECT l.idlista ' +
                 'FROM lista l ' +
                 'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-                'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-                'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-                'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-                'WHERE c.artista LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+                'WHERE c.artista LIKE ? AND l.deleted <> 1 AND c.deleted <> 1;'
     }
 
 
@@ -313,6 +304,28 @@ exports.buscador = function(json, callback){
         if(err) {console.error(err);return callback(100010,null)}
         callback(null,results);
     })
+}
+
+exports.getByIdlist = function(json, callback){
+    var valuesIds = [json.listIds]
+    console.log("los idsss", valuesIds)
+    var query =
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'FROM lista l ' +
+        'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+        'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
+        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+        'WHERE l.idlista in (?) AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
+        'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
+        'ORDER BY l.fecha DESC'
+
+    mysql.query(query, valuesIds, function(err,results){
+        if(err) {console.error(err);return callback(100010,null)}
+        callback(null,results);
+    })
+
 }
 
 exports.favoritos = function(id, callback){
@@ -324,7 +337,7 @@ exports.favoritos = function(id, callback){
         'INNER JOIN favorito f ON l.idlista = f.lista_idlista ' +
         'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
         'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'WHERE f.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+        'WHERE f.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 AND f.deleted <> 1;'
 
     mysql.query(query,id,function(err,results){
         if(err) {console.error(err);return callback(100010,null)}
@@ -333,15 +346,49 @@ exports.favoritos = function(id, callback){
 }
 
 exports.favorito = function(json, callback){
+    var valuesFavorito = [json.idUser, json.favoritoId]
+
+    var query = 'SELECT * FROM favorito WHERE usuario_id = ? AND lista_idlista = ?'
+
+    mysql.query(query,valuesFavorito,function(err,results){
+        if(err) {console.error(err);return callback(100012,null)}
+
+        if(_.isEmpty(results)){
+            var query =
+                'INSERT INTO favorito(usuario_id, lista_idlista) values(?,?)'
+
+            mysql.query(query,valuesFavorito,function(err,results){
+                if(err) {console.error(err);return callback(100012,null)}
+                callback(null,results);
+            })
+
+        } else {
+            var query =
+                'UPDATE favorito SET deleted = 0 WHERE usuario_id = ? AND lista_idlista = ?'
+
+            mysql.query(query,valuesFavorito,function(err,results){
+                if(err) {console.error(err);return callback(100012,null)}
+                callback(null,results);
+            })
+        }
+
+
+    })
+
+
+}
+
+exports.noFavorito = function(json, callback){
     var valuesFavorito = [json.idUser, json.favoritoId ]
     var query =
-        'INSERT INTO favorito(usuario_id, lista_idlista) values(?,?)'
+        'UPDATE favorito SET deleted = 1 WHERE usuario_id = ? AND lista_idlista = ?'
 
     mysql.query(query,valuesFavorito,function(err,results){
         if(err) {console.error(err);return callback(100012,null)}
         callback(null,results);
     })
 }
+
 
 
 exports.newLists = function(callback){

@@ -26,7 +26,7 @@ div(layout="row")
                         div(ng-if="lista.isfavorited == false")
                             md-button(ng-click="nct.favorito(lista.listaid)") Favorito
                         div(ng-if="lista.isfavorited == true")
-                            md-button(ng-click="") NO Favorito
+                            md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
 
 
                 //md-card-content

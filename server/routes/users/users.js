@@ -120,37 +120,55 @@ router.post('/search', function(req, res, next) {
             return codigos.responseFail(res, err);
         } else {
 
+            var json2 = {listIds: _.map(_.uniqBy(resultados, "idlista"), "idlista")}
 
-            var listas = {listas : [
-            ]}
-            var index = 0
-            var idListas = _.map(_.uniqBy(resultados,'idlista' ),'idlista')
+            console.log("json pa edita loco 2", json2)
 
-            _.forEach(idListas, function(item){
-                listas.listas.push({nombre:_.uniq( _.map(_.filter(resultados,function(o){return o.idlista == item}),'listanombre'))[0],
-                    idlista:item,
-                    //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
-                    info:[],
-                    tags:[_.uniq(_.map(_.filter(resultados,function(o){return o.idlista == item}),'nombre'))]}
-                )
-                //console.log("antes de url")
+            if (!_.isEmpty(json2.listIds)) {
+                query.getByIdlist(json2, function (err, resultados) {
+                    if (err) {
+                        return codigos.responseFail(res, err);
+                    } else {
+                        var listas = {
+                            listas: []
+                        }
+                        var index = 0
+                        var idListas = _.map(_.uniqBy(resultados, 'idlista'), 'idlista')
 
-                var urls = _.uniqBy(_.filter(resultados,function(o){return o.idlista == item}),'URL')
-                _.forEach(urls, function(item2){
-                    listas.listas[index].info.push({url: item2.URL,
-                        artista: item2.artista,
-                        cancion: item2.cancion,
-                        thumbnail: item2.thumbnail,
-                        idenlace : item2.idenlace
-                    })
+                        _.forEach(idListas, function (item) {
+                            listas.listas.push({
+                                    nombre: _.uniq(_.map(_.filter(resultados, function (o) {
+                                        return o.idlista == item
+                                    }), 'listanombre'))[0],
+                                    idlista: item,
+                                    //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+                                    info: [],
+                                    tags: [_.uniq(_.map(_.filter(resultados, function (o) {
+                                        return o.idlista == item
+                                    }), 'nombre'))]
+                                }
+                            )
+                            //console.log("antes de url")
+
+                            var urls = _.uniqBy(_.filter(resultados, function (o) {
+                                return o.idlista == item
+                            }), 'URL')
+                            _.forEach(urls, function (item2) {
+                                listas.listas[index].info.push({
+                                    url: item2.URL,
+                                    artista: item2.artista,
+                                    cancion: item2.cancion,
+                                    thumbnail: item2.thumbnail,
+                                    idenlace: item2.idenlace
+                                })
+                            })
+                            index++
+                        })
+                    }
+                    console.log("los resultaos la query", listas)
+                    codigos.responseOk(res, listas)
                 })
-                index++
-
-
-
-            })
-            console.log("los resultaos la query", listas)
-            codigos.responseOk(res, listas)
+            }
 
         }
     })
@@ -163,6 +181,22 @@ router.post('/favorito', function(req, res, next) {
     console.log("datos favorito", json)
 
     query.favorito(json,function(err,resultados){
+        if(err){
+            return codigos.responseFail(res, err);
+        }
+        else {
+            codigos.responseOk(res)
+        }
+    })
+});
+
+router.post('/noFavorito', function(req, res, next) {
+
+    var json = {favoritoId: req.body.noFavoritoId, idUser: req.idUser}
+    // aqui query
+    console.log("datos No favorito", json)
+
+    query.noFavorito(json,function(err,resultados){
         if(err){
             return codigos.responseFail(res, err);
         }
@@ -204,10 +238,10 @@ router.get('/getLists', function(req, res, next) {
             var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
             _.forEach(urls, function(item2){
                 listas.listas[index].info.push({url: item2.URL,
-                artista: item2.artista,
-                cancion: item2.cancion,
-                thumbnail: item2.thumbnail,
-                idenlace : item2.idenlace
+                    artista: item2.artista,
+                    cancion: item2.cancion,
+                    thumbnail: item2.thumbnail,
+                    idenlace : item2.idenlace
                 })
                 console.log("onde ta el id", item2)
             })
