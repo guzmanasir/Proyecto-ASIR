@@ -73,10 +73,20 @@
 
             .state('main.populares',{
                 url: "/populares",
-                //controller: 'indexController',
-                //controllerAs: 'ic',
+                controller: 'popularesCtrl',
+                controllerAs: 'pc',
                 templateUrl: '/users/tempPopulares',
-                params: {requireLogin : true}
+                params: {requireLogin : true},
+                resolve : {
+                    listas: ['$http',function($http){
+                        return $http.get('/users/populares')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }]
+                }
             })
 
             .state('main.recomendaciones',{

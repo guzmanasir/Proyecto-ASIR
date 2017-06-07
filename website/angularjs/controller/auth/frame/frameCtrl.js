@@ -207,7 +207,7 @@
                      $state.go('main.buscador', {resultado: responseOk.data.data.listas})
 
                  }, function(responseFail){
-                     console.log(responseFail)
+                     console.log("emptyyyy query", responseFail)
                  })
         }
     }

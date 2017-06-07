@@ -410,6 +410,25 @@ exports.newLists = function(callback){
     })
 }
 
+exports.populares = function(callback){
+    var query =
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'FROM lista l ' +
+        'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+        'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
+        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+        'WHERE l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
+        'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
+        'ORDER BY numerofavoritos DESC'
+
+    mysql.query(query, function(err,results){
+        if(err) {console.error(err);return callback(100010,null)}
+        callback(null,results);
+    })
+}
+
 /*exports.editList = function(callback){
  var query =
  ""
