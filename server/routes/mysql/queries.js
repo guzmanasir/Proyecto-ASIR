@@ -393,9 +393,10 @@ exports.noFavorito = function(json, callback){
 
 exports.newLists = function(callback){
     var query =
-        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, u.nombre as username, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
         'FROM lista l ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+        'INNER JOIN usuario u ON l.usuario_id = u.id ' +
         'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
         'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
         'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
@@ -421,7 +422,7 @@ exports.populares = function(callback){
         'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
         'WHERE l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
         'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
-        'ORDER BY numerofavoritos DESC'
+        'ORDER BY numerofavorito DESC'
 
     mysql.query(query, function(err,results){
         if(err) {console.error(err);return callback(100010,null)}

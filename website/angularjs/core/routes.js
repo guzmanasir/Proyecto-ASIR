@@ -74,7 +74,7 @@
             .state('main.populares',{
                 url: "/populares",
                 controller: 'popularesCtrl',
-                controllerAs: 'pc',
+                controllerAs: 'pct',
                 templateUrl: '/users/tempPopulares',
                 params: {requireLogin : true},
                 resolve : {
@@ -146,6 +146,14 @@
                 controller: 'editListCtrl',
                 controllerAs: 'elc',
                 templateUrl: '/users/tempEditList',
+                params: {requireLogin : true, lista: null}
+            })
+
+            .state('main.verLista',{
+                url: "/nuevos/lista",
+                controller: 'verlistaCtrl',
+                controllerAs: 'vlc',
+                templateUrl: '/users/tempVerLista',
                 params: {requireLogin : true, lista: null}
             })
 

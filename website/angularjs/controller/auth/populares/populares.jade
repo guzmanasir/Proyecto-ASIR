@@ -1,1 +1,29 @@
 p POPULARES
+
+
+div(layout="row")
+    md-content.md-padding(layout-xs='column', layout='row')
+        md-list(layout="row" layout-wrap)
+            md-list-item(ng-repeat="lista in pct.listas track by $index")
+                md-card(flex)
+                    md-card-title
+                        md-card-title-text
+                            span.md-headline(flex) {{ lista.nombre }}
+                    div(layout= "row")
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                    div(layout= "row")
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                        img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+
+                    //md-card-actions(layout='row', layout-align='start center')
+                    //    md-card-icon-actions
+                    p Etiquetas
+                    span(flex) {{ lista.tags }}
+                    //md-button(ng-click="nct.play(lista.info)") Reproducir
+                    //span {{ lista.numfavoritos }}
+                    //div(ng-if="lista.usuarioid != lista.miusuarioid")
+                    //    div(ng-if="lista.isfavorited == false")
+                    //        md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                    //    div(ng-if="lista.isfavorited == true")
+                    //        md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito

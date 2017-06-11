@@ -5,35 +5,47 @@ div(layout="column" layout-fill)
 
     //md-toolbar
     //    .md-toolbar-tools
-    md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
-        md-nav-item(md-nav-sref="main.nuevos") Nuevas
-        md-nav-item(md-nav-sref="main.populares") Populares
-        md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
-        md-nav-item(md-nav-sref="main.mislistas") Mis listas
-        md-nav-item(md-nav-sref="main.favoritos") Mis Favoritos
-        div(flex)
-        //md-nav-item(md-nav-sref="#")
-        md-button(ng-click="fc.showAdvanced()")
-            i.material-icons playlist-add
-        md-nav-item(md-nav-sref="main.logout") Cerrar sesion
     div(layout="row")
-        md-input-container(flex='')
-            label Buscador
-            input(type='text' ng-model='fc.busqueda' search)
-            md-button(ng-click="fc.buscar()" ) Buscar
-        md-select.md-no-underline(ng-model='fc.type')
-            md-option(value='lista' selected) Listas
-            md-option(value='artista') Artista
-            md-option(value='cancion') Cancion
+        div(flex=15)
 
-    md-content(layout='column')
-        main
-            div(ui-view="")
-        span(flex)
-        footer
-            p footer
-            div(ng-show="fc.youtube")
-                youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'50%'")
+            md-content(layout='column' class='columna' flex="auto")
+                div(flex=20 class="logo") LOGO
+                span(flex style="background-color: gray") NUBE DE TAGS O ALGO
+
+                div(ng-show="fc.youtube")
+                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'120%'")
+        div(flex=85)
+            div(ng-if="!fc.abrirBusqueda")
+                md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
+                    md-nav-item(md-nav-sref="main.nuevos") Nuevas
+                    md-nav-item(md-nav-sref="main.populares") Populares
+                    md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
+                    md-nav-item(md-nav-sref="main.mislistas") Mis listas
+                    md-nav-item(md-nav-sref="main.favoritos") Mis Favoritos
+                    div(flex)
+                    //md-nav-item(md-nav-sref="#")
+
+                    i.material-icons.md-48(ng-click="fc.showAdvanced()" class="nav") playlist_add
+                    i.material-icons.md-48(ng-click="fc.abrirBuscar()" class="nav") search
+                    md-nav-item(md-nav-sref="main.logout") Cerrar sesion
+            div(ng-if="fc.abrirBusqueda")
+                md-nav-bar
+                    md-input-container(flex='80')
+                        label Buscador
+                        input(type='text' ng-model='fc.busqueda' ng-blur="fc.cerrarBuscar()" autofocus)
+                    i.material-icons(ng-click="fc.buscar()" class="nav" flex='5') search
+                    i.material-icons(ng-click="fc.cerrarBuscar()" class="nav" flex='5') clear
+                    md-select(ng-model='fc.type' layout-align="center start" flex='10')
+                        md-option(value='lista' selected) Listas
+                        md-option(value='artista') Artista
+                        md-option(value='cancion') Cancion
+
+            md-content(layout='column' class='frame')
+                main
+                    div(ui-view="")
+                span(flex)
+                footer
+
 
 
 //div(layout="column" layout-fill)

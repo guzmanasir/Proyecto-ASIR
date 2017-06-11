@@ -50,6 +50,11 @@
 
         }
 
+        vm.verLista = function(lista){
+            console.log("llamando ver lista", lista)
+            $state.go('main.verLista',{lista: lista})
+        }
+
 
     }
 

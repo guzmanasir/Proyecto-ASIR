@@ -1,11 +1,13 @@
 
-div(layout="row")
-    h1 LISTAS
+p NUEVOS
+
 div(layout="row")
     md-content.md-padding(layout-xs='column', layout='row')
-            md-list(layout="row" layout-wrap)
-                md-list-item(flex=25 ng-repeat="lista in mlc.listas track by $index")
-                        md-card(flex)
+        md-list(layout="row" layout-wrap)
+            md-list-item(ng-repeat="lista in mlc.listas track by $index")
+                md-card(flex class="todas")
+                    div(layout="row")
+                        div(layout="column" flex=90)
                             md-card-title
                                 md-card-title-text
                                     span.md-headline(flex) {{ lista.nombre }}
@@ -18,17 +20,20 @@ div(layout="row")
 
                             //md-card-actions(layout='row', layout-align='start center')
                             //    md-card-icon-actions
-                            p Etiquetas
-                            span(flex) {{ lista.tags }}
-                            md-button(ng-click="mlc.edit(lista)") EDITAR
-                            md-button(ng-click="mlc.play(lista.info)") Reproducir
-                        //md-card-content
-                        //    md-list-item(ng-repeat="info in lista.info")
-                        //        img.md-avatar(ng-src='{{info.thumbnail}}')
-                        //        div.md-list-item.text(layout='column')
-                        //            span {{ info.artista }}
-                        //            span {{ info.cancion }}
-                                //md-button.md-icon-button(aria-label='Favorite')
-                                //    md-icon(md-svg-icon='img/icons/favorite.svg')
-                                //md-button.md-icon-button(aria-label='Share')
-                                //    md-icon(md-svg-icon='img/icons/share-arrow.svg')
+                            p Por: {{ lista.nombreUsuario }}
+                            div(ng-repeat="tag in lista.tags")
+                                span Genero: {{ tag }}
+
+                            p Nº Favoritos: {{ lista.numfavoritos }}
+                        div(layout="column" flex=10 class="iconos")
+                            i.material-icons(ng-click="nct.play(lista.info)") play_arrow
+                            div(ng-if="lista.usuarioid != lista.miusuarioid")
+                                div(ng-if="lista.isfavorited == false")
+                                    //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                    i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
+                                div(ng-if="lista.isfavorited == true")
+                                    //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
+                                    i.material-icons(ng-click="nct.nofavorito(lista.listaid)") favorite
+
+
+                //md-card-content

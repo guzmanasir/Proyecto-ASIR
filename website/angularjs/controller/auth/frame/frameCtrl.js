@@ -175,6 +175,7 @@
         vm.player = ""
         vm.idVideo="null"
         vm.youtube=false;
+        vm.abrirBusqueda = false;
         $scope.$on('youtube.player.ready', function (event, player) {
             console.log("el reproductor esta listo");
             vm.player = player
@@ -209,6 +210,12 @@
                  }, function(responseFail){
                      console.log("emptyyyy query", responseFail)
                  })
+        }
+        vm.abrirBuscar = function(){
+            vm.abrirBusqueda = true;
+        }
+        vm.cerrarBuscar = function(){
+            vm.abrirBusqueda = false;
         }
     }
 

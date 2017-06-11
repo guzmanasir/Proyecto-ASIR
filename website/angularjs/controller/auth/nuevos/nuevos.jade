@@ -2,31 +2,43 @@
 p NUEVOS
 
 div(layout="row")
-    md-content.md-padding(layout-xs='column', layout='row')
-        md-list(layout="row" layout-wrap)
+    md-content(layout-xs='column' layout='row' style="padding-right: 15%" )
+        md-list(layout="row" layout-wrap layout-align="center")
             md-list-item(ng-repeat="lista in nct.nuevos track by $index")
-                md-card(flex)
-                    md-card-title
-                        md-card-title-text
-                            span.md-headline(flex) {{ lista.nombre }}
-                    div(layout= "row")
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                    div(layout= "row")
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                md-card(flex=33 class="todas")
+                        div(layout="column")
 
-                    //md-card-actions(layout='row', layout-align='start center')
-                    //    md-card-icon-actions
-                    p Etiquetas
-                    span(flex) {{ lista.tags }}
-                    md-button(ng-click="nct.play(lista.info)") Reproducir
-                    span {{ lista.numfavoritos }}
-                    div(ng-if="lista.usuarioid != lista.miusuarioid")
-                        div(ng-if="lista.isfavorited == false")
-                            md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                        div(ng-if="lista.isfavorited == true")
-                            md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
+                            md-card-title
+                                md-card-title-text
+                                    span.md-headline(flex md-truncate) {{ lista.nombre }}
+                            div(layout= "row")
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout= "row")
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+
+                            //md-card-actions(layout='row', layout-align='start center')
+                            //    md-card-icon-actions
+                            p Por: {{ lista.nombreUsuario }}
+                            div(ng-repeat="tag in lista.tags")
+                                span Genero: {{ tag }}
+
+                            p Nº Favoritos: {{ lista.numfavoritos }}
+                            div
+                                md-button(ng-click="nct.play(lista.info)")
+                                    i.material-icons() play_arrow
+                                    span(flex=100)
+                                span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
+                                    span(ng-if="lista.isfavorited == false")
+                                        //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                        md-whiteframe(class="caja")
+                                            i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
+                                            span {{ lista.numfavoritos }}
+                                    span(ng-if="lista.isfavorited == true")
+                                        //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
+                                        md-button(ng-click="nct.nofavorito(lista.listaid)")
+                                            i.material-icons favorite
 
 
                 //md-card-content
