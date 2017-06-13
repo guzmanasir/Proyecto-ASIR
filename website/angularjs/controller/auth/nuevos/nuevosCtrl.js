@@ -50,6 +50,21 @@
 
         }
 
+        vm.reproduccion = function(id){
+            console.log("reproduciendo", id)
+
+            $http.post('/users/reproduccion', {listaid: id})
+                .then(function(responseOk){
+                    console.log(responseOk)
+
+                }, function(responseFail){
+                    console.log(responseFail)
+
+                })
+
+
+        }
+
         vm.verLista = function(lista){
             console.log("llamando ver lista", lista)
             $state.go('main.verLista',{lista: lista})

@@ -91,10 +91,20 @@
 
             .state('main.recomendaciones',{
                 url: "/recomendaciones",
-                //controller: 'indexController',
-                //controllerAs: 'ic',
+                controller: 'recomendacionesCtrl',
+                controllerAs: 'rct',
                 templateUrl: '/users/tempRecomendaciones',
-                params: {requireLogin : true}
+                params: {requireLogin : true},
+                resolve : {
+                    recomendadas: ['$http',function($http){
+                        return $http.get('/users/recomendaciones')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }]
+                }
             })
 
             .state('main.mislistas',{

@@ -216,6 +216,7 @@
         }
         vm.cerrarBuscar = function(){
             vm.abrirBusqueda = false;
+            vm.busqueda = "";
         }
     }
 

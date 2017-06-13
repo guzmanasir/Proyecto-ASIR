@@ -345,6 +345,21 @@ exports.favoritos = function(id, callback){
     })
 }
 
+exports.recomendaciones = function(id, callback){
+    var query =
+        'SELECT  c.lista_idlista, c.artista ' +
+        'FROM contiene c ' +
+        'JOIN pertenece p ON c.lista_idlista = p.lista_idlista and p.lista_usuario_id != ? ' +
+        'JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta and et.idetiqueta IN (SELECT etiqueta_idetiqueta from pertenece where lista_usuario_id = ? ) ' +
+        'WHERE c.artista not in (SELECT artista from contiene where lista_usuario_id = ? ) and c.lista_idlista not in (select lista_idlista from favorito where usuario_id = ? ) ' +
+        'group by lista_idlista, c.artista;'
+    var values = [id, id, id, id]
+    mysql.query(query,values,function(err,results){
+        if(err) {console.error(err);return callback(100010,null)}
+        callback(null,results);
+    })
+}
+
 exports.favorito = function(json, callback){
     var valuesFavorito = [json.idUser, json.favoritoId]
 
@@ -378,6 +393,23 @@ exports.favorito = function(json, callback){
 
 }
 
+exports.reproduccion = function(json, callback){
+    var valuesReproduccion = [json.listaId]
+
+    var query =
+        'UPDATE lista SET reproducciones = reproducciones + 1 WHERE idlista = ?'
+
+    mysql.query(query,valuesReproduccion,function(err,results){
+        if(err) {console.error(err);return callback(100012,null)}
+        callback(null,results)
+
+
+
+    })
+
+
+}
+
 exports.noFavorito = function(json, callback){
     var valuesFavorito = [json.idUser, json.favoritoId ]
     var query =
@@ -393,7 +425,7 @@ exports.noFavorito = function(json, callback){
 
 exports.newLists = function(callback){
     var query =
-        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, u.nombre as username, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, l.reproducciones, u.nombre as username, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
         'FROM lista l ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
         'INNER JOIN usuario u ON l.usuario_id = u.id ' +

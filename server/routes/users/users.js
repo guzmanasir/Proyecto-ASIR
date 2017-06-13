@@ -95,6 +95,8 @@ router.post('/editList', function(req, res, next) {
     })
 });
 
+
+
 router.post('/songEdit', function(req, res, next) {
     var json = req.body
     console.log("json pa edita loco", json)
@@ -190,6 +192,22 @@ router.post('/favorito', function(req, res, next) {
     })
 });
 
+router.post('/reproduccion', function(req, res, next) {
+
+    var json = {listaId: req.body.listaid}
+    // aqui query
+    console.log("datos favorito", json)
+
+    query.reproduccion(json,function(err,resultados){
+        if(err){
+            return codigos.responseFail(res, err);
+        }
+        else {
+            codigos.responseOk(res)
+        }
+    })
+});
+
 router.post('/noFavorito', function(req, res, next) {
 
     var json = {favoritoId: req.body.noFavoritoId, idUser: req.idUser}
@@ -253,6 +271,59 @@ router.get('/getLists', function(req, res, next) {
         codigos.responseOk(res, listas)
 
     })
+
+});
+
+router.get('/recomendaciones', function(req, res, next) {
+    var id = req.idUser;
+    // var result = {
+    //     total: [{nombre:'lista1', urls: [], tags : []}]
+    // }
+
+    query.recomendaciones(id, function(err, resultado){
+        if(err) return codigos.responseFail(res, err)
+        var recomendaciones = resultado
+        codigos.responseOk(res, recomendaciones)
+    })
+
+
+
+    // query.getList(id, function(err,resultado){
+    //
+    //     if(err) return codigos.responseFail(res, err)
+    //     //console.log("resultado ",resultado)
+    //     var listas = {listas : [
+    //     ]}
+    //     var index = 0
+    //     var idListas = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
+    //
+    //     _.forEach(idListas, function(item){
+    //         listas.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
+    //             idlista:item,
+    //             //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+    //             info:[],
+    //             tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
+    //         )
+    //         //console.log("antes de url")
+    //
+    //         var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
+    //         _.forEach(urls, function(item2){
+    //             listas.listas[index].info.push({url: item2.URL,
+    //                 artista: item2.artista,
+    //                 cancion: item2.cancion,
+    //                 thumbnail: item2.thumbnail,
+    //                 idenlace : item2.idenlace
+    //             })
+    //             console.log("onde ta el id", item2)
+    //         })
+    //         index++
+    //         console.log("urls ",urls)
+    //
+    //
+    //     })
+    //     codigos.responseOk(res, listas)
+    //
+    // })
 
 });
 
@@ -321,6 +392,7 @@ router.get('/newLists', function(req, res, next) {
                 nombreUsuario: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'username'))[0],
                 miusuarioid: req.idUser,
                 numfavoritos:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
+                numreproducciones: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'reproducciones'))[0],
                 usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                 info:[],
@@ -462,6 +534,10 @@ router.get('/tempBuscador', function(req, res, next) {
 
 router.get('/tempPopulares', function(req, res, next) {
     res.render('angularjs/controller/auth/populares/populares')
+});
+
+router.get('/tempRecomendaciones', function(req, res, next) {
+    res.render('angularjs/controller/auth/recomendaciones/recomendaciones')
 });
 
 

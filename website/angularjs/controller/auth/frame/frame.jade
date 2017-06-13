@@ -13,9 +13,9 @@ div(layout="column" layout-fill)
                 span(flex style="background-color: gray") NUBE DE TAGS O ALGO
 
                 div(ng-show="fc.youtube")
-                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'120%'")
+                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'120%'" player="player")
         div(flex=85)
-            div(ng-if="!fc.abrirBusqueda")
+            div(ng-show="!fc.abrirBusqueda")
                 md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
                     md-nav-item(md-nav-sref="main.nuevos") Nuevas
                     md-nav-item(md-nav-sref="main.populares") Populares
@@ -28,11 +28,11 @@ div(layout="column" layout-fill)
                     i.material-icons.md-48(ng-click="fc.showAdvanced()" class="nav") playlist_add
                     i.material-icons.md-48(ng-click="fc.abrirBuscar()" class="nav") search
                     md-nav-item(md-nav-sref="main.logout") Cerrar sesion
-            div(ng-if="fc.abrirBusqueda")
+            div(ng-show="fc.abrirBusqueda")
                 md-nav-bar
                     md-input-container(flex='80')
                         label Buscador
-                        input(type='text' ng-model='fc.busqueda' ng-blur="fc.cerrarBuscar()" autofocus)
+                        input(type='text' autofocus ng-model='fc.busqueda' )
                     i.material-icons(ng-click="fc.buscar()" class="nav" flex='5') search
                     i.material-icons(ng-click="fc.cerrarBuscar()" class="nav" flex='5') clear
                     md-select(ng-model='fc.type' layout-align="center start" flex='10')
@@ -45,6 +45,16 @@ div(layout="column" layout-fill)
                     div(ui-view="")
                 span(flex)
                 footer
+                    md-button(ng-click="player.playVideo()")
+                        i.material-icons() play_arrow
+                    md-button(ng-click="player.pauseVideo()")
+                        i.material-icons() pause
+                    md-button(ng-click="player.previousVideo()")
+                        i.material-icons() skip_previous
+                    md-button(ng-click="player.nextVideo()")
+                        i.material-icons() skip_next
+                    md-button(ng-click="player.stopVideo()")
+                        i.material-icons() stop
 
 
 
