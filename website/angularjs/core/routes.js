@@ -52,16 +52,50 @@
                 }
             })
 
+            .state('main.home',{
+                url: "/home",
+                controller: 'homeCtrl',
+                controllerAs: 'hct',
+                templateUrl: '/users/tempHome',
+                params: {requireLogin : true},
+                resolve : {
+                    nuevosHome: ['$http',function($http){
+                        return $http.get('/users/newLists')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }],
+                    popularesHome: ['$http',function($http){
+                        return $http.get('/users/populares')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }],
+                    masEscuchada: ['$http',function($http){
+                        return $http.get('/users/masEscuchada')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }]
+                }
+            })
+
 
             .state('main.nuevos',{
                 url: "/nuevos",
                 controller: 'nuevosCtrl',
                 controllerAs: 'nct',
                 templateUrl: '/users/tempNuevos',
-                params: {requireLogin : true},
+                params: {requireLogin : true, page:null},
                 resolve : {
-                    nuevos: ['$http',function($http){
-                        return $http.get('/users/newLists')
+                    nuevos: ['$http',function($http,$stateParams){
+                        return $http.get('/users/newLists/')
                             .then(function(response){
                                 return response;
                             },function(response) {

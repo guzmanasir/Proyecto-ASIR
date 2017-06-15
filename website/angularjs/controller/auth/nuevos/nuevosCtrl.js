@@ -2,11 +2,15 @@
  * Created by jesus on 21/05/17.
  */
 (function() {
-    function nuevosCtrl($http,$auth,$state,$rootScope, lodash, nuevos){
+    function nuevosCtrl($http,$auth,$state,$rootScope, lodash, $stateParams, nuevos){
         console.log("entro en nuevos")
         var vm = this;
         vm.nuevos = nuevos.data.data.listas;
         console.log("nuevos" , vm.nuevos)
+        vm.paginaActual = 0
+        vm.paginaMaxima = 0
+
+
         vm.favorito = function(listaid){
             vm.favoritoId = listaid
             lodash.find(vm.nuevos, {listaid: listaid}).isfavorited = true
@@ -46,7 +50,9 @@
 
         vm.play = function(lista){
             //$rootScope.playlist = lista
+            console.log("lista reproduciendose", lista)
             $rootScope.$broadcast('playlist',lista);
+
 
         }
 
@@ -70,10 +76,18 @@
             $state.go('main.verLista',{lista: lista})
         }
 
+        vm.anterior = function(){
+
+        }
+
+        vm.siguiente = function(){
+
+        }
+
 
     }
 
     angular.module('proyecto')
-        .controller('nuevosCtrl',['$http','$auth','$state', '$rootScope', 'lodash', 'nuevos', nuevosCtrl]);
+        .controller('nuevosCtrl',['$http','$auth','$state', '$rootScope', 'lodash', '$stateParams', 'nuevos', nuevosCtrl]);
 
 })();

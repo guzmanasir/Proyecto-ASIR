@@ -306,8 +306,17 @@ exports.buscador = function(json, callback){
     })
 }
 
+
 exports.getByIdlist = function(json, callback){
-    var valuesIds = [json.listIds]
+   var valuesIds = _.isArray(json) ? json : [json]
+
+    var interrogaciones = ""
+    var coma = ","
+    for(var i = 0; i < valuesIds.length; i++){
+        interrogaciones += "?"
+        if( i != valuesIds.length - 1)
+            interrogaciones += coma
+    }
     console.log("los idsss", valuesIds)
     var query =
         'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
@@ -317,12 +326,13 @@ exports.getByIdlist = function(json, callback){
         'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
         'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
         'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'WHERE l.idlista in (?) AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
+         'WHERE l.idlista in ('+interrogaciones+') AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
         'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
         'ORDER BY l.fecha DESC'
 
     mysql.query(query, valuesIds, function(err,results){
         if(err) {console.error(err);return callback(100010,null)}
+        //console.error(results)
         callback(null,results);
     })
 
@@ -423,23 +433,20 @@ exports.noFavorito = function(json, callback){
 
 
 
-exports.newLists = function(callback){
+exports.newLists = function(valuesPagina, callback){
+
+    var values =  [parseInt(valuesPagina.limit), valuesPagina.offset]
+    console.log("EN QUERY: values ",values)
     var query =
-        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, l.reproducciones, u.nombre as username, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'SELECT DISTINCT l.idlista, l.fecha ' +
         'FROM lista l ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-        'INNER JOIN usuario u ON l.usuario_id = u.id ' +
-        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-        'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
-        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'WHERE l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
-        'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
-        'ORDER BY l.fecha DESC'
+        'WHERE l.deleted <> 1 ' +
+        'ORDER BY l.fecha DESC LIMIT ? OFFSET ? '
 
-    mysql.query(query, function(err,results){
+    mysql.query(query, values, function(err,results){
         if(err) {console.error(err);return callback(100010,null)}
-        callback(null,results);
+        callback(null,results)
     })
 }
 
@@ -478,5 +485,16 @@ exports.getTags = function(callback){
     })
 }
 
+exports.masEscuchada = function(callback){
+    var query =
+        'SELECT idlista from lista ' +
+        'where fecha BETWEEN  date_sub(now(),INTERVAL 1 WEEK) and now() ' +
+        'order by reproducciones desc limit 1'
+
+    mysql.query(query,function(err,results){
+        if(err) {console.error(err);return callback(100011,null)}
+        callback(null,results);
+    })
+}
 
 

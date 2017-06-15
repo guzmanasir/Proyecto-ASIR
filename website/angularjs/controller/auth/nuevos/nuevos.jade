@@ -1,44 +1,44 @@
 
 p NUEVOS
 
-div(layout="row")
-    md-content(layout-xs='column' layout='row' style="padding-right: 20%" )
-        md-list(layout="row" layout-wrap layout-align="center")
-            md-list-item(ng-repeat="lista in nct.nuevos track by $index")
-                md-card(flex=33 class="todas")
-                        div(layout="column")
-                            md-card-title(ng-click="nct.verLista(lista)" style="cursor:pointer")
-                                md-card-title-text
-                                    span.md-headline(flex md-truncate) {{ lista.nombre }}
-                            div(layout= "row")
-                                img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                                img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                            div(layout= "row")
-                                img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                                img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+section.cards
+    div(layout='row', layout-align='center stretch' layout-wrap style="padding-right:10%; padding-left:10%")
+        md-card(ng-repeat="lista in nct.nuevos track by $index" flex=30 )
 
-                            //md-card-actions(layout='row', layout-align='start center')
-                            //    md-card-icon-actions
-                            p Por: {{ lista.nombreUsuario }}
-                            div(ng-repeat="tag in lista.tags")
-                                span Genero: {{ tag }}
+            div(layout= "row")
+                img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+            div(layout= "row")
+                img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+            md-card-title(ng-click="nct.verLista(lista)" style="cursor:pointer")
+                md-card-title-text
+                    span.md-headline(flex md-truncate) {{ lista.nombre }}
 
-                            p Nº Favoritos: {{ lista.numfavoritos }}
-                            div
-                                md-button(ng-click="nct.play(lista.info); nct.reproduccion(lista.listaid)")
-                                    i.material-icons() play_arrow
-                                    span {{ lista.numreproducciones }}
-                                    span(flex=100)
-                                span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
-                                    span(ng-if="lista.isfavorited == false")
-                                        //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                                        md-whiteframe(class="caja")
-                                            i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
-                                            span {{ lista.numfavoritos }}
-                                    span(ng-if="lista.isfavorited == true")
-                                        //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
-                                        md-button(ng-click="nct.nofavorito(lista.listaid)")
-                                            i.material-icons favorite
+            //md-card-actions(layout='row', layout-align='start center')
+            //    md-card-icon-actions
+            p Por: {{ lista.nombreUsuario }}
+            div(ng-repeat="tag in lista.tags")
+                span Genero: {{ tag }}
 
+            p Nº Favoritos: {{ lista.numfavoritos }}
+            div
+                md-button(ng-click="nct.play(lista.info); nct.reproduccion(lista.listaid)")
+                    i.material-icons() play_arrow
+                    span {{ lista.numreproducciones }}
+                    span(flex=100)
+                span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
+                    span(ng-if="lista.isfavorited == false")
+                        //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                        md-whiteframe(class="caja")
+                            i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
+                            span {{ lista.numfavoritos }}
+                    span(ng-if="lista.isfavorited == true")
+                        //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
+                        md-button(ng-click="nct.nofavorito(lista.listaid)")
+                            i.material-icons favorite
 
-                //md-card-content
+    md-button(ng-click="") ANTERIOR
+    md-button(ng-click="") SIGUIENTE
+
+    //md-card-content

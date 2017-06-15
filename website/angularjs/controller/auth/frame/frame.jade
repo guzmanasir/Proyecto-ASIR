@@ -13,10 +13,12 @@ div(layout="column" layout-fill)
                 span(flex style="background-color: gray") NUBE DE TAGS O ALGO
 
                 div(ng-show="fc.youtube")
-                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'120%'" player="player")
+                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'1px'" player="player")
         div(flex=85)
             div(ng-show="!fc.abrirBusqueda")
                 md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
+                    md-nav-item(md-nav-sref="main.home")
+                        i.material-icons.md-48 home
                     md-nav-item(md-nav-sref="main.nuevos") Nuevas
                     md-nav-item(md-nav-sref="main.populares") Populares
                     md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
@@ -55,6 +57,8 @@ div(layout="column" layout-fill)
                         i.material-icons() skip_next
                     md-button(ng-click="player.stopVideo()")
                         i.material-icons() stop
+                    md-button {{ fc.reproduciendo }}
+
 
 
 
