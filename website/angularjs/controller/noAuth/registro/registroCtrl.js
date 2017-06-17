@@ -15,7 +15,7 @@
 
             $http.post('/registerForm',json)
                 .then(function(response){
-                        console.log("respuesta",response);
+                        //console.log("respuesta",response);
                         vm.status = "OK";
                     },
                     function(response) {

@@ -1,0 +1,38 @@
+md-dialog(flex=60)
+    md-toolbar
+        .md-toolbar-tools
+            span.md-headline Nueva Playlist
+    div(layout="row")
+        div(layout="column", flex=60)
+            form( ng-cloak, name="miForm")
+                md-dialog-content
+                    .md-dialog-content
+                        div(layout='column')
+                                div(layout='row')
+                                    md-input-container
+                                        label Enlaces
+                                        input( ng-model='eld.url', type='text',  required)
+                                    //md-button(ng-click="mc.addUrl()") Añadir
+                                    md-button(ng-click="eld.searchUrl(eld.url)") Buscar
+
+
+                            div(ng-show="eld.videoIds")
+                                md-list(layout="row" layout-wrap)
+                                    md-list-item.md-1-line(flex=33 ng-repeat="video in eld.videoIds track by $index")
+                                        md-card
+                                            //md-card-title
+                                                md-card-title-text
+                                                    strong {{ video.snippet.title }}
+                                            md-card-content
+                                                youtube-video(flex=100 player-height="'50%'" video-id="video.id.videoId")
+                                                //iframe(src="https://www.youtube.com/embed/ " + {{ video.id.videoID }})
+                                                md-button(ng-click="eld.addUrl(video)") Añadir
+                                                    md-tooltip {{ video.snippet.title }}
+
+                                    md-button(ng-click="eld.searchUrl(eld.url,0)" ng-disabled="eld.firstPage") Anterior
+                                    md-button(ng-click="eld.searchUrl(eld.url,1)") Siguiente
+
+    div(layout="row")
+        md-dialog-actions
+            md-button( ng-click="eld.answer()") Guardar
+        md-button( ng-click="eld.close()") Cancelar

@@ -27,7 +27,7 @@
                             // )
                             $rootScope.$emit("Loginfail",response)
                         else{
-                            $state.go('main.nuevos')
+                            $state.go('main.home')
                         }
 
                     },

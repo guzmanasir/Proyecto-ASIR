@@ -1,23 +1,84 @@
 //
    Created by guzman on 4/02/17.
 
+div(layout="column" layout-fill)
 
-div(layout= "row")
-    md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
-        md-nav-item(md-nav-sref="main.nuevos") Nuevas
-        md-nav-item(md-nav-sref="main.populares") Populares
-        md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
-        md-nav-item(md-nav-sref="main.mislistas") Mis listas
-        md-nav-item(md-nav-sref="main.directorio") Directorio listas
-        div(flex)
-        //md-nav-item(md-nav-sref="#")
-        md-button(ng-click="fc.showAdvanced()")
-            i.material-icons playlist-add
-        md-nav-item(md-nav-sref="main.logout") Cerrar sesion
-div(layour= "row")
-    div(ui-view="")
+    //md-toolbar
+    //    .md-toolbar-tools
+    div(layout="row")
+        div(flex=15)
+
+            md-content(layout='column' class='columna' flex="auto")
+                div(flex=20 class="logo") LOGO
+                span(flex style="background-color: gray") NUBE DE TAGS O ALGO
+
+                div(ng-show="fc.youtube")
+                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'50px'" player="player")
+        div(flex=85)
+            div(ng-show="!fc.abrirBusqueda")
+                md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
+                    md-nav-item(md-nav-sref="main.home")
+                        i.material-icons.md-48 home
+                    md-nav-item(md-nav-sref="main.nuevos({pagina: 1})") Nuevas
+                    md-nav-item(md-nav-sref="main.populares") Populares
+                    md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
+                    md-nav-item(md-nav-sref="main.favoritos") Mis Favoritos
+                    div(flex)
+                    //md-nav-item(md-nav-sref="#")
+
+                    i.material-icons.md-48(ng-click="fc.showAdvanced()" class="nav") playlist_add
+                    i.material-icons.md-48(ng-click="fc.abrirBuscar()" class="nav") search
+                    md-nav-item(md-nav-sref="main.perfil") Perfil
+                    md-nav-item(md-nav-sref="main.logout") Cerrar sesion
+            div(ng-show="fc.abrirBusqueda")
+                md-nav-bar
+                    form(flex='80')
+                        md-input-container
+                            label Buscador
+                            input(type='text' autofocus ng-model='fc.busqueda' )
+                        md-button
+                            i.material-icons(type="submit" ng-click="fc.buscar()" class="nav" flex='5') search
+                        i.material-icons(ng-click="fc.cerrarBuscar()" class="nav" flex='5') clear
+                    md-select(ng-model='fc.type' layout-align="center start" flex='10')
+                        md-option(value='lista' selected) Listas
+                        md-option(value='artista') Artista
+                        md-option(value='cancion') Cancion
+
+            md-content(layout='column' class='frame')
+                main
+                    div(ui-view="")
+                span(flex)
+                footer
+                    md-button(ng-click="player.playVideo()")
+                        i.material-icons() play_arrow
+                    md-button(ng-click="player.pauseVideo()")
+                        i.material-icons() pause
+                    md-button(ng-click="player.previousVideo()")
+                        i.material-icons() skip_previous
+                    md-button(ng-click="player.nextVideo()")
+                        i.material-icons() skip_next
+                    md-button(ng-click="player.stopVideo()")
+                        i.material-icons() stop
+                    md-button {{ fc.reproduciendo }}
 
 
 
 
+//div(layout="column" layout-fill)
+//    md-toolbar
+//        .md-toolbar-tools
+//            h2 Toolbar
+//    md-content(layout='column')
+//        main
+//            p content
+//            p content
+//            p content
+//            p content
+//            p content
+//
+//
+//            p content
+//        span(flex)
+//        footer
+//            p footer
 

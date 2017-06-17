@@ -1,3 +1,43 @@
-a {
-  color: #00B7FF;
+md-content.frame {
+  height: calc(100vh - 49px);
+}
+
+md-content.columna {
+  height: calc(100vh);
+}
+
+footer {
+  background-color: lightblue;
+  height: 64px;
+}
+
+main {
+  overflow-y: auto;
+}
+
+i.material-icons {
+  cursor:pointer;
+}
+
+md-card.todas {
+  height: 380px;
+  width: 260px;
+}
+
+div.iconos {
+  padding-top: 70px;
+}
+
+i.nav {
+  padding-top: 12px;
+  padding-left: 10px;
+}
+
+span.fav {
+  height: 40px;
+  width: 50px;
+}
+
+div.logo {
+  background-color: darkred;
 }

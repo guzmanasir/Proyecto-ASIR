@@ -7,11 +7,11 @@ var moment = require('moment')
 var error = require('../utils/codewrapper');
 
 exports.middlewareToken = function(req, res, next){
-    if (!req.headers.authorization) {
+    if (!req.headers.token) {
         console.error("no hay token")
         return error.responseForbiden(res, 10002);
     }
-    var token = req.headers.authorization.split(" ")[1];
+    var token = req.headers.token.split(" ")[1];
     try {
 
         var payload = jwt.decode(token, 'xxx');

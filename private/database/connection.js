@@ -11,9 +11,10 @@ var dbConnection = mysql.createPool({
 
 dbConnection.query('SELECT 1 + 1 AS solution', function (error) {
     if (error) {
-        console.log("Error al conectar con BD");
+        console.log('Error al conectar con BD');
+        console.error(error)
     } else {
-        console.log("Database connected")
+        console.log('Database connected')
     }
 });
 

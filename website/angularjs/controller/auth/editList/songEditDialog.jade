@@ -1,0 +1,17 @@
+md-dialog(flex=40).confirm
+    md-toolbar
+        .md-toolbar-tools
+            span.md-headline Editar cancion
+    form( ng-cloak, name="miForm")
+        md-dialog-content
+            .md-dialog-content
+                div(layout='column')
+                    md-input-container
+                        label Artista
+                        input( ng-model='sec.artista', type='text',  required)
+                    md-input-container
+                        label Cancion
+                        input( ng-model='sec.cancion', type='text',  required)
+                    md-dialog-actions
+                        md-button( ng-click="sec.close()") Cancelar
+                        md-button( ng-click="sec.save()") Guardar

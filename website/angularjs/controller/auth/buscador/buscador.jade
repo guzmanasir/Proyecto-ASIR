@@ -1,10 +1,11 @@
-p POPULARES
+p BUSCADOR
 
+p {{ blc.vacio }}
 
 div(layout="row")
     md-content.md-padding(layout-xs='column', layout='row')
         md-list(layout="row" layout-wrap)
-            md-list-item(ng-repeat="lista in pct.listas track by $index")
+            md-list-item(ng-repeat="lista in blc.listas track by $index")
                 md-card(flex)
                     md-card-title
                         md-card-title-text
@@ -21,9 +22,5 @@ div(layout="row")
                     p Etiquetas
                     span(flex) {{ lista.tags }}
                     //md-button(ng-click="nct.play(lista.info)") Reproducir
-                    //span {{ lista.numfavoritos }}
                     //div(ng-if="lista.usuarioid != lista.miusuarioid")
-                    //    div(ng-if="lista.isfavorited == false")
-                    //        md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                    //    div(ng-if="lista.isfavorited == true")
-                    //        md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
+                    //    md-button(ng-click="nct.favorito(lista.listaid)") Favorito

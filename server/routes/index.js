@@ -23,6 +23,7 @@ router.get('/login', function(req, res, next) {
 router.post('/loginForm', function(req, res, next) {
     var usuarioServer = req.body.usernameServer;
     var passwordServer = req.body.passwordServer;
+    console.log("usuario", usuarioServer, "contraseña", passwordServer)
     // aqui query
     var datosLogin = {
         usernameQuery : usuarioServer,

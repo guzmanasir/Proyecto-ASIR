@@ -1,0 +1,23 @@
+{
+  "name": "generator",
+  "description": "",
+  "main": "",
+  "authors": [
+    "guzmanasir <jesus.guzman787898@gmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/guzmanasir/Proyecto-ASIR",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-youtube-api-factory": "^0.6.2",
+    "angular-youtube-mb": "^1.3.1",
+    "ng-lodash": "^0.5.0",
+    "ng-youtube-embed": "^1.7.10"
+  }
+}
