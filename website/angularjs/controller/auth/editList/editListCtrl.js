@@ -3,7 +3,7 @@
  */
 (function() {
     function editListCtrl($http,$auth,$state,$rootScope, $stateParams, $mdDialog, lodash){
-        if(lodash.isNull($stateParams.lista)) return $state.go("main.mislistas")
+        if(lodash.isNull($stateParams.lista)) return $state.go("main.perfil")
         console.log("entreo aqui")
         var vm = this;
         vm.editList = $stateParams.lista

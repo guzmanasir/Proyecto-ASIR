@@ -176,6 +176,8 @@
         vm.idVideo="null"
         vm.youtube=false;
         vm.abrirBusqueda = false;
+        vm.reproduciendo = ""
+        //vm.index = 0
         $scope.$on('youtube.player.ready', function (event, player) {
             console.log("el reproductor esta listo");
             vm.player = player
@@ -185,6 +187,7 @@
             //event.preventDefault();
             //$state.go('404');
             vm.playlist = lista;
+            //vm.reproduciendo = lista[vm.index].artista + "-" + lista[vm.index].cancion
 
             vm.idVideos = lodash.map(vm.playlist, function(o){
                 return o.url.split("=")[1]
@@ -193,9 +196,19 @@
             // vm.idVideos = vm.playlist[0].url.split("=")[1]
             vm.youtube=true;
             vm.player.loadPlaylist({playlist: vm.idVideos})
+            //vm.index = vm.player.getPlaylistIndex()
+
 
 
         })
+
+        $scope.$on('youtube.player.playing', function(event, player){
+                //vm.index = player.getPlaylistIndex()
+            vm.reproduciendo = vm.playlist[player.getPlaylistIndex()].artista + "-" + vm.playlist[player.getPlaylistIndex()].cancion
+
+
+        })
+
         vm.buscar = function(){
             console.log("%"+vm.busqueda+"%")
 
@@ -216,6 +229,7 @@
         }
         vm.cerrarBuscar = function(){
             vm.abrirBusqueda = false;
+            vm.busqueda = "";
         }
     }
 

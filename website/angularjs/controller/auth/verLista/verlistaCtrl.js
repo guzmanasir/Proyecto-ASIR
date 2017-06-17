@@ -7,7 +7,7 @@
         console.log("entreo aqui")
         var vm = this;
         vm.verLista = $stateParams.lista
-        console.log("toda ls lista", $stateParams.lista)
+        console.log("toda ls lista", $stateParams)
 
 
 
