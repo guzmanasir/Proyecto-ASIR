@@ -15,6 +15,7 @@
 
 
 
+
         vm.favorito = function(listaid){
             vm.favoritoId = listaid
             lodash.find(vm.nuevos, {listaid: listaid}).isfavorited = true

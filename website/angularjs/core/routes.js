@@ -129,15 +129,23 @@
                 controller: 'perfilUsuarioCtrl',
                 controllerAs: 'puct',
                 templateUrl: '/users/tempPerfilUsuario',
-                params: {requireLogin : true},
+                params: {requireLogin : true, pagina: 1, pagina2: 1, tab: 1},
                 resolve : {
                     listas: ['$http','$stateParams',function($http,$stateParams){
-                        return $http.get('/users/perfilUsuario/'+$stateParams.idUser)
+                        return $http.get('/users/perfilUsuario/'+$stateParams.idUser+"/"+$stateParams.pagina)
                             .then(function(response){
                                 console.log("response ok ",response)
                                 return response;
                             },function(response) {
                                 console.error("error en response ",response)
+                                return response;
+                            })
+                    }],
+                    favoritos: ['$http','$stateParams',function($http, $stateParams){
+                        return $http.get('/users/otrosFavoritos/'+$stateParams.idUser+"/"+$stateParams.pagina2)
+                            .then(function(response){
+                                return response;
+                            },function(response) {
                                 return response;
                             })
                     }]
@@ -167,18 +175,18 @@
                 controller: 'mislistasCtrl',
                 controllerAs: 'mlc',
                 templateUrl: '/users/tempMisListas',
-                params: {requireLogin : true},
+                params: {requireLogin : true, pagina: 1, pagina2: 1, tab:1},
                 resolve : {
-                    listas: ['$http',function($http){
-                        return $http.get('/users/getLists')
+                    listas: ['$http','$stateParams', function($http,$stateParams){
+                        return $http.get('/users/getLists/'+$stateParams.pagina)
                             .then(function(response){
                                 return response;
                             },function(response) {
                                 return response;
                             })
                     }],
-                    favoritos: ['$http',function($http){
-                        return $http.get('/users/misFavoritos')
+                    favoritos: ['$http','$stateParams',function($http, $stateParams){
+                        return $http.get('/users/misFavoritos/'+$stateParams.pagina2)
                             .then(function(response){
                                 return response;
                             },function(response) {

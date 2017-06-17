@@ -4,7 +4,7 @@ p(style="font-size: 20px;") Perfil de {{ puct.listas[0].nombreUsuario }}
 
 
 md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
-    md-tab(label="Mis listas" )
+    md-tab(label="Mis listas" md-active="puct.tab1")
 
         md-list(style="padding-left:10%" flex)
 
@@ -39,7 +39,8 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                         md-button(ng-click="puct.eliminar(lista.idlista)") Eliminar
 
                 md-divider
-    md-tab(label="Favoritos" )
+        ul(uib-pagination, total-items='puct.listas[0].totalListas', items-per-page='9' ng-model='puct.paginaActual', ng-change='puct.siguiente(1,puct.paginaActual)')
+    md-tab(label="Favoritos" md-active="puct.tab2")
 
         md-list(style="padding-left:10%" flex)
 
@@ -70,3 +71,4 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
 
                 md-divider
 
+        ul(uib-pagination, total-items='puct.listas[0].totalListas', items-per-page='9' ng-model='puct.paginaActual2', ng-change='puct.siguiente(2,puct.paginaActual2)')

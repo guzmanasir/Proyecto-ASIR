@@ -275,20 +275,39 @@ exports.editSong = function(json, callback){
  * @param id
  * @param callback
  */
-exports.getList = function(id, callback){
-    var query =
-        'SELECT l.nombre as listanombre, l.idlista, l.fecha, l.reproducciones, u.nombre as nombreUsuario, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
-        'FROM lista l ' +
-        'INNER JOIN usuario u ON l.usuario_id = u.id ' +
-        'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'WHERE l.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1;'
+exports.getList = function(values, callback){
 
-    mysql.query(query,id,function(err,results){
+    var values1 = [values.id, values.limit, values.offset]
+
+    var query =
+        'SELECT DISTINCT l.idlista ' +
+        'FROM lista l ' +
+        'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+        'WHERE l.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
+        'LIMIT ? OFFSET ?'
+
+    mysql.query(query,values1,function(err,resultado1){
+
         if(err) {console.error(err);return callback(100010,null)}
-        callback(null,results);
+
+
+        var query = 'select COUNT(DISTINCT idlista) as total ' +
+            'from lista l '+
+            'inner join contiene c on l.idlista = c.lista_idlista ' +
+            'where l.deleted <> 1 and l.usuario_id = ? ;'
+        // callback(null,results)
+
+        mysql.query(query, values.id, function(err,results){
+            if(err) {console.error(err);return callback(100010,null)}
+            //var resultados = results + resultsPrimeragina
+
+
+            var resultadoTotal = {idlista:  _.map(resultado1,'idlista'), total: results[0].total}
+
+             callback(null,resultadoTotal)
+
+        })
+
     })
 }
 
@@ -354,7 +373,7 @@ exports.getByIdlist = function(json, callback){
     }
     console.log("los idsss", valuesIds)
     var query =
-        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, u.nombre as nombreUsuario, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, l.reproducciones, l.fecha, u.nombre as nombreUsuario, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
         'FROM lista l ' +
         'INNER JOIN usuario u ON l.usuario_id = u.id ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
@@ -380,20 +399,41 @@ exports.getByIdlist = function(json, callback){
  * @param callback
  */
 
-exports.favoritos = function(id, callback){
+exports.favoritos = function(values, callback){
+
+    console.log("entrando en query", values)
+
+    var values1 = [values.id, values.limit, values.offset]
+
+    console.log("values favoritos!", values1)
+
     var query =
-        'SELECT l.nombre as listanombre, l.idlista, c.artista, c.cancion, e.URL, e.idenlace, e.thumbnail, et.nombre ' +
+        'SELECT DISTINCT l.idlista ' +
         'FROM lista l ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
         'INNER JOIN favorito f ON l.idlista = f.lista_idlista ' +
-        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'WHERE f.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 AND f.deleted <> 1;'
+        'WHERE f.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 AND f.deleted <> 1 ' +
+        'LIMIT ? OFFSET ? '
 
-    mysql.query(query,id,function(err,results){
+    mysql.query(query,values1,function(err,resultado1){
         if(err) {console.error(err);return callback(100010,null)}
-        callback(null,results);
+        var query = 'select COUNT(DISTINCT idlista) as total ' +
+            'from lista l '+
+            'inner join contiene c on l.idlista = c.lista_idlista ' +
+            'inner join favorito f on l.idlista = f.lista_idlista ' +
+            'where l.deleted <> 1 and c.deleted <> 1 and f.usuario_id = ? ;'
+        // callback(null,results)
+
+        mysql.query(query, values.id, function(err,results){
+            if(err) {console.error(err);return callback(100010,null)}
+            //var resultados = results + resultsPrimeragina
+
+
+            var resultadoTotal = {idlista:  _.map(resultado1,'idlista'), total: results[0].total}
+
+            callback(null,resultadoTotal)
+
+        })
     })
 }
 
@@ -427,6 +467,8 @@ exports.recomendaciones = function(id, callback){
 exports.favorito = function(json, callback){
     var valuesFavorito = [json.idUser, json.favoritoId]
 
+    console.log("values insert fav", valuesFavorito)
+
     var query = 'SELECT * FROM favorito WHERE usuario_id = ? AND lista_idlista = ?'
 
     mysql.query(query,valuesFavorito,function(err,results){
@@ -450,7 +492,7 @@ exports.favorito = function(json, callback){
                 callback(null,results);
             })
         }
-_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0]
+
 
     })
 

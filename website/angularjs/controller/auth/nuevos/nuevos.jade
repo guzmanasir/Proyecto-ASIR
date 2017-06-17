@@ -17,7 +17,7 @@ section.cards
 
             //md-card-actions(layout='row', layout-align='start center')
             //    md-card-icon-actions
-            a(href='/perfilUsuario?idUser=2') Por: {{ lista.nombreUsuario }}
+            a(href='/perfilUsuario?idUser={{lista.usuarioid}}' ) Por: {{ lista.nombreUsuario }}
             div(ng-repeat="tag in lista.tags")
                 span Genero: {{ tag }}
 

@@ -2,9 +2,11 @@
  * Created by jesus on 21/05/17.
  */
 (function() {
-    function mislistasCtrl($http,$auth,$state,$rootScope, lodash, listas, favoritos, infoUsuario){
+    function mislistasCtrl($http,$auth,$state,$rootScope, lodash,$stateParams, listas, favoritos, infoUsuario){
 
         var vm = this;
+        vm.paginaActual = $stateParams.pagina
+        vm.paginaActual2 = $stateParams.pagina2
         vm.listas = listas.data.data.listas;
         vm.favoritos = favoritos.data.data.listas;
         console.log("mis favoritos")
@@ -14,6 +16,13 @@
         vm.emailCambia = false
         vm.passwordCambia = false
         console.log(listas)
+        if($stateParams.tab == 1){
+            vm.tab1 = true
+            vm.tab2 = false
+        } else {
+            vm.tab1 = false
+            vm.tab2 = true
+        }
         vm.edit = function(lista){
             console.log("llamando funcione edit", lista)
             $state.go('main.editList',{lista: lista})
@@ -29,6 +38,16 @@
                     console.log("emptyyyy query", responseFail)
                 })
         }
+
+        vm.siguiente = function(pos,index){
+            if(pos==1)
+                $stateParams.pagina = index
+            else
+                $stateParams.pagina2 = index
+            $state.go($state.current, {pagina: $stateParams.pagina, pagina2: $stateParams.pagina2, tab: pos }, {reload: true});
+        }
+
+
 
         vm.editarInfo = function(){
             console.log("editar info")
@@ -91,6 +110,6 @@
     }
 
     angular.module('proyecto')
-        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','listas', 'favoritos', 'infoUsuario', mislistasCtrl]);
+        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','listas', 'favoritos', 'infoUsuario', mislistasCtrl]);
 
 })();
