@@ -176,7 +176,7 @@
         vm.idVideo="null"
         vm.youtube=false;
         vm.abrirBusqueda = false;
-        vm.reproduciendo = "ey"
+        vm.reproduciendo = ""
         //vm.index = 0
         $scope.$on('youtube.player.ready', function (event, player) {
             console.log("el reproductor esta listo");
@@ -204,10 +204,8 @@
 
         $scope.$on('youtube.player.playing', function(event, player){
                 //vm.index = player.getPlaylistIndex()
-
-            console.log("entro en el evento", player.getPlaylistIndex(), vm.reproduciendo)
             vm.reproduciendo = vm.playlist[player.getPlaylistIndex()].artista + "-" + vm.playlist[player.getPlaylistIndex()].cancion
-            console.log("entro en el evento 2", player.getPlaylistIndex(), vm.reproduciendo)
+
 
         })
 

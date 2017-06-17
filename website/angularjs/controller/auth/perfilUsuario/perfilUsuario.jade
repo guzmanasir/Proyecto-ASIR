@@ -1,30 +1,14 @@
-div(layout="row")
-    div(flex=45)
-    div(flex=35)
-        div(ng-if="!mlc.abrirInput")
-            p(style="font-size: 20px;") Perfil de {{ mlc.listas[0].nombreUsuario}}
-            md-button(ng-click="mlc.abrir()") Editar datos
-        div(ng-if="mlc.abrirInput")
-            form
-                md-input-container
-                    label Nombre
-                    input(ng-model="mlc.infoUsuario.nombre" ng-change="mlc.cambia('nombre')")
-                md-input-container
-                    label Email
-                    input(ng-model="mlc.infoUsuario.email" ng-change="mlc.cambia('email')")
-                md-input-container
-                    label Contraseña
-                    input(type="password" ng-model="mlc.infoUsuario.password" ng-change="mlc.cambia('password')")
-                md-button(ng-click="mlc.editarInfo()") Guardar
+p ALGOO
+p(style="font-size: 20px;") Perfil de {{ puct.listas[0].nombreUsuario }}
 
-    div(flex=20)
+
 
 md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
     md-tab(label="Mis listas" )
 
         md-list(style="padding-left:10%" flex)
 
-            md-list-item(ng-repeat="lista in mlc.listas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
+            md-list-item(ng-repeat="lista in puct.listas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
                 md-divider
                 div(flex=15 layout="row")
                     div(layout="column" flex=50)
@@ -35,7 +19,7 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                         img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
                 div(layout="column" style="padding-left: 1%" flex)
                     div
-                        span.md-subhead(ng-click="mlc.eliminar(lista.idlista)") {{ lista.nombre }}
+                        span.md-subhead(ng-click="puct.eliminar(lista.idlista)") {{ lista.nombre }}
                     div(style="padding-bottom:2px")
                         span Generos:
                         span(ng-repeat="tag in lista.tags")
@@ -44,22 +28,22 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                         span Subido en: {{ lista.fecha }}
                     div.btn-group.btn-group-xs
                         //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                        i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.play(lista.info); mlc.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
+                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
                         label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
 
 
                 span(flex)
                 div
-                    md-button(ng-click="mlc.edit(lista)") EDITAR
+                    md-button(ng-click="puct.edit(lista)") EDITAR
                     div
-                        md-button(ng-click="mlc.eliminar(lista.idlista)") Eliminar
+                        md-button(ng-click="puct.eliminar(lista.idlista)") Eliminar
 
                 md-divider
     md-tab(label="Favoritos" )
 
         md-list(style="padding-left:10%" flex)
 
-            md-list-item(ng-repeat="lista in mlc.favoritos track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
+            md-list-item(ng-repeat="lista in puct.favoritos track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
                 md-divider
                 div(flex=15 layout="row")
                     div(layout="column" flex=50)
@@ -70,7 +54,7 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                         img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
                 div(layout="column" style="padding-left: 1%" flex)
                     div
-                        span.md-subhead(ng-click="mlc.eliminar(lista.idlista)") {{ lista.nombre }}
+                        span.md-subhead(ng-click="puct.eliminar(lista.idlista)") {{ lista.nombre }}
                     div(style="padding-bottom:2px")
                         span Generos:
                         span(ng-repeat="tag in lista.tags")
@@ -79,13 +63,10 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                         span Subido en: {{ lista.fecha }}
                     div.btn-group.btn-group-xs
                         //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                        i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.play(lista.info); mlc.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
+                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
                         label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
 
 
 
                 md-divider
-
-
-
 

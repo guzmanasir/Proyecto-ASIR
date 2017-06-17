@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "angular-ui-bootstrap": "^2.5.0",
     "async": "^2.4.0",
     "body-parser": "~1.15.2",
     "cookie-parser": "~1.4.3",

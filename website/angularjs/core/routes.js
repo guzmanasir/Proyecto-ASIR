@@ -92,11 +92,12 @@
                 controller: 'nuevosCtrl',
                 controllerAs: 'nct',
                 templateUrl: '/users/tempNuevos',
-                params: {requireLogin : true, page:null},
+                params: {requireLogin : true, pagina:1},
                 resolve : {
-                    nuevos: ['$http',function($http,$stateParams){
-                        return $http.get('/users/newLists/')
+                    nuevos: ['$http','$stateParams',function($http,$stateParams){
+                        return $http.get('/users/newLists/'+$stateParams.pagina)
                             .then(function(response){
+                               // console.log("er param", $state)
                                 return response;
                             },function(response) {
                                 return response;
@@ -123,6 +124,26 @@
                 }
             })
 
+            .state('main.perfilUsuario',{
+                url: "/perfilUsuario?idUser",
+                controller: 'perfilUsuarioCtrl',
+                controllerAs: 'puct',
+                templateUrl: '/users/tempPerfilUsuario',
+                params: {requireLogin : true},
+                resolve : {
+                    listas: ['$http','$stateParams',function($http,$stateParams){
+                        return $http.get('/users/perfilUsuario/'+$stateParams.idUser)
+                            .then(function(response){
+                                console.log("response ok ",response)
+                                return response;
+                            },function(response) {
+                                console.error("error en response ",response)
+                                return response;
+                            })
+                    }]
+                }
+            })
+
             .state('main.recomendaciones',{
                 url: "/recomendaciones",
                 controller: 'recomendacionesCtrl',
@@ -141,8 +162,8 @@
                 }
             })
 
-            .state('main.mislistas',{
-                url: "/mislistas",
+            .state('main.perfil',{
+                url: "/perfil",
                 controller: 'mislistasCtrl',
                 controllerAs: 'mlc',
                 templateUrl: '/users/tempMisListas',
@@ -155,19 +176,17 @@
                             },function(response) {
                                 return response;
                             })
-                    }]
-                }
-            })
-
-            .state('main.favoritos',{
-                url: "/favoritos",
-                controller: 'favoritosCtrl',
-                controllerAs: 'flc',
-                templateUrl: '/users/tempFavoritos',
-                params: {requireLogin : true},
-                resolve : {
-                    listas: ['$http',function($http){
+                    }],
+                    favoritos: ['$http',function($http){
                         return $http.get('/users/misFavoritos')
+                            .then(function(response){
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }],
+                    infoUsuario: ['$http',function($http){
+                        return $http.get('/users/infoUsuario')
                             .then(function(response){
                                 return response;
                             },function(response) {
@@ -176,6 +195,24 @@
                     }]
                 }
             })
+
+            // .state('main.favoritos',{
+            //     url: "/favoritos",
+            //     controller: 'favoritosCtrl',
+            //     controllerAs: 'flc',
+            //     templateUrl: '/users/tempFavoritos',
+            //     params: {requireLogin : true},
+            //     resolve : {
+            //         listas: ['$http',function($http){
+            //             return $http.get('/users/misFavoritos')
+            //                 .then(function(response){
+            //                     return response;
+            //                 },function(response) {
+            //                     return response;
+            //                 })
+            //         }]
+            //     }
+            // })
 
             .state('main.buscador',{
                 url: "/buscar",
@@ -186,7 +223,7 @@
             })
 
             .state('main.editList',{
-                url: "/mislistas/edit",
+                url: "/perfil/edit",
                 controller: 'editListCtrl',
                 controllerAs: 'elc',
                 templateUrl: '/users/tempEditList',
@@ -218,7 +255,7 @@
                 template: '<p>404</p>'
             })
 
-        $urlRouterProvider.otherwise('/mislistas')
+        $urlRouterProvider.otherwise('/perfil')
 
 
 

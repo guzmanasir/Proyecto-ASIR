@@ -1,5 +1,5 @@
 
-p NUEVOS
+
 
 section.cards
     div(layout='row', layout-align='center stretch' layout-wrap style="padding-right:10%; padding-left:10%")
@@ -17,7 +17,7 @@ section.cards
 
             //md-card-actions(layout='row', layout-align='start center')
             //    md-card-icon-actions
-            p Por: {{ lista.nombreUsuario }}
+            a(href='/perfilUsuario?idUser=2') Por: {{ lista.nombreUsuario }}
             div(ng-repeat="tag in lista.tags")
                 span Genero: {{ tag }}
 
@@ -38,7 +38,10 @@ section.cards
                         md-button(ng-click="nct.nofavorito(lista.listaid)")
                             i.material-icons favorite
 
-    md-button(ng-click="") ANTERIOR
-    md-button(ng-click="") SIGUIENTE
-
+    //md-button(ng-click="") ANTERIOR
+    //md-button(ng-click="nct.siguiente()") SIGUIENTE
+    ul(uib-pagination, total-items='nct.nuevos[0].totalListas', items-per-page='9' ng-model='nct.paginaActual', ng-change='nct.siguiente(nct.paginaActual)')
     //md-card-content
+    //div.btn-group(ng-repeat="n in ")
+    //    label.btn.btn-primary(ng-model='radioModel', uib-btn-radio="'Left'")
+

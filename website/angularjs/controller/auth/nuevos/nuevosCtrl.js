@@ -7,8 +7,12 @@
         var vm = this;
         vm.nuevos = nuevos.data.data.listas;
         console.log("nuevos" , vm.nuevos)
-        vm.paginaActual = 0
-        vm.paginaMaxima = 0
+        vm.paginaActual = $stateParams.pagina
+        vm.paginaMaxima = Math.ceil(vm.nuevos[0].totalListas / 9)
+        console.log("la pagina total", vm.paginaMaxima)
+        console.log("la pagina actual", vm.paginaActual)
+
+
 
 
         vm.favorito = function(listaid){
@@ -80,8 +84,9 @@
 
         }
 
-        vm.siguiente = function(){
-
+        vm.siguiente = function(index){
+            $stateParams.pagina = index
+            $state.go($state.current, {pagina: $stateParams.pagina}, {reload: true});
         }
 
 

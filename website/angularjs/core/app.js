@@ -11,7 +11,8 @@ angular.module("proyecto", [
     'satellizer',
     'youtube-embed',
     'ngLodash',
-    'ngYoutubeEmbed'
+    'ngYoutubeEmbed',
+    'ui.bootstrap'
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('grey')

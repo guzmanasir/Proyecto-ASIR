@@ -64,6 +64,8 @@ router.post('/addList', function(req, res, next){
     })
 })
 
+
+
 router.post('/addSongs', function(req, res, next){
     var json = req.body;
     json.id = req.idUser;
@@ -126,7 +128,7 @@ router.post('/search', function(req, res, next) {
 
         console.log("json pa edita loco 2", json2)
 
-        if (!_.isEmpty(json2.listIds)) {
+        if (!_.isEmpty(json2)) {
 
             query.getByIdlist(json2, function (err, resultados) {
                 if (err) return codigos.responseFail(res, err);
@@ -227,18 +229,48 @@ router.post('/noFavorito', function(req, res, next) {
 
 
 
+router.post('/editarInfo', function(req, res, next) {
+
+    var json = {campo: req.body.campo, idUser: req.idUser}
+    // aqui query
+    console.log("datos No favorito", json)
+
+    query.noFavorito(json,function(err,resultados){
+        if(err){
+            return codigos.responseFail(res, err);
+        }
+        else {
+            codigos.responseOk(res)
+        }
+    })
+});
+
+
+
 
 /**
  * Obtiene lista de listas a partir de un id de usuario
  */
 router.get('/getLists', function(req, res, next) {
     var id = req.idUser;
+    getListById(id, function(err,data){
+        if(err) return codigos.responseFail(res,err)
+
+        codigos.responseOk(res, data)
+    })
     // var result = {
     //     total: [{nombre:'lista1', urls: [], tags : []}]
     // }
+
+
+});
+
+
+
+function getListById(id, callback){
     query.getList(id, function(err,resultado){
 
-        if(err) return codigos.responseFail(res, err)
+        if(err) return callback(err, null)
         //console.log("resultado ",resultado)
         var listas = {listas : [
         ]}
@@ -248,9 +280,12 @@ router.get('/getLists', function(req, res, next) {
         _.forEach(idListas, function(item){
             listas.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
                 idlista:item,
+                fecha: _.uniqBy(_.map(_.filter(resultado,function(o){return o.idlista == item}),'fecha'))[0],
+                numreproducciones: _.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'reproducciones'))[0],
+                nombreUsuario: _.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombreUsuario'))[0],
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                 info:[],
-                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
+                tags:_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))}
             )
             //console.log("antes de url")
 
@@ -269,11 +304,10 @@ router.get('/getLists', function(req, res, next) {
 
 
         })
-        codigos.responseOk(res, listas)
+        callback(null, listas)
 
     })
-
-});
+}
 
 router.get('/recomendaciones', function(req, res, next) {
     var id = req.idUser;
@@ -288,43 +322,20 @@ router.get('/recomendaciones', function(req, res, next) {
     })
 
 
+});
 
-    // query.getList(id, function(err,resultado){
-    //
-    //     if(err) return codigos.responseFail(res, err)
-    //     //console.log("resultado ",resultado)
-    //     var listas = {listas : [
-    //     ]}
-    //     var index = 0
-    //     var idListas = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
-    //
-    //     _.forEach(idListas, function(item){
-    //         listas.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
-    //             idlista:item,
-    //             //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
-    //             info:[],
-    //             tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
-    //         )
-    //         //console.log("antes de url")
-    //
-    //         var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
-    //         _.forEach(urls, function(item2){
-    //             listas.listas[index].info.push({url: item2.URL,
-    //                 artista: item2.artista,
-    //                 cancion: item2.cancion,
-    //                 thumbnail: item2.thumbnail,
-    //                 idenlace : item2.idenlace
-    //             })
-    //             console.log("onde ta el id", item2)
-    //         })
-    //         index++
-    //         console.log("urls ",urls)
-    //
-    //
-    //     })
-    //     codigos.responseOk(res, listas)
-    //
-    // })
+router.get('/infoUsuario', function(req, res, next) {
+    var id = req.idUser;
+    // var result = {
+    //     total: [{nombre:'lista1', urls: [], tags : []}]
+    // }
+
+    query.infoUsuario(id, function(err, resultado){
+        if(err) return codigos.responseFail(res, err)
+        //console.log(resultado)
+        codigos.responseOk(res, resultado[0])
+    })
+
 
 });
 
@@ -412,8 +423,9 @@ router.get('/newLists/:pagina?/:limite*?', function(req, res, next) {
     query.newLists(valuesPagina, function(err,resultado){
         if(err) return codigos.responseFail(res, err)
 
-        var json = _.map(resultado,'idlista')
-
+        var json = resultado.idlista
+        var total = resultado.total
+        console.log("ids procesaos", json)
         if(json.length<1)
             return codigos.responseOk(res,null)
 
@@ -432,7 +444,8 @@ router.get('/newLists/:pagina?/:limite*?', function(req, res, next) {
                 nuevos.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
                     listaid: item,
                     isfavorited: false,
-                    nombreUsuario: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'username'))[0],
+                    totalListas: total,
+                    nombreUsuario: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'nombreUsuario'))[0],
                     miusuarioid: req.idUser,
                     numfavoritos:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
                     numreproducciones: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'reproducciones'))[0],
@@ -462,10 +475,14 @@ router.get('/newLists/:pagina?/:limite*?', function(req, res, next) {
 
 
                 query.favoritos(id, function(err, resultado){
-                    //console.log(nuevos.listas)
+                    if(err) return codigos.responseFail(res, err)
+
                     var idFavoritos = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
+                    console.log("idsfavoritossss", idFavoritos)
                     _.forEach(idFavoritos, function(item){
-                        _.find(nuevos.listas, {listaid: item}).isfavorited = true
+                        if(!_.isUndefined(_.find(nuevos.listas, {listaid: item})))
+                            _.find(nuevos.listas, {listaid: item}).isfavorited = true
+
 
                     })
 
@@ -559,6 +576,32 @@ router.get('/getTags', function(req, res, next) {
     })
 });
 
+router.post('/eliminar', function(req,res,next){
+    var id = req.body.idlista
+    console.log("id pa eliminar", id)
+    query.eliminar(id, function(err, resultado){
+        if(err) return codigos.responseFail(res, err)
+
+        //console.log("nuevos", nuevos)
+         codigos.responseOk(res, [])
+    })
+
+})
+
+router.get('/perfilUsuario/:id', function(req,res,next){
+    var id = req.params.id
+    console.log("id pa buscar", id)
+    getListById(id, function(err,data){
+        if(err) return codigos.responseFail(res,err)
+
+        codigos.responseOk(res, data)
+    })
+
+})
+
+
+
+
 router.get('/masEscuchada', function(req, res, next) {
 
     query.masEscuchada(function(err,resultado){
@@ -646,6 +689,11 @@ router.get('/tempRecomendaciones', function(req, res, next) {
 router.get('/tempHome', function(req, res, next) {
     res.render('angularjs/controller/auth/home/home')
 });
+
+router.get('/tempPerfilUsuario', function(req, res, next) {
+    res.render('angularjs/controller/auth/perfilUsuario/perfilUsuario')
+});
+
 
 
 
