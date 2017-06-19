@@ -6,9 +6,11 @@ var _ = require('lodash')
 var query = require('../mysql/queries');
 var async = require('async')
 
-/* GET users listing. */
 router.use(middlewareToken.middlewareToken);
 
+/**
+ * Rutas para renderizar templates
+ */
 
 router.get('/frame', function(req, res, next) {
     res.render('angularjs/controller/auth/frame/frame')
@@ -26,9 +28,6 @@ router.get('/tempPopulares', function(req, res, next) {
     res.render('angularjs/controller/auth/populares/populares')
 });
 
-router.get('/tempRecomendaciones', function(req, res, next) {
-    res.render('angularjs/controller/auth/recomendaciones/recomendaciones')
-});
 
 router.get('/addListDialog', function(req, res, next) {
     res.render('angularjs/controller/auth/frame/addListDialog')
@@ -45,6 +44,56 @@ router.get('/songEditDialog', function(req, res, next) {
 router.get('/addSongDialog', function(req, res, next) {
     res.render('angularjs/controller/auth/editList/addSongDialog')
 });
+
+
+router.get('/tempMisListas', function(req, res, next) {
+    res.render('angularjs/controller/auth/mislistas/mislistas')
+});
+
+router.get('/tempNuevos', function(req, res, next) {
+    res.render('angularjs/controller/auth/nuevos/nuevos')
+});
+
+router.get('/tempFavoritos', function(req, res, next) {
+    res.render('angularjs/controller/auth/favoritos/favoritos')
+});
+
+router.get('/tempEditList', function(req, res, next) {
+    res.render('angularjs/controller/auth/editList/editList')
+});
+
+router.get('/tempVerLista', function(req, res, next) {
+    res.render('angularjs/controller/auth/verLista/verlista')
+});
+
+router.get('/tempBuscador', function(req, res, next) {
+    res.render('angularjs/controller/auth/buscador/buscador')
+});
+
+router.get('/tempPopulares', function(req, res, next) {
+    res.render('angularjs/controller/auth/populares/populares')
+});
+
+router.get('/tempRecomendaciones', function(req, res, next) {
+    res.render('angularjs/controller/auth/recomendaciones/recomendaciones')
+});
+
+router.get('/tempHome', function(req, res, next) {
+    res.render('angularjs/controller/auth/home/home')
+});
+
+router.get('/tempPerfilUsuario', function(req, res, next) {
+    res.render('angularjs/controller/auth/perfilUsuario/perfilUsuario')
+});
+
+router.get('/tempEditInfo', function(req, res, next) {
+    res.render('angularjs/controller/auth/editInfo/editInfo')
+});
+
+
+/**
+ * Ruta para insertar listas
+ */
 
 router.post('/addList', function(req, res, next){
     var json = req.body;
@@ -64,7 +113,9 @@ router.post('/addList', function(req, res, next){
     })
 })
 
-
+/**
+ *
+ */
 
 router.post('/addSongs', function(req, res, next){
     var json = req.body;
@@ -115,61 +166,59 @@ router.post('/songEdit', function(req, res, next) {
     })
 });
 
-router.post('/search', function(req, res, next) {
+router.post('/search/:pagina', function(req, res, next) {
     var json = req.body
     console.log("json pa edita loco", json)
-    // aqui query
+    console.log("PAGINA VALE ",req.params.pagina)
+    console.log("LIMITE VALE ",req.params.limite)
+    var limit = ""
+    var offset = ""
+    if((req.params.pagina && parseInt(req.params.pagina)-1 < 0) || (req.params.limite && parseInt(req.params.limite)-1 < 0)  ){
+        limit = 9
+        offset = 0
+        console.log("entroe en el primero")
+    } else {
 
-    query.buscador(json,function(err,resultados){
+        if(req.params.pagina && req.params.limite){
+            limit = req.params.limite
+            offset = (parseInt(req.params.pagina)-1) * req.params.limite
+            console.log("entroe en el segundo")
+
+        }else if(req.params.pagina){
+            limit = 9
+            offset = (parseInt(req.params.pagina)-1) * limit
+            console.log("entroe en el tercero")
+
+        }else{
+            limit = 9
+            offset = 0
+            console.log("entroe en el cuarto")
+
+        }
+    }
+
+    console.log("limit ", req.params.limit)
+    console.log("offset ", req.params.pagina)
+    var valuesPagina = {limit: limit, offset: offset, busqueda: json.busqueda, tipo: json.tipo, ordenar: json.ordenar, idtag: json.idtag}
+
+    console.log("ENTRO")
+
+    query.buscador(valuesPagina,function(err,resultados){
         if(err) return codigos.responseFail(res, err);
 
+        if (!_.isEmpty(resultados)) {
+            console.log("valores brutos del buscador", resultados)
+            var idlistas = resultados.idlista
+            var total = resultados.total
+            var idUser = req.idUser
+            console.log("los valores del buscador", idlistas, " ", total, " ", idUser)
+            getInfoList(idlistas, total, idUser, function(err, data){
 
-        var json2 = _.map(_.uniqBy(resultados, "idlista"), "idlista")
+                if(err) return codigos.responseFail(res,err)
+                console.log("RESULTAOS FINALES", data)
 
-        console.log("json pa edita loco 2", json2)
+                codigos.responseOk(res, data)
 
-        if (!_.isEmpty(json2)) {
-
-            query.getByIdlist(json2, function (err, resultados) {
-                if (err) return codigos.responseFail(res, err);
-                var listas = {
-                    listas: []
-                }
-                var index = 0
-                var idListas = _.map(_.uniqBy(resultados, 'idlista'), 'idlista')
-
-                _.forEach(idListas, function (item) {
-                    listas.listas.push({
-                            nombre: _.uniq(_.map(_.filter(resultados, function (o) {
-                                return o.idlista == item
-                            }), 'listanombre'))[0],
-                            idlista: item,
-                            //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
-                            info: [],
-                            tags: [_.uniq(_.map(_.filter(resultados, function (o) {
-                                return o.idlista == item
-                            }), 'nombre'))]
-                        }
-                    )
-                    //console.log("antes de url")
-
-                    var urls = _.uniqBy(_.filter(resultados, function (o) {
-                        return o.idlista == item
-                    }), 'URL')
-                    _.forEach(urls, function (item2) {
-                        listas.listas[index].info.push({
-                            url: item2.URL,
-                            artista: item2.artista,
-                            cancion: item2.cancion,
-                            thumbnail: item2.thumbnail,
-                            idenlace: item2.idenlace
-                        })
-                    })
-                    index++
-                })
-
-                console.log("los resultaos la query", listas)
-                codigos.responseOk(res, listas)
             })
         } else {
             codigos.responseOk(res, [])
@@ -177,7 +226,10 @@ router.post('/search', function(req, res, next) {
 
 
     })
+
+
 });
+
 
 router.post('/favorito', function(req, res, next) {
 
@@ -196,7 +248,7 @@ router.post('/favorito', function(req, res, next) {
 });
 
 router.post('/reproduccion', function(req, res, next) {
-
+    var idGlobal = req.idUser
     var json = {listaId: req.body.listaid}
     // aqui query
     console.log("datos favorito", json)
@@ -230,12 +282,12 @@ router.post('/noFavorito', function(req, res, next) {
 
 
 router.post('/editarInfo', function(req, res, next) {
-
-    var json = {campo: req.body.campo, idUser: req.idUser}
+    var json = req.body
+    json.idUser = req.idUser
     // aqui query
     console.log("datos No favorito", json)
 
-    query.noFavorito(json,function(err,resultados){
+    query.editarInfo(json,function(err,resultados){
         if(err){
             return codigos.responseFail(res, err);
         }
@@ -332,7 +384,7 @@ function getListById(values, callback){
     })
 }
 
-router.get('/recomendaciones', function(req, res, next) {
+router.get('/recomendacionesQuery', function(req, res, next) {
     var id = req.idUser;
     // var result = {
     //     total: [{nombre:'lista1', urls: [], tags : []}]
@@ -340,8 +392,12 @@ router.get('/recomendaciones', function(req, res, next) {
 
     query.recomendaciones(id, function(err, resultado){
         if(err) return codigos.responseFail(res, err)
-        var recomendaciones = resultado
-        codigos.responseOk(res, recomendaciones)
+        var idlistas = _.uniq(_.map(resultado,'lista_idlista'),'lista_idlista')
+        getInfoList(idlistas, 9, id, function(err,data){
+            if(err) return codigos.responseFail(res,err)
+            var recomendaciones = {listas: data, artistas: resultado}
+            codigos.responseOk(res, recomendaciones)
+        })
     })
 
 
@@ -493,7 +549,8 @@ function getInfoList(idlistas, total, idUser, callback){
                 nuevos.listas[index].info.push({url: item2.URL,
                     artista: item2.artista,
                     cancion: item2.cancion,
-                    thumbnail: item2.thumbnail
+                    thumbnail: item2.thumbnail,
+                    idenlace: item2.idenlace
                 })
             })
             index++
@@ -609,6 +666,7 @@ router.get('/populares', function(req, res, next) {
                 isfavorited: false,
                 miusuarioid: req.idUser,
                 numfavoritos:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
+                nombreusuario:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'nombreusuario'))[0],
                 usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                 info:[],
@@ -662,6 +720,16 @@ router.get('/getTags', function(req, res, next) {
     })
 });
 
+router.get('/tagCloud', function(req, res, next) {
+    console.log("entrando gettags")
+    query.tagCloud(function(err,resultado){
+        if(err) return codigos.responseFail(res, err)
+        console.log("tag cloud resultados", resultado)
+
+        codigos.responseOk(res, resultado)
+    })
+});
+
 router.post('/eliminar', function(req,res,next){
     var id = req.body.idlista
     console.log("id pa eliminar", id)
@@ -669,7 +737,7 @@ router.post('/eliminar', function(req,res,next){
         if(err) return codigos.responseFail(res, err)
 
         //console.log("nuevos", nuevos)
-         codigos.responseOk(res, [])
+        codigos.responseOk(res, [])
     })
 
 })
@@ -747,6 +815,9 @@ router.get('/masEscuchada', function(req, res, next) {
                             return o.idlista == item
                         }), 'listanombre'))[0],
                         idlista: item,
+                        nombreusuario: _.uniq(_.map(_.filter(resultados, function (o) {
+                            return o.idlista == item
+                        }), 'nombreUsuario'))[0],
                         //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
                         info: [],
                         tags: [_.uniq(_.map(_.filter(resultados, function (o) {
@@ -775,47 +846,6 @@ router.get('/masEscuchada', function(req, res, next) {
             codigos.responseOk(res, listas)
         })
     })
-});
-
-
-router.get('/tempMisListas', function(req, res, next) {
-    res.render('angularjs/controller/auth/mislistas/mislistas')
-});
-
-router.get('/tempNuevos', function(req, res, next) {
-    res.render('angularjs/controller/auth/nuevos/nuevos')
-});
-
-router.get('/tempFavoritos', function(req, res, next) {
-    res.render('angularjs/controller/auth/favoritos/favoritos')
-});
-
-router.get('/tempEditList', function(req, res, next) {
-    res.render('angularjs/controller/auth/editList/editList')
-});
-
-router.get('/tempVerLista', function(req, res, next) {
-    res.render('angularjs/controller/auth/verLista/verlista')
-});
-
-router.get('/tempBuscador', function(req, res, next) {
-    res.render('angularjs/controller/auth/buscador/buscador')
-});
-
-router.get('/tempPopulares', function(req, res, next) {
-    res.render('angularjs/controller/auth/populares/populares')
-});
-
-router.get('/tempRecomendaciones', function(req, res, next) {
-    res.render('angularjs/controller/auth/recomendaciones/recomendaciones')
-});
-
-router.get('/tempHome', function(req, res, next) {
-    res.render('angularjs/controller/auth/home/home')
-});
-
-router.get('/tempPerfilUsuario', function(req, res, next) {
-    res.render('angularjs/controller/auth/perfilUsuario/perfilUsuario')
 });
 
 

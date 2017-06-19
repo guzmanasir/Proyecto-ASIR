@@ -1,5 +1,29 @@
 p RECOMENDACIONES
+md-list(style="padding-left:10%" flex)
 
-md-list
-    md-list-item(ng-repeat="datos in rct.recomendadas")
-        p {{ datos }}
+    md-list-item(ng-repeat="lista in rct.recomendadas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="column")
+        md-divider
+        div(layout="row") Te recomendamos estos artistas
+        div(ng-repeat="artista in lista.artistas")
+            span {{ artista }}
+        div(flex layout="row")
+            div(layout="column" flex=50)
+                img(flex= 50, ng-src='{{lista.listas[0].info[0].thumbnail}}')
+                img(flex= 50, ng-src='{{lista.listas[0].info[1].thumbnail}}')
+            div(layout="column" flex=50)
+                img(flex= 50, ng-src='{{lista.listas[0].info[2].thumbnail}}')
+                img(flex= 50, ng-src='{{lista.listas[0].info[3].thumbnail}}')
+        div(layout="column" style="padding-left: 1%" flex)
+            div
+                span.md-subhead {{ lista.listas[0].nombre }}
+            div(style="padding-bottom:2px")
+                span Generos:
+                span(ng-repeat="tag in lista.listas[0].tags")
+                    span {{ tag }}
+                a(href='/perfilUsuario?idUser={{lista.listas[0].usuarioid}}' ) Por: {{ lista.listas[0].nombreUsuario }}
+            div(layout="row")
+                span Subido en: {{ lista.listas[0].fecha }}
+            div.btn-group.btn-group-xs
+                //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
+                label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.listas.numreproducciones }}

@@ -5,10 +5,24 @@
 
 
 (function() {
-    function frameCtrl($http,$state,$auth, $mdDialog, lodash, tags , $rootScope, $scope) {
+    function frameCtrl($http,$state,$auth, $mdDialog, lodash, tags , $rootScope, $scope, tagCloud) {
         var vm = this;
         vm.name = ""
-        vm.cualquiera = "aa"
+        vm.words = tagCloud.data.data
+        // vm.words =  [
+        //     {word: "oke", id: 1,  size: 1},
+        //     {id: 22, word: "blues", size: 1},
+        //     {id: 32, word: "test", size: 1},
+        //     {id: 440, word: "schaap", size: 1},
+        //     {id: 50, word: "deployment", size: 1},
+        //     {id: 63, word: "woord3", size: 5},
+        //     {id: 73, word: "wogamalord4", size: 10},
+        //     {id: 82, word: "woord5", size: 1},
+        //     {id: 91, word: "woord8", size: 1},
+        //     {id: 103, word: "woord9", size: 1}
+        // ];
+        console.log("tags", tagCloud.data.data)
+        console.log("words", vm.words)
         vm.showAdvanced = function (ev) {
             $mdDialog.show({
                 controller: function ($mdDialog) {
@@ -21,6 +35,8 @@
                     vmd.pageNext = "";
                     vmd.artista = "";
                     vmd.cancion = "";
+
+
 
                     vmd.createFilterFor = function (query) {
 
@@ -177,6 +193,9 @@
         vm.youtube=false;
         vm.abrirBusqueda = false;
         vm.reproduciendo = ""
+        vm.actualNavItem=$rootScope.estadoActual
+        console.log("la tab", vm.actualNavItem)
+
         //vm.index = 0
         $scope.$on('youtube.player.ready', function (event, player) {
             console.log("el reproductor esta listo");
@@ -209,21 +228,26 @@
 
         })
 
-        vm.buscar = function(){
-            console.log("%"+vm.busqueda+"%")
+        // vm.buscar = function(){
+        //     console.log("%"+vm.busqueda+"%")
+        //
+        //     var buscador = {tipo: vm.type, busqueda: "%"+vm.busqueda+"%" }
+        //
+        //      $http.post('/users/search/', buscador)
+        //          .then(function(responseOk){
+        //              console.log("datos brutos", responseOk)
+        //              console.log("datos busqueda", responseOk.data.data.listas)
+        //              $state.go('main.buscador', {resultado: responseOk.data.data.listas})
+        //
+        //          }, function(responseFail){
+        //              console.log("emptyyyy query", responseFail)
+        //          })
+        // }
 
-            var buscador = {tipo: vm.type, busqueda: "%"+vm.busqueda+"%" }
-
-             $http.post('/users/search/', buscador)
-                 .then(function(responseOk){
-                     console.log("datos brutos", responseOk)
-                     console.log("datos busqueda", responseOk.data.data.listas)
-                     $state.go('main.buscador', {resultado: responseOk.data.data.listas})
-
-                 }, function(responseFail){
-                     console.log("emptyyyy query", responseFail)
-                 })
+        vm.cambiarNav = function(){
+            $state.go('main.nuevos', {pagina: 1})
         }
+
         vm.abrirBuscar = function(){
             vm.abrirBusqueda = true;
         }
@@ -234,6 +258,6 @@
     }
 
     angular.module('proyecto')
-        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', 'lodash', 'tags', '$rootScope', '$scope', frameCtrl]);
+        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', 'lodash', 'tags', '$rootScope', '$scope', 'tagCloud', frameCtrl]);
 
 })();

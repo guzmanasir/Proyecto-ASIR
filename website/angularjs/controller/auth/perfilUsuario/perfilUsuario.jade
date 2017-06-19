@@ -1,74 +1,94 @@
-p ALGOO
-p(style="font-size: 20px;") Perfil de {{ puct.listas[0].nombreUsuario }}
+
+p(style="font-size: 20px; font-height: bold; text-align: center; padding-top: 2%") Perfil de {{ puct.listas[0].nombreUsuario }}
 
 
 
 md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
-    md-tab(label="Mis listas" md-active="puct.tab1")
+    md-tab(label="Listas" md-active="puct.tab1")
 
-        md-list(style="padding-left:10%" flex)
+        md-list(style="padding-left:20%" flex=80)
 
             md-list-item(ng-repeat="lista in puct.listas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
-                md-divider
-                div(flex=15 layout="row")
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
-                div(layout="column" style="padding-left: 1%" flex)
-                    div
-                        span.md-subhead(ng-click="puct.eliminar(lista.idlista)") {{ lista.nombre }}
-                    div(style="padding-bottom:2px")
-                        span Generos:
-                        span(ng-repeat="tag in lista.tags")
-                            span {{ tag }}
-                    div(layout="row")
-                        span Subido en: {{ lista.fecha }}
-                    div.btn-group.btn-group-xs
-                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
-                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+                div(layout="column" flex=70 )
+                    div(style="padding-bottom:2%").md-headline {{ lista.nombre }}
 
 
-                span(flex)
-                div
-                    md-button(ng-click="puct.edit(lista)") EDITAR
-                    div
-                        md-button(ng-click="puct.eliminar(lista.idlista)") Eliminar
+                    div(layout="row" )
+                        div(flex=25 layout="row")
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                        div(layout="column" style="padding-top: 1%; padding-left:1%" flex layout-aling="none center")
+                            div(style="font-weight: bold") Etiquetas:
+                            div(style="padding-bottom:1px")
+                                md-chips(ng-model="lista.tags" readonly="true")
+
+                            div(layout="row" style="padding-top:4%")
+                                span Subido en: {{ lista.fecha }}
+                            div(layout="row" style="padding-top:1%")
+                                span.btn-group.btn-group-xs
+                                    //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.listaid)" style="font-size:15px") play_arrow
+                                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+                                span(ng-if="lista.isfavorited == false")
+                                    //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.favorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                span(ng-if="lista.isfavorited == true")
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.nofavorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+
+
 
                 md-divider
         ul(uib-pagination, total-items='puct.listas[0].totalListas', items-per-page='9' ng-model='puct.paginaActual', ng-change='puct.siguiente(1,puct.paginaActual)')
     md-tab(label="Favoritos" md-active="puct.tab2")
 
-        md-list(style="padding-left:10%" flex)
+        md-list(style="padding-left:20%" flex=80)
 
             md-list-item(ng-repeat="lista in puct.favoritos track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
-                md-divider
-                div(flex=15 layout="row")
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
-                div(layout="column" style="padding-left: 1%" flex)
-                    div
-                        span.md-subhead(ng-click="puct.eliminar(lista.idlista)") {{ lista.nombre }}
-                    div(style="padding-bottom:2px")
-                        span Generos:
-                        span(ng-repeat="tag in lista.tags")
-                            span {{ tag }}
-                    div(layout="row")
-                        span Subido en: {{ lista.fecha }}
-                    div.btn-group.btn-group-xs
-                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
-                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+                div(layout="column" flex=70 )
+                    div(style="padding-bottom:2%" ng-click="mlc.verLista(lista)").md-headline {{ lista.nombre }} Por
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}')  {{ lista.nombreUsuario }}
 
+                    div(layout="row"  ng-click="mlc.verLista(lista)" style="cursor:pointer")
+                        div(flex=25 layout="row")
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                        div(layout="column" style="padding-top: 1%; padding-left:1%" flex layout-aling="none center")
+                            div(style="font-weight: bold") Etiquetas:
+                            div(style="padding-bottom:1px")
+                                md-chips(ng-model="lista.tags" readonly="true")
 
+                            div(layout="row" style="padding-top:4%")
+                                span Subido en: {{ lista.fecha }}
+                            div(layout="row" style="padding-top:1%")
+                                span.btn-group.btn-group-xs
+                                    //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); mlc.reproduccion(lista.listaid)" style="font-size:15px") play_arrow
+                                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+                                span(ng-if="lista.isfavorited == false")
+                                    //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.favorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                span(ng-if="lista.isfavorited == true")
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.nofavorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
-                md-divider
 
         ul(uib-pagination, total-items='puct.listas[0].totalListas', items-per-page='9' ng-model='puct.paginaActual2', ng-change='puct.siguiente(2,puct.paginaActual2)')

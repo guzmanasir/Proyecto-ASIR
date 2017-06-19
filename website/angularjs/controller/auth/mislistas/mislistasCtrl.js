@@ -2,15 +2,17 @@
  * Created by jesus on 21/05/17.
  */
 (function() {
-    function mislistasCtrl($http,$auth,$state,$rootScope, lodash,$stateParams, listas, favoritos, infoUsuario){
+    function mislistasCtrl($http,$auth,$state,$rootScope, lodash,$stateParams,$mdDialog, listas, favoritos, infoUsuario){
 
         var vm = this;
         vm.paginaActual = $stateParams.pagina
         vm.paginaActual2 = $stateParams.pagina2
         vm.listas = listas.data.data.listas;
         vm.favoritos = favoritos.data.data.listas;
-        console.log("mis favoritos")
+        console.log("mis favoritos", vm.listas)
         vm.infoUsuario = infoUsuario.data.data
+        vm.totalListas = vm.listas[0].totalListas
+        vm.totalFavoritos = vm.favoritos[0].totalListas
         vm.abrirInput = false
         vm.nombreCambia = false
         vm.emailCambia = false
@@ -23,19 +25,48 @@
             vm.tab1 = false
             vm.tab2 = true
         }
+        vm.showConfirm = function(ev, id) {
+            console.log("entrando en dialog")
+            // Appending dialog to document.body to cover sidenav in docs app
+            var confirm = $mdDialog.confirm()
+                .title('¿Te gustaría eliminar esta lista?')
+                .textContent('No podrás recuperarla en el futuro')
+                .ariaLabel('Lucky day')
+                .targetEvent(ev)
+                .ok('Si')
+                .cancel('No');
+
+            $mdDialog.show(confirm).then(function() {
+                vm.eliminar(id,function(err,data){
+                    if(!err){
+                        if(vm.tab1){
+                            var index = _.findIndex(vm.listas, {listaid: id})
+                            vm.listas.splice(index,1)
+                            vm.totalListas -= 1
+                        }
+                    }
+                })
+
+            }, function() {
+
+            });
+        };
+
         vm.edit = function(lista){
             console.log("llamando funcione edit", lista)
             $state.go('main.editList',{lista: lista})
         }
 
-        vm.eliminar = function(id){
+        vm.eliminar = function(id,cb){
             console.log("llamando funcione eliminar", id)
             $http.post('/users/eliminar', {idlista: id})
                 .then(function(responseOk){
                     console.log("datos brutos", responseOk)
+                    cb(null,[])
 
                 }, function(responseFail){
                     console.log("emptyyyy query", responseFail)
+                    cb(responseFail,null)
                 })
         }
 
@@ -48,42 +79,30 @@
         }
 
 
+        vm.nofavorito = function(listaid){
+            vm.nofavoritoId = listaid
+            lodash.find(vm.favoritos, {listaid: listaid}).isfavorited = false
+            lodash.find(vm.favoritos, {listaid: listaid}).numfavoritos -= 1
+            var index = _.findIndex(vm.favoritos, {listaid: listaid})
+            vm.favoritos.splice(index,1)
+            vm.totalFavoritos -= 1
 
-        vm.editarInfo = function(){
-            console.log("editar info")
-            var datos = lodash.mapKeys([{nombre: "nombreCambia", active: vm.nombreCambia}, {nombre: "emailCambia", active: vm.emailCambia}, {nombre: "passwordCambia", active: vm.passwordCambia}],function(o){ return o.active == true})
-
-            console.log("enviando datos", datos)
-            // $http.post('/users/editarInfo', campo)
-            //     .then(function(responseOk){
-            //         console.log(responseOk)
-            //
-            //     }, function(responseFail){
-            //         console.log(responseFail)
-            //     })
+            $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
+                .then(function(responseOk){
+                    console.log(responseOk)
+                }, function(responseFail){
+                    console.log(responseFail)
+                })
         }
 
-        vm.cambia = function(cambia){
-            switch(cambia){
-                case 'nombre':
-                    vm.nombreCambia = true
-                    console.log("cambiuando nombre",vm.nombreCambia)
-                    break;
-                case 'email':
-                    vm.emailCambia = true
-                    console.log("cambiuando email",vm.emailCambia)
-                    break;
-                case 'password':
-                    vm.passwordCambia = true
-                    console.log("cambiuando password",vm.passwordCambia)
-                    break;
 
-            }
+        vm.verLista = function(lista){
+            console.log("llamando ver lista", lista)
+            $state.go('main.verLista',{lista: lista})
         }
-
 
         vm.abrir = function(){
-            vm.abrirInput = true
+            $state.go('main.editInfo',{datos: vm.infoUsuario})
         }
 
         vm.play = function(lista){
@@ -110,6 +129,6 @@
     }
 
     angular.module('proyecto')
-        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','listas', 'favoritos', 'infoUsuario', mislistasCtrl]);
+        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','$mdDialog','listas', 'favoritos', 'infoUsuario', mislistasCtrl]);
 
 })();

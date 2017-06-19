@@ -18,7 +18,7 @@
             });
             console.log(vm.seleccionados)
 
-            var edit = {idurls: vm.seleccionados, idlista: vm.editList.idlista}
+            var edit = {idurls: vm.seleccionados, idlista: vm.editList.listaid}
 
             console.log("json", edit)
 
@@ -44,6 +44,7 @@
 
                     vmd.answer = function(){
                         vm.name = vmd.nombre;
+
                         $mdDialog.hide();
                     }
 
@@ -131,7 +132,7 @@
 
                     var dataList = {
                         urlsServer: vm.urls,
-                        idlista: vm.editList.idlista
+                        idlista: vm.editList.listaid
                     }
                     if(dataList.urlsServer.length >=1) {
                         $http.post('/users/addSongs', dataList)
@@ -154,6 +155,7 @@
                     vme.nuevoArtista = ""
                     vme.nuevaCancion = ""
                     console.log("er index", index)
+                    console.log("los ids", idenlace, idlista)
                     vme.save = function() {
                         vm.nuevoArtista = vme.artista
                         vm.nuevaCancion = vme.cancion
@@ -181,6 +183,7 @@
                 autoWrap: false,
                 bindToController: true
             })
+
                 .then(function(){
                     var dataEditSong = {
                         nuevoArtista : vm.nuevoArtista,

@@ -12,7 +12,8 @@ angular.module("proyecto", [
     'youtube-embed',
     'ngLodash',
     'ngYoutubeEmbed',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'tangcloud'
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('grey')

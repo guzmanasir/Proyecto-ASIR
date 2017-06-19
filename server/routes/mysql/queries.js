@@ -304,7 +304,7 @@ exports.getList = function(values, callback){
 
             var resultadoTotal = {idlista:  _.map(resultado1,'idlista'), total: results[0].total}
 
-             callback(null,resultadoTotal)
+            callback(null,resultadoTotal)
 
         })
 
@@ -318,38 +318,64 @@ exports.getList = function(values, callback){
  */
 exports.buscador = function(json, callback){
 
-    var valuesBuscar = [json.busqueda]
+    var valuesBuscar = [json.busqueda, json.limit, json.offset]
 
     console.log("los valoreh", valuesBuscar)
 
-    switch(json.tipo){
-        case "lista":
-            var query =
-                'SELECT l.idlista ' +
-                'FROM lista l ' +
-                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-                'WHERE l.nombre LIKE ? AND l.deleted <> 1 AND c.deleted <> 1;'
-            break;
-        case "cancion":
-            var query =
-                'SELECT l.idlista ' +
-                'FROM lista l ' +
-                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-                'WHERE c.cancion LIKE ? AND l.deleted <> 1 AND c.deleted <> 1;'
-            break;
-        case "artista":
-            var query =
-                'SELECT l.idlista ' +
-                'FROM lista l ' +
-                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-                'WHERE c.artista LIKE ? AND l.deleted <> 1 AND c.deleted <> 1;'
+    if(json.idtag == "todos"){
+        var query =
+            'SELECT l.idlista ' +
+            'FROM lista l ' +
+            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+            'WHERE '+json.tipo+' LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
+            'GROUP BY l.idlista, '+json.ordenar+' ORDER BY '+json.ordenar+' '+
+            'LIMIT ? OFFSET ? '
+        var query2 = 'SELECT COUNT(DISTINCT l.idlista) as total ' +
+            'FROM lista l ' +
+            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+            'WHERE '+json.tipo+' LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
+            'ORDER BY '+json.ordenar
+
+
+    } else {
+        var query =
+            'SELECT l.idlista ' +
+            'FROM lista l ' +
+            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+            'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
+            'WHERE '+json.tipo+' LIKE ? AND p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
+            'GROUP BY l.idlista,'+json.ordenar+' ORDER BY '+json.ordenar+' '+
+            'LIMIT ? OFFSET ? '
+
+        var query2 =
+            'SELECT COUNT(DISTINCT l.idlista) as total ' +
+            'FROM lista l ' +
+            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+            'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
+            'WHERE '+json.tipo+' LIKE ? AND p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
+            'ORDER BY '+json.ordenar
     }
 
+    console.log("fallo en la query", query2)
 
 
-    mysql.query(query,valuesBuscar,function(err,results){
+    mysql.query(query,valuesBuscar,function(err,resultado1){
         if(err) {console.error(err);return callback(100010,null)}
-        callback(null,results);
+
+        console.log("RESULTADO DE LA PRIMERA BUSCADOR", resultado1)
+
+        mysql.query(query2,json.busqueda,function(err,results){
+            if(err) {console.error(err);return callback(100010,null)}
+            console.log("El total", results)
+
+            var resultadoTotal = {idlista:  _.map(resultado1,'idlista'), total: results[0].total}
+
+            console.log("RESULTADO DE LA QUERY BUSCADOR", resultadoTotal)
+
+            callback(null,resultadoTotal);
+        })
+
+
     })
 }
 
@@ -362,7 +388,7 @@ exports.buscador = function(json, callback){
 
 exports.getByIdlist = function(json, callback){
     console.log("na mas entrar", json)
-   var valuesIds = _.isArray(json) ? json : [json]
+    var valuesIds = _.isArray(json) ? json : [json]
 
     var interrogaciones = ""
     var coma = ","
@@ -373,15 +399,15 @@ exports.getByIdlist = function(json, callback){
     }
     console.log("los idsss", valuesIds)
     var query =
-        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, l.reproducciones, l.fecha, u.nombre as nombreUsuario, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, l.reproducciones, DATE_FORMAT(l.fecha,"%d/%m/%Y") as fecha, u.nombre as nombreUsuario, c.artista, c.cancion, e.URL, e.thumbnail, e.idenlace, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
         'FROM lista l ' +
         'INNER JOIN usuario u ON l.usuario_id = u.id ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
         'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-        'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
+        'LEFT JOIN favorito f ON l.idlista = f.lista_idlista AND f.deleted <> 1 ' +
         'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
         'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-         'WHERE l.idlista in ('+interrogaciones+') AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
+        'WHERE l.idlista in ('+interrogaciones+') AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
         'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
         'ORDER BY l.fecha DESC'
 
@@ -417,6 +443,9 @@ exports.favoritos = function(values, callback){
 
     mysql.query(query,values1,function(err,resultado1){
         if(err) {console.error(err);return callback(100010,null)}
+
+        console.log("resultado de la primera buscador", resultado1)
+
         var query = 'select COUNT(DISTINCT idlista) as total ' +
             'from lista l '+
             'inner join contiene c on l.idlista = c.lista_idlista ' +
@@ -430,6 +459,8 @@ exports.favoritos = function(values, callback){
 
 
             var resultadoTotal = {idlista:  _.map(resultado1,'idlista'), total: results[0].total}
+
+
 
             callback(null,resultadoTotal)
 
@@ -447,13 +478,16 @@ exports.recomendaciones = function(id, callback){
     var query =
         'SELECT  c.lista_idlista, c.artista ' +
         'FROM contiene c ' +
+        'JOIN lista l on c.lista_idlista = l.idlista ' +
         'JOIN pertenece p ON c.lista_idlista = p.lista_idlista and p.lista_usuario_id != ? ' +
         'JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta and et.idetiqueta IN (SELECT etiqueta_idetiqueta from pertenece where lista_usuario_id = ? ) ' +
-        'WHERE c.artista not in (SELECT artista from contiene where lista_usuario_id = ? ) and c.lista_idlista not in (select lista_idlista from favorito where usuario_id = ? ) ' +
+        'WHERE c.artista not in (SELECT artista from contiene where lista_usuario_id = ? ) and c.lista_idlista not in (select lista_idlista from favorito where usuario_id = ? ) and l.deleted <> 1 ' +
         'group by lista_idlista, c.artista;'
     var values = [id, id, id, id]
     mysql.query(query,values,function(err,results){
         if(err) {console.error(err);return callback(100010,null)}
+
+
         callback(null,results);
     })
 }
@@ -509,6 +543,22 @@ exports.eliminar = function(id, callback){
     var values = [id]
     var query =
         'UPDATE lista SET deleted = 1 WHERE idlista = ?'
+
+    mysql.query(query,values,function(err,results){
+        if(err) {console.error(err);return callback(100012,null)}
+        callback(null,results);
+    })
+}
+
+/**
+ * query para editar informacion de un usuario
+ * @param id
+ * @param callback
+ */
+exports.editarInfo = function(json, callback){
+    var values = [json.nombre, json.password, json.email, json.idUser]
+    var query =
+        'UPDATE usuario SET nombre = ? , password = ?, email = ? where id = ?'
 
     mysql.query(query,values,function(err,results){
         if(err) {console.error(err);return callback(100012,null)}
@@ -617,8 +667,9 @@ exports.newLists = function(valuesPagina, callback){
  */
 exports.populares = function(callback){
     var query =
-        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, u.nombre as nombreusuario, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
         'FROM lista l ' +
+        'INNER JOIN usuario u ON l.usuario_id = u.id ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
         'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
         'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
@@ -648,6 +699,24 @@ exports.getTags = function(callback){
         callback(null,results);
     })
 }
+
+/**
+ * Query para la nube de tags
+ * @param callback
+ */
+exports.tagCloud = function(callback){
+    var query =
+        'select et.nombre as word, et.idetiqueta as id, count(p.etiqueta_idetiqueta) as size '+
+        'from pertenece p '+
+        'inner join etiqueta et on et.idetiqueta = p.etiqueta_idetiqueta '+
+        'group by et.nombre, et.idetiqueta'
+
+    mysql.query(query,function(err,results){
+        if(err) {console.error(err);return callback(100011,null)}
+        callback(null,results);
+    })
+}
+
 
 /**
  * Query para la lista mas escuchada de la semana

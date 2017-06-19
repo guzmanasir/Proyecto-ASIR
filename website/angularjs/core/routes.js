@@ -23,7 +23,8 @@
                 url: "/",
                 controller: 'loginCtrl',
                 controllerAs: 'lc',
-                templateUrl: '/login'
+                templateUrl: '/login',
+                params: {redireccion : true}
             })
 
             .state('home.registro',{
@@ -41,6 +42,16 @@
                 resolve : {
                     tags: ['$http',function($http){
                         return $http.get('/users/getTags')
+                            .then(function(response){
+                                console.log("query tags")
+                                return response;
+                            },function(response) {
+                                console.log("error query tags")
+                                return response;
+                            })
+                    }],
+                    tagCloud: ['$http',function($http){
+                        return $http.get('/users/tagCloud')
                             .then(function(response){
                                 console.log("query tags")
                                 return response;
@@ -98,6 +109,14 @@
                         return $http.get('/users/newLists/'+$stateParams.pagina)
                             .then(function(response){
                                // console.log("er param", $state)
+                                return response;
+                            },function(response) {
+                                return response;
+                            })
+                    }],
+                    tags: ['$http',function($http){
+                        return $http.get('/users/getTags')
+                            .then(function(response){
                                 return response;
                             },function(response) {
                                 return response;
@@ -160,7 +179,7 @@
                 params: {requireLogin : true},
                 resolve : {
                     recomendadas: ['$http',function($http){
-                        return $http.get('/users/recomendaciones')
+                        return $http.get('/users/recomendacionesQuery')
                             .then(function(response){
                                 return response;
                             },function(response) {
@@ -230,12 +249,22 @@
                 params: {requireLogin : true, resultado: null}
             })
 
+
+
             .state('main.editList',{
                 url: "/perfil/edit",
                 controller: 'editListCtrl',
                 controllerAs: 'elc',
                 templateUrl: '/users/tempEditList',
                 params: {requireLogin : true, lista: null}
+            })
+
+            .state('main.editInfo',{
+                url: "/perfil/editInfo",
+                controller: 'editInfoCtrl',
+                controllerAs: 'eict',
+                templateUrl: '/users/tempEditInfo',
+                params: {requireLogin : true, datos: null}
             })
 
             .state('main.verLista',{

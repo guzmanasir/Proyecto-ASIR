@@ -3,28 +3,27 @@
  */
 
 (function() {
-    function recomendacionesCtrl($http,$auth,$state,$rootScope, recomendadas){
-        console.log("entreo")
+    function recomendacionesCtrl($http,$auth,$state,$rootScope,lodash,  recomendadas){
         var vm = this;
-        vm.recomendadas = recomendadas.data.data;
+        vm.artistas = recomendadas.data.data.artistas;
+        vm.listas = recomendadas.data.data.listas
+        vm.ids = lodash.uniq(lodash.map(vm.artistas, 'lista_idlista')).slice(0,4)
+        //vm.recomendadas = [{artistas: [], listaparaPintar:{}},{}]
+        vm.recomendadas = []
+        lodash.forEach(vm.ids, function(item) {
+            vm.recomendadas.push({artistas: lodash.map(lodash.filter(vm.artistas,{lista_idlista: item}), 'artista'),
+            listas: lodash.filter(vm.listas.listas,{listaid: item})
+            })
+        })
+
         console.log("recomendaciones", vm.recomendadas)
 
-        //     vm.play = function(lista){
-        //         //$rootScope.playlist = lista
-        //         $rootScope.$broadcast('playlist',lista);
-        //
-        //     }
-        //
-        // vm.play = function(lista){
-        //     //$rootScope.playlist = lista
-        //     $rootScope.$broadcast('playlist',lista);
-        // }
 
 
     }
 
 
     angular.module('proyecto')
-        .controller('recomendacionesCtrl',['$http','$auth','$state', '$rootScope','recomendadas', recomendacionesCtrl]);
+        .controller('recomendacionesCtrl',['$http','$auth','$state', '$rootScope','lodash', 'recomendadas', recomendacionesCtrl]);
 
 })();
