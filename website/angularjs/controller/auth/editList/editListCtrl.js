@@ -2,32 +2,94 @@
  * Created by jesus on 30/05/17.
  */
 (function() {
-    function editListCtrl($http,$auth,$state,$rootScope, $stateParams, $mdDialog, lodash){
+    function editListCtrl($http,$auth,$state,$rootScope, $stateParams, $mdDialog, $mdToast, lodash){
         if(lodash.isNull($stateParams.lista)) return $state.go("main.perfil")
-        console.log("entreo aqui")
+        //console.log("entreo aqui")
         var vm = this;
         vm.editList = $stateParams.lista
         vm.firstPosition = vm.editList.info.length
-        console.log("primera posicion", vm.firstPosition)
-        console.log("toda ls lista", $stateParams.lista)
+        //console.log("primera posicion", vm.firstPosition)
+        //console.log("toda ls lista", $stateParams.lista)
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        vm.toastPosition = angular.extend({},last);
+
+        vm.getToastPosition = function() {
+            sanitizePosition();
+
+            return Object.keys(vm.toastPosition)
+                .filter(function(pos) { return vm.toastPosition[pos]; })
+                .join(' ');
+        };
+
+        function sanitizePosition() {
+            var current = vm.toastPosition;
+
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+
+            last = angular.extend({},current);
+        }
+
+        vm.toastEliminarCanciones = function() {
+            var pinTo = vm.getToastPosition();
+            //console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Canciones eliminadas')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+        vm.toastEditarCanciones = function() {
+            var pinTo = vm.getToastPosition();
+            //console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Cancion editada')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+        vm.toastMeterCanciones = function() {
+            var pinTo = vm.getToastPosition();
+            //console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Canciones añadidas')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
 
         vm.eliminar = function(){
             vm.seleccionados = lodash.map(lodash.filter(vm.editList.info,function(o){return o.seleccionado == true}),'idenlace')
             lodash.remove(vm.editList.info, function(currentObject) {
                 return currentObject.seleccionado === true;
             });
-            console.log(vm.seleccionados)
+            //console.log(vm.seleccionados)
 
-            var edit = {idurls: vm.seleccionados, idlista: vm.editList.idlista}
+            var edit = {idurls: vm.seleccionados, idlista: vm.editList.listaid}
 
-            console.log("json", edit)
+            //console.log("json", edit)
 
             $http.post('/users/editList', edit)
                 .then(function(responseOk){
-                    console.log(responseOk)
+                    //console.log(responseOk)
+                    vm.toastEliminarCanciones()
                 },
                 function(responseFail){
-                    console.log(responseFail)
+                    //console.log(responseFail)
                 })
         }
 
@@ -44,13 +106,14 @@
 
                     vmd.answer = function(){
                         vm.name = vmd.nombre;
+
                         $mdDialog.hide();
                     }
 
                     vmd.close = function() {
                         vm.editList.info = vm.editList.info.slice(0,vm.firstPosition)
                         vmd.urls = []
-                        console.log("borrando",vm.firstPosition)
+                        //console.log("borrando",vm.firstPosition)
                         $mdDialog.hide();
                     }
 
@@ -62,7 +125,7 @@
                             artista: obj.snippet.title.split("-")[0],
                             cancion: _.isUndefined(obj.snippet.title.split("-")[1]) ? "unknown" : obj.snippet.title.split("-")[1]
                         })
-                        console.log(vmd.urls)
+                        //console.log(vmd.urls)
                         vm.editList.info.push({
                             thumbnail: obj.snippet.thumbnails.default.url ,
                             url: "https://www.youtube.com/watch?v="+obj.id.videoId,
@@ -75,10 +138,10 @@
 
                         if(index === 0){
                             vmd.page = vmd.pagePrev;
-                            console.log("Vale", vmd.page)
+                            //console.log("Vale", vmd.page)
                         } else {
                             vmd.page = vmd.pageNext;
-                            console.log("Vale2", vmd.page)
+                            //console.log("Vale2", vmd.page)
                         }
 
                         var key = 'AIzaSyBX1ayzZTlapJWNuhSYZRlkSUhU-NlOrCA'
@@ -88,13 +151,13 @@
                             '&videoEmbeddable=true&pageToken='+vmd.page
 
 
-                        console.log("primer then")
+                        //console.log("primer then")
                         $http.get(url).then(function (data) {
 
                             if(!data.data.prevPageToken){
                                 vmd.pageNext = data.data.nextPageToken
                                 vmd.firstPage = true
-                                console.log("si no prev(primera)" )
+                                //console.log("si no prev(primera)" )
                             } else {
                                 //vmd.page = (index == 0) ? data.data.prevPageToken : data.data.nextPageToken;
                                 if(!data.data.prevPageToken){
@@ -105,8 +168,8 @@
                                     vmd.pagePrev = data.data.prevPageToken
 
                                 }
-                                console.log("si hay prev")
-                                console.log(vmd.page)
+                                //console.log("si hay prev")
+                                //console.log(vmd.page)
                                 vmd.firstPage = false
                             }
                             vmd.videoIds = data.data.items
@@ -131,19 +194,20 @@
 
                     var dataList = {
                         urlsServer: vm.urls,
-                        idlista: vm.editList.idlista
+                        idlista: vm.editList.listaid
                     }
                     if(dataList.urlsServer.length >=1) {
                         $http.post('/users/addSongs', dataList)
                             .then(function(responseOk){
-                                console.log(responseOk)
+                                //console.log(responseOk)
+                                vm.toastMeterCanciones()
                             },function(responseFail){
                                 console.error(responseFail);
                             })
                     }
 
                 }, function() {
-                    console.log("asdal");
+                    //console.log("asdal");
                 });
         }
 
@@ -153,7 +217,10 @@
                     var vme = this;
                     vme.nuevoArtista = ""
                     vme.nuevaCancion = ""
-                    console.log("er index", index)
+                    //console.log("er index", index)
+                    //console.log("los ids", idenlace, idlista)
+                    vme.artista = vm.editList.info[index].artista
+                    vme.cancion = vm.editList.info[index].cancion
                     vme.save = function() {
                         vm.nuevoArtista = vme.artista
                         vm.nuevaCancion = vme.cancion
@@ -181,6 +248,7 @@
                 autoWrap: false,
                 bindToController: true
             })
+
                 .then(function(){
                     var dataEditSong = {
                         nuevoArtista : vm.nuevoArtista,
@@ -188,12 +256,13 @@
                         idenlace : vm.idenlace,
                         idlista : vm.idlista
                     }
-                    console.log("datos pa edita", dataEditSong)
+                    //console.log("datos pa edita", dataEditSong)
                     $http.post('/users/songEdit', dataEditSong)
                         .then(function(responseOk){
-                            console.log(responseOk)
+                            //console.log(responseOk)
+                            vm.toastEditarCanciones()
                         }, function(responseFail){
-                            console.log(responseFail)
+                            //console.log(responseFail)
                         })
                 })
         }
@@ -203,6 +272,6 @@
     }
 
     angular.module('proyecto')
-        .controller('editListCtrl',['$http','$auth','$state', '$rootScope','$stateParams', '$mdDialog', 'lodash', editListCtrl]);
+        .controller('editListCtrl',['$http','$auth','$state', '$rootScope','$stateParams', '$mdDialog','$mdToast', 'lodash', editListCtrl]);
 
 })();

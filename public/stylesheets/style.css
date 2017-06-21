@@ -7,7 +7,7 @@ md-content.columna {
 }
 
 footer {
-  background-color: lightblue;
+  background-color: black;
   height: 64px;
 }
 
@@ -41,3 +41,117 @@ span.fav {
 div.logo {
   background-color: darkred;
 }
+
+/*.tangcloud {*/
+  /*height: 300px;*/
+  /*width: 200px;*/
+/*}*/
+
+
+.tangcloud span {
+  line-height: 100%;
+}
+
+.tangcloud-item-1 {
+  font-size: 10px;
+  color: #080808;
+  position: relative !important;
+}
+
+.tangcloud-item-2 {
+  font-size: 14px;
+  color: #101010;
+  position: relative !important;
+}
+
+.tangcloud-item-3 {
+  font-size: 18px;
+  color: #181818;
+  position: relative !important;
+}
+
+.tangcloud-item-4 {
+  font-size: 22px;
+  color: #303030;
+  position: relative !important;
+}
+
+.tangcloud-item-5 {
+  font-size: 26px;
+  color: #282828;
+  position: relative !important;
+}
+
+.tangcloud-item-6 {
+  font-size: 30px;
+  color: #202020;
+  position: relative !important;
+}
+
+.tangcloud-item-7 {
+  font-size: 34px;
+  color: #383838;
+  position: relative !important;
+}
+
+.tangcloud-item-8 {
+  font-size: 38px;
+  color: #404040;
+  position: relative !important;
+}
+
+.tangcloud-item-9 {
+  font-size: 42px;
+  color: #484848;
+  position: relative !important;
+}
+
+.tangcloud-item-10 {
+  font-size: 47px;
+  color: #000000;
+  position: relative !important;
+}
+
+.tangcloud-item-hidden {
+  visibility: hidden;
+}
+
+.md-button {
+  text-transform: none !important;
+}
+
+.truncatedemoBasicUsage #fake-app {
+  position: relative;
+  height: 400px;
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #333; }
+.truncatedemoBasicUsage #fake-app .sidebar {
+  position: absolute;
+  width: 50px;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #333; }
+.truncatedemoBasicUsage #fake-app .sidebar md-icon {
+  display: block;
+  color: #ddd;
+  margin-top: 15px; }
+.truncatedemoBasicUsage #fake-app .app-body {
+  position: absolute;
+  left: 50px;
+  right: 100px;
+  top: 0;
+  bottom: 0;
+  background-color: white;
+  padding: 10px;
+  overflow: auto; }
+.truncatedemoBasicUsage #fake-app .rightbar {
+  position: absolute;
+  width: 100px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #ddd;
+  padding: 10px; }

@@ -1,0 +1,7 @@
+instala mysql-server
+
+con usuario root y contraseña toor - o cambia las credenciales que encontraras en el archivo private/database/connection.js
+
+inserta la base de datos "mydb.sql" que encontraras en este directorio
+
+Ejecuta el script run.sh que encontraras en este directorio

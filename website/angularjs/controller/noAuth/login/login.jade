@@ -2,12 +2,16 @@
    Created by guzman on 4/02/17.
 
 md-content(layout-gt-sm='row', layout-padding='')
-    div
+    form( ng-cloak, name="miForm")
         md-input-container
             label Username
-            input(ng-model=' lc.usernameModel', required='')
+            input(ng-model=' lc.usernameModel', name="nombre" required)
+            div(ng-messages="miForm.nombre.$error")
+                div(ng-message="required") Campo requerido
         md-input-container
             label Password
-            input(ng-model='lc.passwordModel', type='password')
-        md-button(ng-click="lc.login()" ) Login
-        p {{ lc.status }}
+            input(ng-model='lc.passwordModel', name="password" type='password' required)
+            div(ng-messages="miForm.password.$error")
+                div(ng-message="required") Campo requerido
+        div
+            md-button(ng-click="lc.login()" type="submit") Login

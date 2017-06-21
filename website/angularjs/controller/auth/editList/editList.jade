@@ -1,4 +1,5 @@
-p editar {{ elc.editList.nombre }}
+p(style="font-size: 20px; font-weight: bold; text-align: center; padding-top: 2%") Editar {{ elc.editList.nombre }}
+p(style="text-align: center; font-weight: bold") Seleccione canciones para liminarle, pulse editar para editar su nombre o el boton añadir para insertar mas canciones
 
 md-list
     md-list-item(ng-repeat="info in elc.editList.info")
@@ -8,6 +9,6 @@ md-list
             span {{ info.cancion }}
 
         md-checkbox.md-secondary(aria-label="row" ng-model="elc.editList.info[$index].seleccionado")
-        md-button(ng-click="elc.songEdit(info.idenlace, elc.editList.idlista, $index)") Editar
+        md-button(ng-click="elc.songEdit(info.idenlace, elc.editList.listaid, $index)") Editar
     md-button(ng-click = 'elc.eliminar()') Elminiar seleccionados
     md-button(ng-click = 'elc.addNew()') Añadir

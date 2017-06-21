@@ -1,90 +1,97 @@
+
 div(layout="row")
     div(flex=45)
     div(flex=35)
-        div(ng-if="!mlc.abrirInput")
-            p(style="font-size: 20px;") Perfil de {{ mlc.listas[0].nombreUsuario}}
-            md-button(ng-click="mlc.abrir()") Editar datos
-        div(ng-if="mlc.abrirInput")
-            form
-                md-input-container
-                    label Nombre
-                    input(ng-model="mlc.infoUsuario.nombre" ng-change="mlc.cambia('nombre')")
-                md-input-container
-                    label Email
-                    input(ng-model="mlc.infoUsuario.email" ng-change="mlc.cambia('email')")
-                md-input-container
-                    label Contraseña
-                    input(type="password" ng-model="mlc.infoUsuario.password" ng-change="mlc.cambia('password')")
-                md-button(ng-click="mlc.editarInfo()") Guardar
+        p(style="font-size: 20px; padding-left:5%; padding-top: 10%") Mi Perfil
+        md-button(md-ripple-size="full" ng-click="mlc.abrir()" ) Editar Mis Datos
+
 
     div(flex=20)
 
-md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
-    md-tab(label="Mis listas" )
+md-tabs(md-dynamic-height md-border-bottom md-center-tabs )
+    md-tab(label="Mis listas" md-active="mlc.tab1")
+        div(flex=30)
+        md-list(style="padding-left:20%" flex=80)
 
-        md-list(style="padding-left:10%" flex)
+            md-list-item(ng-repeat="lista in mlc.listas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row" layout-align="center center")
 
-            md-list-item(ng-repeat="lista in mlc.listas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
-                md-divider
-                div(flex=15 layout="row")
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
-                div(layout="column" style="padding-left: 1%" flex)
-                    div
-                        span.md-subhead(ng-click="mlc.eliminar(lista.idlista)") {{ lista.nombre }}
-                    div(style="padding-bottom:2px")
-                        span Generos:
-                        span(ng-repeat="tag in lista.tags")
-                            span {{ tag }}
-                    div(layout="row")
-                        span Subido en: {{ lista.fecha }}
-                    div.btn-group.btn-group-xs
-                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                        i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.play(lista.info); mlc.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
-                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+                div(layout="column" flex=70 )
+                    div(style="padding-bottom:2%").md-headline {{ lista.nombre }}
 
+
+                    div(layout="row" )
+                        div(flex=25 layout="row")
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                        div(layout="column" style="padding-top: 1%; padding-left:1%" flex layout-aling="none center")
+                            div(style="font-weight: bold") Etiquetas:
+                            div(style="padding-bottom:1px")
+                                md-chips(ng-model="lista.tags" readonly="true")
+
+                            div(layout="row" style="padding-top:4%")
+                                span Subido en: {{ lista.fecha }}
+                            div(layout="row" style="padding-top:1%")
+                                span.btn-group.btn-group-xs
+                                    //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.play(lista.info); mlc.reproduccion(lista.listaid)" style="font-size:15px") play_arrow
+                                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
 
                 span(flex)
                 div
-                    md-button(ng-click="mlc.edit(lista)") EDITAR
+                    md-button(ng-click="mlc.edit(lista)") Editar Lista
                     div
-                        md-button(ng-click="mlc.eliminar(lista.idlista)") Eliminar
+                        md-button(ng-click="mlc.showConfirm($event, lista.listaid )") Eliminar Lista
 
                 md-divider
-    md-tab(label="Favoritos" )
-
-        md-list(style="padding-left:10%" flex)
+            ul(ng-show="mlc.totalFavoritos>9" uib-pagination, total-items='mlc.totalListas', items-per-page='9' ng-model='mlc.paginaActual', ng-change='mlc.siguiente(1,mlc.paginaActual)')
+    md-tab(label="Mis Favoritos" md-active="mlc.tab2")
+        md-list(style="padding-left:20%" flex=80)
 
             md-list-item(ng-repeat="lista in mlc.favoritos track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
-                md-divider
-                div(flex=15 layout="row")
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                    div(layout="column" flex=50)
-                        img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                        img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
-                div(layout="column" style="padding-left: 1%" flex)
-                    div
-                        span.md-subhead(ng-click="mlc.eliminar(lista.idlista)") {{ lista.nombre }}
-                    div(style="padding-bottom:2px")
-                        span Generos:
-                        span(ng-repeat="tag in lista.tags")
-                            span {{ tag }}
-                    div(layout="row")
-                        span Subido en: {{ lista.fecha }}
-                    div.btn-group.btn-group-xs
-                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                        i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.play(lista.info); mlc.reproduccion(lista.idlista)" style="font-size:15px") play_arrow
-                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+
+                div(layout="column" flex=70 )
+                    div(style="padding-bottom:2%" ng-click="mlc.verLista(lista)").md-headline {{ lista.nombre }} Por
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}')  {{ lista.nombreUsuario }}
+
+                    div(layout="row"  ng-click="mlc.verLista(lista)" style="cursor:pointer")
+                        div(flex=25 layout="row")
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                        div(layout="column" style="padding-top: 1%; padding-left:1%" flex layout-aling="none center")
+                            div(style="font-weight: bold") Etiquetas:
+                            div(style="padding-bottom:1px")
+                                md-chips(ng-model="lista.tags" readonly="true")
+
+                            div(layout="row" style="padding-top:4%")
+                                span Subido en: {{ lista.fecha }}
+                            div(layout="row" style="padding-top:1%")
+                                span.btn-group.btn-group-xs
+                                    //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.play(lista.info); mlc.reproduccion(lista.listaid)" style="font-size:15px") play_arrow
+                                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+
+                                span(ng-if="lista.isfavorited == false")
+                                    //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.favorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                span(ng-if="lista.isfavorited == true")
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="mlc.nofavorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
 
-
-                md-divider
+            ul(ng-show="mlc.totalFavoritos>9" uib-pagination, total-items='mlc.totalFavoritos', items-per-page='9' ng-model='mlc.paginaActual2', ng-change='mlc.siguiente(2,mlc.paginaActual2)' )
 
 
 

@@ -2,15 +2,24 @@
    Created by guzman on 4/02/17.
 
 md-content(layout-gt-sm='row', layout-padding='')
-    div
+    form(name="registerForm")
         md-input-container
             label Username
-            input(ng-model=' rc.usernameModel', ng-required='true')
+            input(ng-model=' rc.usernameModel' required name="nombre")
+            div(ng-messages="registerForm.nombre.$error")
+                div(ng-message="required") Campo requerido
         md-input-container
             label Password
-            input(ng-model='rc.passwordModel', type='password')
-        md-input-container
-            label Email
-            input(ng-model='rc.emailModel', ng-required='true')
-        md-button(ng-click="rc.registro()") Registro
-        p {{ rc.status }}
+            input(ng-model='rc.passwordModel', type='password' required ng-minlength="8" name="password")
+            div(ng-messages="registerForm.password.$error")
+                div(ng-message="required") Campo requerido
+                div(ng-message="minlength") La contraseña debe tener 8 caracteres como mínimo
+        div
+            md-input-container
+                label Email
+                input(ng-model='rc.emailModel' required type="email" name="email" ng-pattern="/^.+@.+\..+$/")
+                div(ng-messages="registerForm.email.$error")
+                    div(ng-message="required") Campo requerido
+                    div(ng-message="pattern") Introduzca una direccion de correo
+        div
+            md-button(ng-click="rc.registro()") Registro

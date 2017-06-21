@@ -9,26 +9,27 @@ div(layout="column" layout-fill)
         div(flex=15)
 
             md-content(layout='column' class='columna' flex="auto")
-                div(flex=20 class="logo") LOGO
-                span(flex style="background-color: gray") NUBE DE TAGS O ALGO
-
+                div(flex=20 class="logo")
+                    img(ng-src="/img/logo.jpg" height="100%" width="100%")
+                span(flex style="background-color: white")
+                //    tang-cloud(words="fc.words" flex)
+                    //p ALGO
+                div(ng-if="!fc.youtube")
+                    img(ng-src="/img/cdDefault.png" height="100%" width="100%")
                 div(ng-show="fc.youtube")
-                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'50px'" player="player")
+                    youtube-video(video-url="fc.idVideo" player-vars="fc.playerVars" player-width="'100%'" player-height="'235px'" player="player")
         div(flex=85)
             div(ng-show="!fc.abrirBusqueda")
-                md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
-                    md-nav-item(md-nav-sref="main.home")
+                md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="fc.actualNavItem")
+                    md-nav-item(md-nav-sref="main.home" name="main.home" ui-sref-opts="{reload: true}")
                         i.material-icons.md-48 home
-                    md-nav-item(md-nav-sref="main.nuevos({pagina: 1})") Nuevas
-                    md-nav-item(md-nav-sref="main.populares") Populares
-                    md-nav-item(md-nav-sref="main.recomendaciones") Recomendaciones
-                    md-nav-item(md-nav-sref="main.favoritos") Mis Favoritos
+                    md-nav-item(md-nav-sref="main.nuevos({pagina: 1})" name="main.nuevos" ui-sref-opts="{reload: false}") Directorio
+                    md-nav-item(md-nav-sref="main.recomendaciones" name="main.recomendaciones") Recomendaciones
                     div(flex)
                     //md-nav-item(md-nav-sref="#")
 
                     i.material-icons.md-48(ng-click="fc.showAdvanced()" class="nav") playlist_add
-                    i.material-icons.md-48(ng-click="fc.abrirBuscar()" class="nav") search
-                    md-nav-item(md-nav-sref="main.perfil") Perfil
+                    md-nav-item(md-nav-sref="main.perfil" name="main.perfil") Perfil
                     md-nav-item(md-nav-sref="main.logout") Cerrar sesion
             div(ng-show="fc.abrirBusqueda")
                 md-nav-bar
@@ -40,9 +41,9 @@ div(layout="column" layout-fill)
                             i.material-icons(type="submit" ng-click="fc.buscar()" class="nav" flex='5') search
                         i.material-icons(ng-click="fc.cerrarBuscar()" class="nav" flex='5') clear
                     md-select(ng-model='fc.type' layout-align="center start" flex='10')
-                        md-option(value='lista' selected) Listas
-                        md-option(value='artista') Artista
-                        md-option(value='cancion') Cancion
+                        md-option(value='l.nombre' selected) Listas
+                        md-option(value='c.artista') Artista
+                        md-option(value='c.cancion') Cancion
 
             md-content(layout='column' class='frame')
                 main
@@ -50,16 +51,16 @@ div(layout="column" layout-fill)
                 span(flex)
                 footer
                     md-button(ng-click="player.playVideo()")
-                        i.material-icons() play_arrow
+                        i.material-icons(style="color: white") play_arrow
                     md-button(ng-click="player.pauseVideo()")
-                        i.material-icons() pause
+                        i.material-icons(style="color: white") pause
                     md-button(ng-click="player.previousVideo()")
-                        i.material-icons() skip_previous
+                        i.material-icons(style="color: white") skip_previous
                     md-button(ng-click="player.nextVideo()")
-                        i.material-icons() skip_next
+                        i.material-icons(style="color: white") skip_next
                     md-button(ng-click="player.stopVideo()")
-                        i.material-icons() stop
-                    md-button {{ fc.reproduciendo }}
+                        i.material-icons(style="color: white") stop
+                    span(style="color: white") {{ fc.reproduciendo }}
 
 
 

@@ -1,10 +1,30 @@
-p {{ vlc.verLista.nombre }}
+div(layout="row")
+    div(flex=25)
+    div(flex=40 style="background-color: white")
 
-p Por {{ vlc.verLista.nombreUsuario}}
+        div(layout="row" layout-align="center center" style="padding-top:3%")
+            p(text-align="center" style="font-size: 20px; font-weight: bold") {{ vlc.verLista.nombre }}
+        div(layout="row" layout-align="center center" style="font-size: 20px; font-weight: bold")
+            a(href='/perfilUsuario?idUser={{vlc.verLista.usuarioid}}')  {{ vlc.verLista.nombreUsuario }}
+        div(layout="row" layout-align="center center" style="padding-top:3%; padding-bottom:3%")
+            span.btn-group.btn-group-xs
+                i.material-icons.btn.btn-default.btn-xs(ng-click="vlc.play(vlc.verLista.info); vlc.reproduccion(vlc.verLista.listaid)" style="font-size:15px") play_arrow
+                label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") Reproducir
+            span(ng-if="vlc.verLista.usuarioid != vlc.verLista.miusuarioid")
+                span.btn-group.btn-group-xs(ng-if="vlc.verLista.isfavorited == false")
+                    i.material-icons.btn.btn-default.btn-xs(ng-click="vlc.favorito(vlc.verLista.listaid)" style="font-size:15px") favorite_border
+                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'" ng-click="vlc.favorito(vlc.verLista.listaid)" style="font-size:15px") Favorito
+                span(ng-if="vlc.verLista.isfavorited == true")
+                    span.btn-group.btn-group-xs
+                        i.material-icons.btn.btn-default.btn-xs(ng-click="vlc.nofavorito(vlc.verLista.listaid)" style="font-size:15px") favorite
+                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'" ng-click="vlc.nofavorito(vlc.verLista.listaid)" style="font-size:15px") No Favorito
 
-md-list
-    md-list-item(ng-repeat="info in vlc.verLista.info")
-        img.md-avatar(ng-src='{{info.thumbnail}}')
-        div.md-list-item.text(layout='column')
-            span {{ info.artista }}
-            span {{ info.cancion }}
+        div(layout="row" style="font-size: 20px; font-weight: bold; padding-left: 10%")
+            p Canciones:
+        div(layout="row" layout-align="center center")
+            md-list
+                md-list-item(ng-repeat="info in vlc.verLista.info")
+                    img.md-avatar(ng-src='{{info.thumbnail}}')
+                    div.md-list-item.text(layout='column')
+                        span {{ info.artista }}
+                        span {{ info.cancion }}

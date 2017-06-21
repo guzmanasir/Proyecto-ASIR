@@ -18,7 +18,7 @@ exports.middlewareToken = function(req, res, next){
         if ( payload.exp <=  moment().unix()) {
             return error.responseForbiden(res, 10003);
         }
-        console.log("hay token ",payload.id)
+        //console.log("hay token ",payload.id)
         req.idUser = payload.id;
         next()
 

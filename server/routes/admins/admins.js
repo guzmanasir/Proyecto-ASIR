@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 
 
 router.get('/dashboard', function(req, res, next) {
-    console.log("entro en dashboard");
+    //console.log("entro en dashboard");
     res.render('adminDashboard');
 });
 

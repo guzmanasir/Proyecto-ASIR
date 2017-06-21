@@ -1,91 +1,100 @@
 
-div(layout="row")
+div(layout="row" style="padding-top: 2%")
     div(flex=70)
         div(layout="row" layout-align="center")
-            p Últimas listas
+            p(style="font-size: 20px; font-height: bold") Últimas listas
         section.cards
             div(layout='row', layout-align='center stretch' layout-wrap )
-                md-card(ng-repeat="lista in hct.nuevosHome track by $index" flex=20 style="height:70%" )
+                md-card(ng-repeat="lista in hct.nuevosHome track by $index" flex=20 )
+                    div(ng-click="hct.verLista(lista)" style="cursor:pointer" flex)
+                        div(layout="row")
 
-                    div(layout= "row")
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                    div(layout= "row")
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
-                    md-card-title(ng-click="hct.verLista(lista)" style="cursor:pointer")
-                        md-card-title-text
-                            h2.md-headline(md-truncate) {{ lista.nombre }}
+                            div(layout= "column" flex=50)
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout= "column" flex=50)
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                    div(layout="column")
+                        div(class="app-body" layout="column")
+                            div(flex=5)
+                                p(style="padding-top: 1%; overflow: hidden; text-overflow: ellipsis; font-weight: bold") {{ lista.nombre }}
 
-                    //md-card-actions(layout='row', layout-align='start center')
-                    //    md-card-icon-actions
-                    p Por: {{ lista.nombreUsuario }}
-                    div(ng-repeat="tag in lista.tags")
-                        span Genero: {{ tag }}
+                        //md-card-actions(layout='row', layout-align='start center')
+                        //    md-card-icon-actions
 
-                    div
-                        md-button(ng-click="nct.play(lista.info); nct.reproduccion(lista.listaid)")
-                            i.material-icons() play_arrow
-                            span {{ lista.numreproducciones }}
-                            span(flex=100)
-                        span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
-                            span(ng-if="lista.isfavorited == false")
-                                //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                                md-whiteframe(class="caja")
-                                    i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
-                                    span {{ lista.numfavoritos }}
-                            span(ng-if="lista.isfavorited == true")
-                                //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
-                                md-button(ng-click="nct.nofavorito(lista.listaid)")
-                                    i.material-icons favorite
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}') {{ lista.nombreUsuario }}
+                        p Genero: {{ lista.tags[0] }}
+                        p Fecha: {{ lista.fecha }}
+                        span(flex=100)
+
+                        div(layout="row" style="padding-top:1%" layout-align="start end")
+                            span.btn-group.btn-group-xs
+                                //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                i.material-icons.btn.btn-default.btn-xs(ng-click="hct.play(lista.info); hct.reproduccion(lista.listaid, 1); $event.stopPropagation();" style="font-size:15px") play_arrow
+                                label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+
+                            span(ng-if="lista.usuarioid != lista.miusuarioid")
+                                span(ng-if="lista.isfavorited == false")
+                                    //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="hct.favorito(lista.listaid,1); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                span(ng-if="lista.isfavorited == true")
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="hct.nofavorito(lista.listaid, 1); $event.stopPropagation()" style="font-size:15px") favorite
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+
+
         div(layout="row" layout-align="center")
-            p Listas populares
+            p(style="font-size: 20px; font-height: bold") Listas populares
         section.cards
             div(layout='row', layout-align='center stretch' layout-wrap)
                 md-card(ng-repeat="lista in hct.popularesHome track by $index" flex=20 )
+                    div(ng-click="hct.verLista(lista)" style="cursor:pointer")
+                        div(layout="row")
+                            div(layout= "column" flex=50)
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout= "column" flex=50)
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                        p(style="padding-top: 1%; font-weight: bold") {{ lista.nombre }}
 
-                    div(layout= "row")
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-                    div(layout= "row")
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                        img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}') {{ lista.nombreUsuario }}
+                        p Genero: {{ lista.tags[0] }}
+                        p Fecha: {{ lista.fecha }}
+                        span(flex)
+                        div(layout="row" style="padding-top:1%")
+                            span.btn-group.btn-group-xs
+                                //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                i.material-icons.btn.btn-default.btn-xs(ng-click="hct.play(lista.info); hct.reproduccion(lista.listaid, 2); $event.stopPropagation();" style="font-size:15px") play_arrow
+                                label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
 
-                    md-truncate {{ lista.nombre }}
+                            span(ng-if="lista.usuarioid != lista.miusuarioid")
+                                span(ng-if="lista.isfavorited == false")
+                                    //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="hct.favorito(lista.listaid, 2); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                span(ng-if="lista.isfavorited == true")
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="hct.nofavorito(lista.listaid, 2); $event.stopPropagation()" style="font-size:15px") favorite
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
-                    //md-card-actions(layout='row', layout-align='start center')
-                    //    md-card-icon-actions
-                    p Por: {{ lista.nombreUsuario }}
-                    div(ng-repeat="tag in lista.tags")
-                        span Genero: {{ tag }}
-
-                    div
-                        md-button(ng-click="nct.play(lista.info); nct.reproduccion(lista.listaid)")
-                            i.material-icons() play_arrow
-                            span {{ lista.numreproducciones }}
-                            span(flex=100)
-                        span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
-                            span(ng-if="lista.isfavorited == false")
-                                //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                                md-whiteframe(class="caja")
-                                    i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
-                                    span {{ lista.numfavoritos }}
-                            span(ng-if="lista.isfavorited == true")
-                                //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
-                                md-button(ng-click="nct.nofavorito(lista.listaid)")
-                                    i.material-icons favorite
 
     div(flex=30)
-        md-content(layout="column")
+        md-content(layout="column" style="padding-top: 0%; padding-right: 13%")
             div(flex=40)
             div(layout="row" layout-align="center")
-                p Lista de la semana
+                p(style="font-size: 20px; font-height: bold") Lista de la semana
             div(layout="row" layout-align="center")
                 md-content(layout-xs='column' layout='row')
-                    md-card(flex)
-                        md-card-title(ng-click="nct.verLista(lista)" style="cursor:pointer")
-                            md-card-title-text
-                                span.md-headline(flex md-truncate) {{ hct.masEscuchada[0].nombre }}
+                    md-card(flex ng-click="hct.verLista(hct.masEscuchada[0])" style="cursor:pointer" )
                         div(layout= "row")
                             img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[0].thumbnail}}')
                             img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[1].thumbnail}}')
@@ -95,23 +104,28 @@ div(layout="row")
 
                         //md-card-actions(layout='row', layout-align='start center')
                         //    md-card-icon-actions
-                        p Por: {{ hct.masEscuchada[0].nombreUsuario }}
-                        div(ng-repeat="tag in hct.masEscuchada[0].tags")
-                            span Genero: {{ tag }}
+                        span.md-headline(flex md-truncate) {{ hct.masEscuchada[0].nombre }}
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}') {{ hct.masEscuchada[0].nombreusuario }}
+                        p Genero: {{ hct.masEscuchada[0].tags[0] }}
 
-                        p Nº Favoritos: {{ hct.masEscuchada[0].numfavoritos }}
-                        div
-                            md-button(ng-click="nct.play(lista.info); nct.reproduccion(lista.listaid)")
-                                i.material-icons() play_arrow
-                                span {{ hct.masEscuchada[0].numreproducciones }}
-                                span(flex=100)
-                            span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
-                                span(ng-if="lista.isfavorited == false")
+                        p Fecha: {{ hct.masEscuchada[0].fecha }}
+                        span(flex)
+                        div(layout="row" style="padding-top:1%")
+                            span.btn-group.btn-group-xs
+                                //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                i.material-icons.btn.btn-default.btn-xs(ng-click="hct.play(hct.masEscuchada[0].info); hct.reproduccion(hct.masEscuchada[0].listaid, 3); $event.stopPropagation();" style="font-size:15px") play_arrow
+                                label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ hct.masEscuchada[0].numreproducciones }}
+
+                            span(ng-if="hct.masEscuchada[0].usuarioid != hct.masEscuchada[0].miusuarioid")
+                                span(ng-if="hct.masEscuchada[0].isfavorited == false")
                                     //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                                    md-whiteframe(class="caja")
-                                        i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
-                                        span {{ hct.masEscuchada.numfavoritos }}
-                                span(ng-if="lista.isfavorited == true")
-                                    //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
-                                    md-button(ng-click="nct.nofavorito(lista.listaid)")
-                                        i.material-icons favorite
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="hct.favorito(hct.masEscuchada[0].listaid, 3); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ hct.masEscuchada[0].numfavoritos }}
+                                span(ng-if="hct.masEscuchada[0].isfavorited == true")
+                                    span.btn-group.btn-group-xs
+                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="hct.nofavorito(hct.masEscuchada[0].listaid, 3); $event.stopPropagation()" style="font-size:15px") favorite
+                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ hct.masEscuchada[0].numfavoritos }}
+
