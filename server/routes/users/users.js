@@ -5,7 +5,7 @@ var codigos = require('../../../private/utils/codewrapper');
 var _ = require('lodash')
 var query = require('../mysql/queries');
 var async = require('async')
-
+var Lyric = require('../../../private/classes/lyric')
 router.use(middlewareToken.middlewareToken);
 
 /**
@@ -861,60 +861,24 @@ router.get('/masEscuchada', function(req, res, next) {
 
             codigos.responseOk(res, data)
         })
-        // query.getByIdlist(json, function (err, resultados) {
-        //     if (err) return codigos.responseFail(res, err);
-        //     var listas = {
-        //         listas: []
-        //     }
-        //     var index = 0
-        //     var idListas = _.map(_.uniqBy(resultados, 'idlista'), 'idlista')
-        //
-        //     _.forEach(idListas, function (item) {
-        //         listas.listas.push({
-        //                 nombre: _.uniq(_.map(_.filter(resultados, function (o) {
-        //                     return o.idlista == item
-        //                 }), 'listanombre'))[0],
-        //                 idlista: item,
-        //                 reproducciones: _.uniq(_.map(_.filter(resultados, function (o) {
-        //             return o.idlista == item
-        //         }), 'reproducciones'))[0],
-        //                 numfavoritos: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
-        //                 fecha: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'fecha'))[0] ,
-        //                 usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
-        //                 nombreusuario: _.uniq(_.map(_.filter(resultados, function (o) {
-        //                     return o.idlista == item
-        //                 }), 'nombreUsuario'))[0],
-        //                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
-        //                 info: [],
-        //                 tags: [_.uniq(_.map(_.filter(resultados, function (o) {
-        //                     return o.idlista == item
-        //                 }), 'nombre'))]
-        //             }
-        //         )
-        //         ////console.log("antes de url")
-        //
-        //         var urls = _.uniqBy(_.filter(resultados, function (o) {
-        //             return o.idlista == item
-        //         }), 'URL')
-        //         _.forEach(urls, function (item2) {
-        //             listas.listas[index].info.push({
-        //                 url: item2.URL,
-        //                 artista: item2.artista,
-        //                 cancion: item2.cancion,
-        //                 thumbnail: item2.thumbnail,
-        //                 idenlace: item2.idenlace
-        //             })
-        //         })
-        //         index++
-        //     })
-        //
-        //     //console.log("los resultaos la query", listas)
-        //     codigos.responseOk(res, listas)
-        // })
+
     })
 });
 
+router.get('/lyrics', function(req, res, next) {
+    if(!req.query.artista || !req.query.cancion)
+        return codigos.responseFail(res,10013)
 
+    console.log("sacando letra")
+    var lyric = new Lyric(req.query.artista,req.query.cancion)
+    lyric.getBody(function (err, resultado) {
+        if(err) return codigos.responseFail(res, err)
+
+        codigos.responseOk(res, resultado)
+
+    })
+
+})
 
 
 

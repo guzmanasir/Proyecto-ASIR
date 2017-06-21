@@ -11,7 +11,9 @@ div(layout="column" layout-fill)
             md-content(layout='column' class='columna' flex="auto")
                 div(flex=20 class="logo")
                     img(ng-src="/img/logo.jpg" height="100%" width="100%")
-                span(flex style="background-color: white")
+                span(flex style="background-color: white; overflow-y: auto; overflow-x: auto")
+                    p(ng-show="fc.reproduciendo" style="font-size: 20px; font-width: bold; text-align: center") Letra de {{ fc.reproduciendo }}
+                    p(style="white-space: pre-wrap; text-align: center") {{ fc.letra }}
                 //    tang-cloud(words="fc.words" flex)
                     //p ALGO
                 div(ng-if="!fc.youtube")
