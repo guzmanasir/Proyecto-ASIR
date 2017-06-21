@@ -13,10 +13,11 @@ angular.module("proyecto", [
     'ngLodash',
     'ngYoutubeEmbed',
     'ui.bootstrap',
-    'tangcloud'
+    'tangcloud',
+    'ngMessages'
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('grey')
         .accentPalette('blue')
-        .backgroundPalette('blue-grey');
+        .backgroundPalette('grey');
 });

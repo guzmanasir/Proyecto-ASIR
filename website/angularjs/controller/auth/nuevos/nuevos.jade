@@ -61,8 +61,8 @@ div(layout="row" ng-if="!nct.vacio")
             md-input-container
                 label Ordenar por
                 md-select(ng-model="nct.ordenar")
-                    md-option(value='l.fecha' selected) Fecha
-                    md-option(value='l.reproducciones') Populares
+                    md-option(value='l.fecha DESC' selected) Fecha
+                    md-option(value='l.reproducciones DESC') Populares
                     md-option(value='l.nombre') Titulo
             md-input-container
                 label Etiqueta

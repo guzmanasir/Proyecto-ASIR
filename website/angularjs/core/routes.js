@@ -43,20 +43,20 @@
                     tags: ['$http',function($http){
                         return $http.get('/users/getTags')
                             .then(function(response){
-                                console.log("query tags")
+                                //console.log("query tags")
                                 return response;
                             },function(response) {
-                                console.log("error query tags")
+                                //console.log("error query tags")
                                 return response;
                             })
                     }],
                     tagCloud: ['$http',function($http){
                         return $http.get('/users/tagCloud')
                             .then(function(response){
-                                console.log("query tags")
+                                //console.log("query tags")
                                 return response;
                             },function(response) {
-                                console.log("error query tags")
+                                //console.log("error query tags")
                                 return response;
                             })
                     }]
@@ -108,7 +108,7 @@
                     nuevos: ['$http','$stateParams',function($http,$stateParams){
                         return $http.get('/users/newLists/'+$stateParams.pagina)
                             .then(function(response){
-                               // console.log("er param", $state)
+                               // //console.log("er param", $state)
                                 return response;
                             },function(response) {
                                 return response;
@@ -153,7 +153,7 @@
                     listas: ['$http','$stateParams',function($http,$stateParams){
                         return $http.get('/users/perfilUsuario/'+$stateParams.idUser+"/"+$stateParams.pagina)
                             .then(function(response){
-                                console.log("response ok ",response)
+                                //console.log("response ok ",response)
                                 return response;
                             },function(response) {
                                 console.error("error en response ",response)

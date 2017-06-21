@@ -7,8 +7,8 @@
         vm.paginaActual = $stateParams.pagina
         vm.paginaActual2 = $stateParams.pagina2
 
-        console.log("entrando en perfil", listas)
-        console.log("entrando en perfil favoritos", favoritos)
+        //console.log("entrando en perfil", listas)
+        //console.log("entrando en perfil favoritos", favoritos)
         vm.listas = listas.data.data.listas;
         vm.favoritos = favoritos.data.data.listas
 
@@ -42,7 +42,7 @@
 
         vm.toastFavorito = function() {
             var pinTo = vm.getToastPosition();
-            console.log("entro en toast")
+            //console.log("entro en toast")
             $mdToast.show(
                 $mdToast.simple()
                     .textContent('Has añadido esta lista a favorito')
@@ -53,7 +53,7 @@
 
         vm.toastNoFavorito = function() {
             var pinTo = vm.getToastPosition();
-            console.log("entro en toast")
+            //console.log("entro en toast")
             $mdToast.show(
                 $mdToast.simple()
                     .textContent('Has eliminado esta lista de favoritos')
@@ -62,58 +62,104 @@
             );
         };
 
-        vm.favorito = function(listaid){
-            vm.favoritoId = listaid
-            lodash.find(vm.listas, {listaid: listaid}).isfavorited = true
-            lodash.find(vm.listas, {listaid: listaid}).numfavoritos += 1
+        vm.favorito = function(listaid, por){
+            if(por == 1){
+                vm.favoritoId = listaid
+                lodash.find(vm.listas, {listaid: listaid}).isfavorited = true
+                lodash.find(vm.listas, {listaid: listaid}).numfavoritos += 1
 
-            $http.post('/users/favorito', {favoritoId: vm.favoritoId})
-                .then(function(responseOk){
-                    console.log(responseOk)
-                    vm.toastFavorito()
-                }, function(responseFail){
-                    console.log(responseFail)
-                })
+                $http.post('/users/favorito', {favoritoId: vm.favoritoId})
+                    .then(function(responseOk){
+                        //console.log(responseOk)
+                        vm.toastFavorito()
+                    }, function(responseFail){
+                        //console.log(responseFail)
+                    })
+            } else {
+                vm.favoritoId = listaid
+                lodash.find(vm.favoritos, {listaid: listaid}).isfavorited = true
+                lodash.find(vm.favoritos, {listaid: listaid}).numfavoritos += 1
+
+                $http.post('/users/favorito', {favoritoId: vm.favoritoId})
+                    .then(function(responseOk){
+                        //console.log(responseOk)
+                        vm.toastFavorito()
+                    }, function(responseFail){
+                        //console.log(responseFail)
+                    })
+            }
 
         }
 
-        vm.nofavorito = function(listaid){
-            vm.nofavoritoId = listaid
-            lodash.find(vm.listas, {listaid: listaid}).isfavorited = false
-            lodash.find(vm.listas, {listaid: listaid}).numfavoritos -= 1
+        vm.nofavorito = function(listaid, por){
+            if(por == 1){
+                vm.nofavoritoId = listaid
+                lodash.find(vm.listas, {listaid: listaid}).isfavorited = false
+                lodash.find(vm.listas, {listaid: listaid}).numfavoritos -= 1
 
-            $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
-                .then(function(responseOk){
-                    console.log(responseOk)
-                    vm.toastNoFavorito()
-                }, function(responseFail){
-                    console.log(responseFail)
-                })
+                $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
+                    .then(function(responseOk){
+                        //console.log(responseOk)
+                        vm.toastNoFavorito()
+                    }, function(responseFail){
+                        //console.log(responseFail)
+                    })
+            } else {
+                vm.nofavoritoId = listaid
+                lodash.find(vm.favoritos, {listaid: listaid}).isfavorited = false
+                lodash.find(vm.favoritos, {listaid: listaid}).numfavoritos -= 1
+
+                $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
+                    .then(function(responseOk){
+                        //console.log(responseOk)
+                        vm.toastNoFavorito()
+                    }, function(responseFail){
+                        //console.log(responseFail)
+                    })
+            }
         }
 
         vm.play = function(lista){
             //$rootScope.playlist = lista
-            console.log("lista reproduciendose", lista)
+            //console.log("lista reproduciendose", lista)
             $rootScope.$broadcast('playlist',lista);
 
 
         }
 
-        vm.reproduccion = function(id){
-            console.log("reproduciendo", id)
-            console.log
-            lodash.find(vm.listas, {listaid: id}).numreproducciones += 1
+        vm.reproduccion = function(id, por){
+            if(por == 1){
+                //console.log("reproduciendo", id)
+                lodash.find(vm.listas, {listaid: id}).numreproducciones += 1
 
-            $http.post('/users/reproduccion', {listaid: id})
-                .then(function(responseOk){
-                    console.log(responseOk)
+                $http.post('/users/reproduccion', {listaid: id})
+                    .then(function(responseOk){
+                        //console.log(responseOk)
 
-                }, function(responseFail){
-                    console.log(responseFail)
+                    }, function(responseFail){
+                        //console.log(responseFail)
 
-                })
+                    })
+            } else {
+                //console.log("reproduciendo", lodash.find(vm.favoritos, {listaid: id}).numreproducciones)
+                lodash.find(vm.favoritos, {listaid: id}).numreproducciones += 1
+
+                $http.post('/users/reproduccion', {listaid: id})
+                    .then(function(responseOk){
+                        //console.log(responseOk)
+
+                    }, function(responseFail){
+                        //console.log(responseFail)
+
+                    })
+            }
 
 
+        }
+
+        vm.verLista = function(lista){
+            //console.log("llamando ver lista", lista)
+            $state.go('main.verLista',{lista: lista})
         }
 
         if($stateParams.tab == 1){

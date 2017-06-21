@@ -1,5 +1,8 @@
-md-card
-    md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
-        md-nav-item(md-nav-sref="home.login") Login
-        md-nav-item(md-nav-sref="home.registro") Registro
-    div(ui-view="")
+div(layout="column" layout-align="center-center")
+    div(flex=5 layout="row" layout-align="center-center")
+        img(ng-src="/img/logo.jpg" height="75%" width="75%")
+    md-card(flex=40 )
+        md-nav-bar(flex, nav-bar-aria-label="navigation links", md-selected-nav-item="actualNavItem")
+            md-nav-item(md-nav-sref="home.login") Login
+            md-nav-item(md-nav-sref="home.registro") Registro
+        div(ui-view="")

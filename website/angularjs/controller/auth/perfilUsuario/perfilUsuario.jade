@@ -10,10 +10,10 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
 
             md-list-item(ng-repeat="lista in puct.listas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
                 div(layout="column" flex=70 )
-                    div(style="padding-bottom:2%").md-headline {{ lista.nombre }}
+                    div(style="padding-bottom:2%" ng-click="puct.verLista(lista)").md-headline {{ lista.nombre }}
 
 
-                    div(layout="row" )
+                    div(layout="row" ng-click="puct.verLista(lista)")
                         div(flex=25 layout="row")
                             div(layout="column" flex=50)
                                 img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
@@ -31,18 +31,18 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                             div(layout="row" style="padding-top:1%")
                                 span.btn-group.btn-group-xs
                                     //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                    i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.listaid)" style="font-size:15px") play_arrow
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.listaid, 1); $event.stopPropagation()" style="font-size:15px") play_arrow
                                     label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
                                 span(ng-if="lista.isfavorited == false")
                                     //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
                                     span.btn-group.btn-group-xs
                                         //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.favorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.favorito(lista.listaid, 1); $event.stopPropagation()" style="font-size:15px") favorite_border
                                         label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
                                 span(ng-if="lista.isfavorited == true")
                                     span.btn-group.btn-group-xs
                                         //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.nofavorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite
+                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.nofavorito(lista.listaid, 1); $event.stopPropagation()" style="font-size:15px") favorite
                                         label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
 
@@ -55,10 +55,10 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
 
             md-list-item(ng-repeat="lista in puct.favoritos track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
                 div(layout="column" flex=70 )
-                    div(style="padding-bottom:2%" ng-click="mlc.verLista(lista)").md-headline {{ lista.nombre }} Por
+                    div(style="padding-bottom:2%" ng-click="puct.verLista(lista)").md-headline {{ lista.nombre }} Por
                         a(href='/perfilUsuario?idUser={{lista.usuarioid}}')  {{ lista.nombreUsuario }}
 
-                    div(layout="row"  ng-click="mlc.verLista(lista)" style="cursor:pointer")
+                    div(layout="row"  ng-click="puct.verLista(lista)" style="cursor:pointer")
                         div(flex=25 layout="row")
                             div(layout="column" flex=50)
                                 img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
@@ -76,19 +76,20 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                             div(layout="row" style="padding-top:1%")
                                 span.btn-group.btn-group-xs
                                     //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                    i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); mlc.reproduccion(lista.listaid)" style="font-size:15px") play_arrow
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="puct.play(lista.info); puct.reproduccion(lista.listaid, 2); $event.stopPropagation()" style="font-size:15px") play_arrow
                                     label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
-                                span(ng-if="lista.isfavorited == false")
-                                    //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                                    span.btn-group.btn-group-xs
-                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.favorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite_border
-                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
-                                span(ng-if="lista.isfavorited == true")
-                                    span.btn-group.btn-group-xs
-                                        //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                        i.material-icons.btn.btn-default.btn-xs(ng-click="puct.nofavorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite
-                                        label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
+                                    span(ng-if="lista.isfavorited == false")
+                                        //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                        span.btn-group.btn-group-xs
+                                            //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                            i.material-icons.btn.btn-default.btn-xs(ng-click="puct.favorito(lista.listaid, 2); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                            label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                    span(ng-if="lista.isfavorited == true")
+                                        span.btn-group.btn-group-xs
+                                            //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                            i.material-icons.btn.btn-default.btn-xs(ng-click="puct.nofavorito(lista.listaid, 2); $event.stopPropagation()" style="font-size:15px") favorite
+                                            label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
 
         ul(ng-show="puct.favoritos[0].totalListas>9" uib-pagination, total-items='puct.favoritos[0].totalListas', items-per-page='9' ng-model='puct.paginaActual2', ng-change='puct.siguiente(2,puct.paginaActual2)')

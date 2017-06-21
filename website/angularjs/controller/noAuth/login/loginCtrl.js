@@ -9,7 +9,7 @@
         var vm = this;
         vm.login = function(){
 
-            console.log("Info login", vm.usernameModel, vm.passwordModel)
+            //console.log("Info login", vm.usernameModel, vm.passwordModel)
             /**
              * TODO: Llamada al servidor
              */
@@ -18,25 +18,25 @@
                 passwordServer : vm.passwordModel
             };
             $auth.login(json)
-                .then(function(response){
-                        if (response.data.codigo === 500)
-                            // swal(
-                            //     'Oops...',
-                            //     'Error al iniciar sesión',
-                            //     'error'
-                            // )
-                            $rootScope.$emit("Loginfail",response)
-                        else{
+                .then(function(response) {
+                        if (response.data.codigo === 500){
+                            swal(
+                                'Oops...',
+                                'Su usuario o contraseña son incorrectos',
+                                'error'
+                            )
+                            //$rootScope.$emit("Loginfail", response)
+                        }else{
                             $state.go('main.home')
                         }
 
                     },
                     function(response) {
-                        // swal(
-                        //     'Oops...',
-                        //     'Error de servidor',
-                        //     'error'
-                        // )
+                        swal(
+                            'Oops...',
+                            'Su usuario o contraseña son incorrectos',
+                            'error'
+                        )
                         $rootScope.$emit("Loginfail",response)
 
                     });

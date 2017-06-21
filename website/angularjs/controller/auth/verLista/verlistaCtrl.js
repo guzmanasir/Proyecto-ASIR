@@ -4,12 +4,12 @@
 (function() {
     function verlistaCtrl($http,$auth,$state,$rootScope, $stateParams, $mdDialog, $mdToast, lodash){
         //if(lodash.isNull($stateParams.lista)) return $state.go("main.mislistas")
-        console.log("entreo aqui")
+        //console.log("entreo aqui")
         if(!$stateParams.lista)
             $state.go('main.nuevos')
         var vm = this;
         vm.verLista = $stateParams.lista
-        console.log("toda ls lista", $stateParams)
+        //console.log("toda ls lista", $stateParams)
         var last = {
             bottom: false,
             top: true,
@@ -40,7 +40,7 @@
 
         vm.toastFavorito = function() {
             var pinTo = vm.getToastPosition();
-            console.log("entro en toast")
+            //console.log("entro en toast")
             $mdToast.show(
                 $mdToast.simple()
                     .textContent('Has añadido esta lista a favorito')
@@ -51,7 +51,7 @@
 
         vm.toastNoFavorito = function() {
             var pinTo = vm.getToastPosition();
-            console.log("entro en toast")
+            //console.log("entro en toast")
             $mdToast.show(
                 $mdToast.simple()
                     .textContent('Has eliminado esta lista de favoritos')
@@ -68,10 +68,10 @@
 
             $http.post('/users/favorito', {favoritoId: vm.favoritoId})
                 .then(function(responseOk){
-                    console.log(responseOk)
+                    //console.log(responseOk)
                     vm.toastFavorito()
                 }, function(responseFail){
-                    console.log(responseFail)
+                    //console.log(responseFail)
                 })
 
         }
@@ -84,31 +84,31 @@
             $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                 .then(function(responseOk){
                     vm.toastNoFavorito()
-                    console.log(responseOk)
+                    //console.log(responseOk)
                 }, function(responseFail){
-                    console.log(responseFail)
+                    //console.log(responseFail)
                 })
         }
 
         vm.play = function(lista){
             //$rootScope.playlist = lista
-            console.log("lista reproduciendose", lista)
+            //console.log("lista reproduciendose", lista)
             $rootScope.$broadcast('playlist',lista);
 
 
         }
 
         vm.reproduccion = function(id){
-            console.log("reproduciendo", id)
-            console.log
+            //console.log("reproduciendo", id)
+            //console.log
             lodash.find(vm.verLista, {listaid: id}).numreproducciones += 1
 
             $http.post('/users/reproduccion', {listaid: id})
                 .then(function(responseOk){
-                    console.log(responseOk)
+                    //console.log(responseOk)
 
                 }, function(responseFail){
-                    console.log(responseFail)
+                    //console.log(responseFail)
 
                 })
 

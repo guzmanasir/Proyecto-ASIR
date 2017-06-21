@@ -7,10 +7,10 @@
         var vm = this;
         vm.paginaActual = $stateParams.pagina
         vm.paginaActual2 = $stateParams.pagina2
-        console.log("listas", listas, "favoritos", favoritos)
+        //console.log("listas", listas, "favoritos", favoritos)
         vm.listas = listas.data.data.listas;
         vm.favoritos = favoritos.data.data.listas;
-        console.log("mis favoritos", vm.listas)
+        //console.log("mis favoritos", vm.listas)
         vm.infoUsuario = infoUsuario.data.data
         vm.totalListas = (!lodash.isUndefined(vm.listas)) ? vm.listas[0].totalListas : 0
         vm.totalFavoritos = (!lodash.isUndefined(vm.favoritos)) ? vm.favoritos[0].totalListas : 0
@@ -18,7 +18,7 @@
         vm.nombreCambia = false
         vm.emailCambia = false
         vm.passwordCambia = false
-        console.log(listas)
+        //console.log(listas)
         if($stateParams.tab == 1){
             vm.tab1 = true
             vm.tab2 = false
@@ -56,7 +56,7 @@
 
         vm.toastEliminarLista = function() {
             var pinTo = vm.getToastPosition();
-            console.log("entro en toast")
+            //console.log("entro en toast")
             $mdToast.show(
                 $mdToast.simple()
                     .textContent('Lista eliminada con éxito')
@@ -67,7 +67,7 @@
 
         vm.toastNoFavorito = function() {
             var pinTo = vm.getToastPosition();
-            console.log("entro en toast")
+            //console.log("entro en toast")
             $mdToast.show(
                 $mdToast.simple()
                     .textContent('Has eliminado esta lista de favoritos')
@@ -77,7 +77,7 @@
         };
 
         vm.showConfirm = function(ev, id) {
-            console.log("entrando en dialog")
+            //console.log("entrando en dialog")
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
                 .title('¿Te gustaría eliminar esta lista?')
@@ -104,20 +104,20 @@
         };
 
         vm.edit = function(lista){
-            console.log("llamando funcione edit", lista)
+            //console.log("llamando funcione edit", lista)
             $state.go('main.editList',{lista: lista})
         }
 
         vm.eliminar = function(id,cb){
-            console.log("llamando funcione eliminar", id)
+            //console.log("llamando funcione eliminar", id)
             $http.post('/users/eliminar', {idlista: id})
                 .then(function(responseOk){
                     vm.toastEliminarLista()
-                    console.log("datos brutos", responseOk)
+                    //console.log("datos brutos", responseOk)
                     cb(null,[])
 
                 }, function(responseFail){
-                    console.log("emptyyyy query", responseFail)
+                    //console.log("emptyyyy query", responseFail)
                     cb(responseFail,null)
                 })
         }
@@ -142,15 +142,15 @@
             $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                 .then(function(responseOk){
                     vm.toastNoFavorito()
-                    console.log(responseOk)
+                    //console.log(responseOk)
                 }, function(responseFail){
-                    console.log(responseFail)
+                    //console.log(responseFail)
                 })
         }
 
 
         vm.verLista = function(lista){
-            console.log("llamando ver lista", lista)
+            //console.log("llamando ver lista", lista)
             $state.go('main.verLista',{lista: lista})
         }
 
@@ -165,14 +165,14 @@
         }
 
         vm.reproduccion = function(id){
-            console.log("reproduciendo", id)
+            //console.log("reproduciendo", id)
 
             $http.post('/users/reproduccion', {listaid: id})
                 .then(function(responseOk){
-                    console.log(responseOk)
+                    //console.log(responseOk)
 
                 }, function(responseFail){
-                    console.log(responseFail)
+                    //console.log(responseFail)
 
                 })
 
