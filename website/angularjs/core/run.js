@@ -10,7 +10,14 @@
 
         $rootScope.$on('$stateChangeStart',
             function(event, toState, toParams, fromState, fromParams, options){
-                if ( toState.data && toState.data.requireLogin && !$auth.isAuthenticated() ) {
+                $rootScope.estadoActual = toState.name
+                //console.log("cambiando de estado",toState.params.redireccion )
+                if ( toState.params && toState.params.redireccion && $auth.isAuthenticated() ) {
+                    event.preventDefault();
+                    //console.log("entrando redireccion")
+                    $state.go('main.home');
+                }
+                if ( toState.params && toState.params.requireLogin && !$auth.isAuthenticated() ) {
                     event.preventDefault();
                     $state.go('403');
                 }

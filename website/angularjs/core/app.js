@@ -12,9 +12,12 @@ angular.module("proyecto", [
     'youtube-embed',
     'ngLodash',
     'ngYoutubeEmbed',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'tangcloud',
+    'ngMessages'
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('grey')
-        .accentPalette('blue');
+        .accentPalette('blue')
+        .backgroundPalette('grey');
 });

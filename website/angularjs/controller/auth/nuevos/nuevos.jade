@@ -1,47 +1,73 @@
+div(ng-if="nct.vacio")
+    div {{ nct.vacioMensaje }}
+div(layout="row" ng-if="!nct.vacio")
+    div(flex=75)
+        md-list(style="padding-left:10%" flex)
+            md-list-item(ng-repeat="lista in nct.nuevos track by $index" style="padding-bottom:1%; padding-top: 1%; background-color: white;" layout="row")
+                div(layout="column" flex=70 )
+                    div(ng-click="nct.verLista(lista)" style="padding-bottom:2%").md-headline {{ lista.nombre }} por
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}')  {{ lista.nombreUsuario }}
+
+                    div(layout="row" ng-click="nct.verLista(lista)" style="cursor:pointer")
+                        div(flex=25 layout="row")
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                            div(layout="column" flex=50)
+                                img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                                img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                        div(layout="column" style="padding-top: 1%; padding-left:1%" flex layout-aling="none center")
+                            div(style="font-weight: bold") Etiquetas:
+                            div(style="padding-bottom:1px")
+                                md-chips(ng-model="lista.tags" readonly="true")
+
+                            div(layout="row" style="padding-top:4%")
+                                span Subido en: {{ lista.fecha }}
+                            div(layout="row" style="padding-top:1%")
+                                span.btn-group.btn-group-xs
+                                    //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="nct.play(lista.info); nct.reproduccion(lista.listaid); $event.stopPropagation();" style="font-size:15px") play_arrow
+                                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+
+                                span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
+                                    span(ng-if="lista.isfavorited == false")
+                                        //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                        span.btn-group.btn-group-xs
+                                            //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                            i.material-icons.btn.btn-default.btn-xs(ng-click="nct.favorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                            label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                                    span(ng-if="lista.isfavorited == true")
+                                        span.btn-group.btn-group-xs
+                                            //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                            i.material-icons.btn.btn-default.btn-xs(ng-click="nct.nofavorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite
+                                            label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
 
+                    span(flex)
 
-section.cards
-    div(layout='row', layout-align='center stretch' layout-wrap style="padding-right:10%; padding-left:10%")
-        md-card(ng-repeat="lista in nct.nuevos track by $index" flex=30 )
-
-            div(layout= "row")
-                img.md-card-image(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
-                img.md-card-image(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
-            div(layout= "row")
-                img.md-card-image(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
-                img.md-card-image(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
-            md-card-title(ng-click="nct.verLista(lista)" style="cursor:pointer")
-                md-card-title-text
-                    span.md-headline(flex md-truncate) {{ lista.nombre }}
-
-            //md-card-actions(layout='row', layout-align='start center')
-            //    md-card-icon-actions
-            a(href='/perfilUsuario?idUser=2') Por: {{ lista.nombreUsuario }}
-            div(ng-repeat="tag in lista.tags")
-                span Genero: {{ tag }}
-
-            p Nº Favoritos: {{ lista.numfavoritos }}
+                    md-divider
+            ul(ng-show="nct.paginaMaxima>9" uib-pagination, total-items='nct.paginaMaxima', items-per-page='9' ng-model='nct.paginaActual', ng-change='nct.siguiente(nct.paginaActual)')
+    div(layout="column" flex)
+        md-card()
+            p Filtrar listas
+            md-input-container
+                label Buscar
+                input(ng-model="nct.busqueda")
+            md-input-container
+                md-select(ng-model='nct.tipo')
+                    md-option(value='l.nombre' selected) Listas
+                    md-option(value='c.artista') Artista
+                    md-option(value='c.cancion') Cancion
+            md-input-container
+                label Ordenar por
+                md-select(ng-model="nct.ordenar")
+                    md-option(value='l.fecha DESC' selected) Fecha
+                    md-option(value='l.reproducciones DESC') Populares
+                    md-option(value='l.nombre') Titulo
+            md-input-container
+                label Etiqueta
+                md-select(ng-model="nct.etiqueta")
+                    md-option(value='todos' selected) -
+                    md-option(ng-repeat="tag in nct.tags" value="{{ tag.idetiqueta }}") {{ tag.nombre }}
             div
-                md-button(ng-click="nct.play(lista.info); nct.reproduccion(lista.listaid)")
-                    i.material-icons() play_arrow
-                    span {{ lista.numreproducciones }}
-                    span(flex=100)
-                span(ng-if="lista.usuarioid != lista.miusuarioid" class="fav")
-                    span(ng-if="lista.isfavorited == false")
-                        //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
-                        md-whiteframe(class="caja")
-                            i.material-icons(ng-click="nct.favorito(lista.listaid)") favorite_border
-                            span {{ lista.numfavoritos }}
-                    span(ng-if="lista.isfavorited == true")
-                        //md-button(ng-click="nct.nofavorito(lista.listaid)") NO Favorito
-                        md-button(ng-click="nct.nofavorito(lista.listaid)")
-                            i.material-icons favorite
-
-    //md-button(ng-click="") ANTERIOR
-    //md-button(ng-click="nct.siguiente()") SIGUIENTE
-    ul(uib-pagination, total-items='nct.nuevos[0].totalListas', items-per-page='9' ng-model='nct.paginaActual', ng-change='nct.siguiente(nct.paginaActual)')
-    //md-card-content
-    //div.btn-group(ng-repeat="n in ")
-    //    label.btn.btn-primary(ng-model='radioModel', uib-btn-radio="'Left'")
-
+            md-button(ng-click="nct.buscar()") Filtrar

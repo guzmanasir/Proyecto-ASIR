@@ -12,16 +12,18 @@ md-dialog(flex=60)
                     .md-dialog-content
                         div(layout='column')
                             md-input-container
-                                label Name
-                                input( ng-model='mc.nombre', type='text',  required)
-                            p {{ mc.nombre }}
+                                label Nombre
+                                input( ng-model='mc.nombre', type='text' required name="nombre")
+                                div(ng-messages="miForm.nombre.$error")
+                                    div(ng-message="required") Campo requerido
+
                             //md-chips(ng-model='mc.tags' placeholder="Añade tags" required)
-                            md-contact-chips(ng-model='mc.tagsSelected', md-contacts='mc.filter($query)', md-contact-name='nombre', md-require-match='true', md-highlight-flags='i', filter-selected='true', placeholder='To')
+                            md-contact-chips(ng-model='mc.tagsSelected', md-contacts='mc.filter($query)', md-contact-name='nombre', md-require-match='true', md-highlight-flags='i', filter-selected='true', placeholder='Etiquetas')
                             div(layout='column')
                                 div(layout='row')
                                     md-input-container
                                         label Enlaces
-                                        input( ng-model='mc.url', type='text',  required)
+                                        input( ng-model='mc.url', type='text')
                                     //md-button(ng-click="mc.addUrl()") Añadir
                                     md-button(ng-click="mc.searchUrl(mc.url)") Buscar
 
@@ -41,6 +43,10 @@ md-dialog(flex=60)
 
                                     md-button(ng-click="mc.searchUrl(mc.url,0)" ng-disabled="mc.firstPage") Anterior
                                     md-button(ng-click="mc.searchUrl(mc.url,1)") Siguiente
+                div(layout="row")
+                    md-dialog-actions
+                        md-button(ng-click="mc.close()") Cancelar
+                        md-button(type="submit" ng-click="mc.answer()") Guardar
 
         div(layout="column", flex=40)
 
@@ -53,7 +59,7 @@ md-dialog(flex=60)
                         h4 {{ url.cancion }}
                         md-button(ng-click='mc.editSong($index)') Editar
 
-    div(layout="row")
-        md-dialog-actions
-            md-button( ng-click="mc.close()") Cancelar
-            md-button( ng-click="mc.answer()") Guardar
+    //div(layout="row")
+    //    md-dialog-actions
+    //        md-button(ng-click="mc.close()") Cancelar
+    //        md-button(type="submit" ng-disabled="miForm.nombre.$invalid" ng-click="mc.answer()") Guardar

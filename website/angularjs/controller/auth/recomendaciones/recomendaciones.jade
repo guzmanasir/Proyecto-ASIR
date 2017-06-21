@@ -1,5 +1,53 @@
-p RECOMENDACIONES
+p(style="font-size: 20px; font-weight: bold; text-align: center; padding-top: 2%") Recomendaciones
+div(ng-if="rct.recomienda")
+    p(style="font-size: 14px; font-weight: bold; text-align: center; padding-top: 2%") Agrega alguna lista para poder recomendarte más y descubir música nueva!
+div(flex=90)
+    md-list(style="padding-left:10%" flex)
 
-md-list
-    md-list-item(ng-repeat="datos in rct.recomendadas")
-        p {{ datos }}
+        md-list-item(ng-repeat="lista in rct.listas track by $index" style="padding-bottom:1%; padding-top: 1%" layout="row")
+            div(layout="column" flex=70 )
+                p(style="font-size: 15 px; font-weight: bold") Te recomiendo estos artistas:
+                div(ng-repeat="artista in rct.artistas[0]")
+                    div(ng-if="artista.lista_idlista == lista.listaid")
+                        span - {{ artista.artista }}
+                md-divider
+
+                //div Te recomendamos estos artistas:
+                //    span(ng-repeat="artista in lista.artistas")
+                //        span(style="font-weight: bold")  {{ artista }}
+                div(style="font-size: 15 px; font-weight: bold; padding-top: 1%; padding-bottom: 2%") Que puedes encontrar en esta lista:
+                div(layout="row")
+                    div(flex=25 layout="row")
+                        div(layout="column" flex=50)
+                            img(flex= 50, ng-src='{{lista.info[0].thumbnail}}')
+                            img(flex= 50, ng-src='{{lista.info[1].thumbnail}}')
+                        div(layout="column" flex=50)
+                            img(flex= 50, ng-src='{{lista.info[2].thumbnail}}')
+                            img(flex= 50, ng-src='{{lista.info[3].thumbnail}}')
+                    div(layout="column" style="padding-left: 1%" flex)
+                        div {{ lista.nombre }}
+                        div Generos:
+                        div(layout="row" style="padding-bottom:1px")
+                            md-chips(ng-model="lista.tags" readonly="true")
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}' ) Por: {{ lista.nombreUsuario }}
+                        div(layout="row")
+                            span Subido en: {{ lista.fecha }}
+                        span(flex)
+                        div(style="padding-top:1%")
+                            span.btn-group.btn-group-xs
+                                //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                i.material-icons.btn.btn-default.btn-xs(ng-click="rct.play(lista.info); rct.reproduccion(lista.listaid); $event.stopPropagation();" style="font-size:15px") play_arrow
+                                label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
+
+
+                            span(ng-if="lista.isfavorited == false")
+                                //md-button(ng-click="nct.favorito(lista.listaid)") Favorito
+                                span.btn-group.btn-group-xs
+                                    //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="rct.favorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite_border
+                                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
+                            span(ng-if="lista.isfavorited == true")
+                                span.btn-group.btn-group-xs
+                                    //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
+                                    i.material-icons.btn.btn-default.btn-xs(ng-click="rct.nofavorito(lista.listaid); $event.stopPropagation()" style="font-size:15px") favorite
+                                    label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}

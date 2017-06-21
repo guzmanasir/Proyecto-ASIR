@@ -1,0 +1,19 @@
+
+div(layour="row" flex)
+    div(style="text-align: center; padding-top: 2%")
+        p(style="font-size: 20px; font-weight: bold; padding-bottom: 2%") Editar información de usuario
+
+        form
+            md-input-container
+                label Nombre
+                input(ng-model="eict.editInfo.nombre" )
+            md-input-container
+                label Email
+                input(ng-model="eict.editInfo.email" )
+            md-input-container
+                label Contraseña
+                input(type="password" ng-model="eict.editInfo.password" )
+            div
+                md-button(ng-click="eict.cancelar()") Cancelar
+                md-button(ng-click="eict.editarInfo()") Guardar
+

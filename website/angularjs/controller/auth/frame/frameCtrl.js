@@ -5,10 +5,53 @@
 
 
 (function() {
-    function frameCtrl($http,$state,$auth, $mdDialog, lodash, tags , $rootScope, $scope) {
+    function frameCtrl($http,$state,$auth, $mdDialog, $mdToast, lodash, tags , $rootScope, $scope, tagCloud) {
         var vm = this;
         vm.name = ""
-        vm.cualquiera = "aa"
+        vm.words = tagCloud.data.data
+
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        vm.toastPosition = angular.extend({},last);
+
+        vm.getToastPosition = function() {
+            sanitizePosition();
+
+            return Object.keys(vm.toastPosition)
+                .filter(function(pos) { return vm.toastPosition[pos]; })
+                .join(' ');
+        };
+
+        function sanitizePosition() {
+            var current = vm.toastPosition;
+
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+
+            last = angular.extend({},current);
+        }
+
+        vm.toastAddList = function(nombre) {
+            var pinTo = vm.getToastPosition();
+            //console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Has añadido la lista "' + nombre + '" con éxito')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+
+        //console.log("tags", tagCloud.data.data)
+        //console.log("words", vm.words)
         vm.showAdvanced = function (ev) {
             $mdDialog.show({
                 controller: function ($mdDialog) {
@@ -22,13 +65,15 @@
                     vmd.artista = "";
                     vmd.cancion = "";
 
+
+
                     vmd.createFilterFor = function (query) {
 
                         var lowercaseQuery = angular.lowercase(query);
-                        console.log("lower", lowercaseQuery)
+                        //console.log("lower", lowercaseQuery)
 
                         return function filterFn(contact) {
-                            //console.log("tagsSelected ",tagsSelected)
+                            ////console.log("tagsSelected ",tagsSelected)
                             return (contact.nombre.indexOf(lowercaseQuery) !== -1);
                         };
 
@@ -36,7 +81,7 @@
 
 
                     vmd.filter = function (criteria) {
-                        console.log(criteria)
+                        //console.log(criteria)
                         //return criteria ? vmd.allTags.filter(createFilterFor(criteria)) : [];
                         return criteria ? vmd.allTags.filter(vmd.createFilterFor(criteria)) : [];
 
@@ -44,11 +89,13 @@
 
 
                     vmd.answer = function () {
+                        vm.compru = true
                         vm.name = vmd.nombre;
                         $mdDialog.hide();
                     }
 
                     vmd.close = function () {
+                        vm.compru = false
                         $mdDialog.hide();
                     }
 
@@ -60,7 +107,7 @@
                             artista: obj.snippet.title.split("-")[0],
                             cancion: _.isUndefined(obj.snippet.title.split("-")[1]) ? "unknown" : obj.snippet.title.split("-")[1]
                         })
-                        console.log(vmd.urls)
+                        //console.log(vmd.urls)
                     }
 
 
@@ -68,6 +115,8 @@
                         $mdDialog.show({
                             controller: function () {
                                 var vme = this;
+                                vme.artista = vmd.urls[index].artista
+                                vme.cancion = vmd.urls[index].cancion
                                 vme.save = function () {
                                     vmd.urls[index].artista = vme.artista
                                     vmd.urls[index].cancion = vme.cancion
@@ -93,10 +142,12 @@
 
                         if (index === 0) {
                             vmd.page = vmd.pagePrev;
-                            console.log("Vale", vmd.page)
-                        } else {
+                            //console.log("Vale", vmd.page)
+                        } else if (index === 1) {
                             vmd.page = vmd.pageNext;
-                            console.log("Vale2", vmd.page)
+                            //console.log("Vale2", vmd.page)
+                        } else {
+                            vmd.page = ""
                         }
 
                         var key = 'AIzaSyBX1ayzZTlapJWNuhSYZRlkSUhU-NlOrCA'
@@ -106,13 +157,13 @@
                             '&videoEmbeddable=true&pageToken=' + vmd.page
 
 
-                        console.log("primer then")
+                        //console.log("primer then")
                         $http.get(url).then(function (data) {
 
                             if (!data.data.prevPageToken) {
                                 vmd.pageNext = data.data.nextPageToken
                                 vmd.firstPage = true
-                                console.log("si no prev(primera)")
+                                //console.log("si no prev(primera)")
                             } else {
                                 //vmd.page = (index == 0) ? data.data.prevPageToken : data.data.nextPageToken;
                                 if (!data.data.prevPageToken) {
@@ -123,8 +174,8 @@
                                     vmd.pagePrev = data.data.prevPageToken
 
                                 }
-                                console.log("si hay prev")
-                                console.log(vmd.page)
+                                //console.log("si hay prev")
+                                //console.log(vmd.page)
                                 vmd.firstPage = false
                             }
                             vmd.videoIds = data.data.items
@@ -135,7 +186,9 @@
                         });
 
                     }
-
+                    vm.close = function() {
+                        $mdDialog.hide();
+                    }
 
                     vm.urls = vmd.urls;
                     vm.tags = vmd.tagsSelected
@@ -151,24 +204,35 @@
                 // clickOutsideToClose:true
             })
                 .then(function () {
-
                     var dataList = {
                         nombreServer: vm.name,
                         tagsServer: vm.tags,
                         urlsServer: vm.urls
                     }
-                    console.log(dataList.tagsServer)
+
+                    //console.log(dataList.tagsServer)
                     if (dataList.nombreServer != "" && dataList.tagsServer.length >= 1 && dataList.urlsServer.length >= 1) {
                         $http.post('/users/addList', dataList)
                             .then(function (responseOk) {
-                                console.log(responseOk)
+                                vm.close()
+                                vm.toastAddList(dataList.nombreServer)
+                                //console.log(responseOk)
                             }, function (responseFail) {
                                 console.error(responseFail);
                             })
+                    } else if (vm.compru) {
+                        //console.log("el compru", vm.compru)
+                        console.log("entro",vm.compru)
+                        swal(
+                            'Oops...',
+                            'Error al registrar la lista. Rellene los campos de nombre, etiqueta y añada enlaces!',
+                            'error'
+                        )
                     }
 
                 }, function () {
-                    console.log("asdal");
+
+                    //console.log("asdal");
                 });
         };
         vm.playerVars = {autoplay: 1}
@@ -177,13 +241,16 @@
         vm.youtube=false;
         vm.abrirBusqueda = false;
         vm.reproduciendo = ""
+        vm.actualNavItem=$rootScope.estadoActual
+        //console.log("la tab", vm.actualNavItem)
+
         //vm.index = 0
         $scope.$on('youtube.player.ready', function (event, player) {
-            console.log("el reproductor esta listo");
+            //console.log("el reproductor esta listo");
             vm.player = player
         })
         $scope.$on('playlist', function (event, lista) {
-            console.log("recibo el evento desde framectrl", event, lista)
+            //console.log("recibo el evento desde framectrl", event, lista)
             //event.preventDefault();
             //$state.go('404');
             vm.playlist = lista;
@@ -192,7 +259,7 @@
             vm.idVideos = lodash.map(vm.playlist, function(o){
                 return o.url.split("=")[1]
             })
-            console.log("idvideos",vm.idVideos)
+            //console.log("idvideos",vm.idVideos)
             // vm.idVideos = vm.playlist[0].url.split("=")[1]
             vm.youtube=true;
             vm.player.loadPlaylist({playlist: vm.idVideos})
@@ -209,21 +276,26 @@
 
         })
 
-        vm.buscar = function(){
-            console.log("%"+vm.busqueda+"%")
+        // vm.buscar = function(){
+        //     //console.log("%"+vm.busqueda+"%")
+        //
+        //     var buscador = {tipo: vm.type, busqueda: "%"+vm.busqueda+"%" }
+        //
+        //      $http.post('/users/search/', buscador)
+        //          .then(function(responseOk){
+        //              //console.log("datos brutos", responseOk)
+        //              //console.log("datos busqueda", responseOk.data.data.listas)
+        //              $state.go('main.buscador', {resultado: responseOk.data.data.listas})
+        //
+        //          }, function(responseFail){
+        //              //console.log("emptyyyy query", responseFail)
+        //          })
+        // }
 
-            var buscador = {tipo: vm.type, busqueda: "%"+vm.busqueda+"%" }
-
-             $http.post('/users/search/', buscador)
-                 .then(function(responseOk){
-                     console.log("datos brutos", responseOk)
-                     console.log("datos busqueda", responseOk.data.data.listas)
-                     $state.go('main.buscador', {resultado: responseOk.data.data.listas})
-
-                 }, function(responseFail){
-                     console.log("emptyyyy query", responseFail)
-                 })
+        vm.cambiarNav = function(){
+            $state.go('main.nuevos', {pagina: 1})
         }
+
         vm.abrirBuscar = function(){
             vm.abrirBusqueda = true;
         }
@@ -234,6 +306,6 @@
     }
 
     angular.module('proyecto')
-        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', 'lodash', 'tags', '$rootScope', '$scope', frameCtrl]);
+        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', '$mdToast', 'lodash', 'tags', '$rootScope', '$scope', 'tagCloud', frameCtrl]);
 
 })();
