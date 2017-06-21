@@ -5,22 +5,51 @@
 
 
 (function() {
-    function frameCtrl($http,$state,$auth, $mdDialog, lodash, tags , $rootScope, $scope, tagCloud) {
+    function frameCtrl($http,$state,$auth, $mdDialog, $mdToast, lodash, tags , $rootScope, $scope, tagCloud) {
         var vm = this;
         vm.name = ""
         vm.words = tagCloud.data.data
-        // vm.words =  [
-        //     {word: "oke", id: 1,  size: 1},
-        //     {id: 22, word: "blues", size: 1},
-        //     {id: 32, word: "test", size: 1},
-        //     {id: 440, word: "schaap", size: 1},
-        //     {id: 50, word: "deployment", size: 1},
-        //     {id: 63, word: "woord3", size: 5},
-        //     {id: 73, word: "wogamalord4", size: 10},
-        //     {id: 82, word: "woord5", size: 1},
-        //     {id: 91, word: "woord8", size: 1},
-        //     {id: 103, word: "woord9", size: 1}
-        // ];
+
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        vm.toastPosition = angular.extend({},last);
+
+        vm.getToastPosition = function() {
+            sanitizePosition();
+
+            return Object.keys(vm.toastPosition)
+                .filter(function(pos) { return vm.toastPosition[pos]; })
+                .join(' ');
+        };
+
+        function sanitizePosition() {
+            var current = vm.toastPosition;
+
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+
+            last = angular.extend({},current);
+        }
+
+        vm.toastAddList = function(nombre) {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Has añadido la lista "' + nombre + '" con éxito')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+
         console.log("tags", tagCloud.data.data)
         console.log("words", vm.words)
         vm.showAdvanced = function (ev) {
@@ -84,6 +113,8 @@
                         $mdDialog.show({
                             controller: function () {
                                 var vme = this;
+                                vme.artista = vmd.urls[index].artista
+                                vme.cancion = vmd.urls[index].cancion
                                 vme.save = function () {
                                     vmd.urls[index].artista = vme.artista
                                     vmd.urls[index].cancion = vme.cancion
@@ -173,10 +204,12 @@
                         tagsServer: vm.tags,
                         urlsServer: vm.urls
                     }
+
                     console.log(dataList.tagsServer)
                     if (dataList.nombreServer != "" && dataList.tagsServer.length >= 1 && dataList.urlsServer.length >= 1) {
                         $http.post('/users/addList', dataList)
                             .then(function (responseOk) {
+                                vm.toastAddList(dataList.nombreServer)
                                 console.log(responseOk)
                             }, function (responseFail) {
                                 console.error(responseFail);
@@ -258,6 +291,6 @@
     }
 
     angular.module('proyecto')
-        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', 'lodash', 'tags', '$rootScope', '$scope', 'tagCloud', frameCtrl]);
+        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', '$mdToast', 'lodash', 'tags', '$rootScope', '$scope', 'tagCloud', frameCtrl]);
 
 })();

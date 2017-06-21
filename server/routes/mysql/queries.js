@@ -280,11 +280,11 @@ exports.getList = function(values, callback){
     var values1 = [values.id, values.limit, values.offset]
 
     var query =
-        'SELECT DISTINCT l.idlista ' +
+        'SELECT DISTINCT l.idlista, l.fecha ' +
         'FROM lista l ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
         'WHERE l.usuario_id = ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
-        'LIMIT ? OFFSET ?'
+        'ORDER BY l.fecha DESC LIMIT ? OFFSET ?'
 
     mysql.query(query,values1,function(err,resultado1){
 
@@ -320,40 +320,79 @@ exports.buscador = function(json, callback){
 
     var valuesBuscar = [json.busqueda, json.limit, json.offset]
 
-    console.log("los valoreh", valuesBuscar)
+    console.log("los valoreh", valuesBuscar, "er jsoin", json)
 
-    if(json.idtag == "todos"){
-        var query =
-            'SELECT l.idlista ' +
-            'FROM lista l ' +
-            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-            'WHERE '+json.tipo+' LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
-            'GROUP BY l.idlista, '+json.ordenar+' ORDER BY '+json.ordenar+' '+
-            'LIMIT ? OFFSET ? '
-        var query2 = 'SELECT COUNT(DISTINCT l.idlista) as total ' +
-            'FROM lista l ' +
-            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-            'WHERE '+json.tipo+' LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
-            'ORDER BY '+json.ordenar
+    if(json.idtag === "todos"){
+        if( json.busqueda === "%undefined%" || json.busqueda === "%%"){
+            valuesBuscar = [json.limit, json.offset]
+            var query =
+                'SELECT l.idlista ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'WHERE l.deleted <> 1 AND c.deleted <> 1 ' +
+                'GROUP BY l.idlista, '+json.ordenar+' ORDER BY '+json.ordenar+' DESC ' +
+                'LIMIT ? OFFSET ? '
 
+            var query2 = 'SELECT COUNT(DISTINCT l.idlista) as total ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'WHERE l.deleted <> 1 AND c.deleted <> 1 ' +
+                'ORDER BY '+json.ordenar+' DESC'
+
+        } else {
+            var query =
+                'SELECT l.idlista ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'WHERE '+json.tipo+' LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
+                'GROUP BY l.idlista, '+json.ordenar+' ORDER BY '+json.ordenar+' DESC ' +
+                'LIMIT ? OFFSET ? '
+
+            var query2 = 'SELECT COUNT(DISTINCT l.idlista) as total ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'WHERE '+json.tipo+' LIKE ? AND l.deleted <> 1 AND c.deleted <> 1 ' +
+                'ORDER BY '+json.ordenar+' DESC'
+        }
 
     } else {
-        var query =
-            'SELECT l.idlista ' +
-            'FROM lista l ' +
-            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-            'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
-            'WHERE '+json.tipo+' LIKE ? AND p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
-            'GROUP BY l.idlista,'+json.ordenar+' ORDER BY '+json.ordenar+' '+
-            'LIMIT ? OFFSET ? '
+        if( json.busqueda === "%undefined%"|| json.busqueda === "%%"){
+            valuesBuscar = [json.limit, json.offset]
+            var query =
+                'SELECT l.idlista ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
+                'WHERE p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
+                'GROUP BY l.idlista,'+json.ordenar+' ORDER BY '+json.ordenar+' DESC ' +
+                'LIMIT ? OFFSET ? '
 
-        var query2 =
-            'SELECT COUNT(DISTINCT l.idlista) as total ' +
-            'FROM lista l ' +
-            'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-            'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
-            'WHERE '+json.tipo+' LIKE ? AND p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
-            'ORDER BY '+json.ordenar
+            var query2 =
+                'SELECT COUNT(DISTINCT l.idlista) as total ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
+                'WHERE p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
+                'ORDER BY '+json.ordenar + ' DESC'
+        } else {
+            var query =
+                'SELECT l.idlista ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
+                'WHERE '+json.tipo+' LIKE ? AND p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
+                'GROUP BY l.idlista,'+json.ordenar+' ORDER BY '+json.ordenar+' DESC ' +
+                'LIMIT ? OFFSET ? '
+
+            var query2 =
+                'SELECT COUNT(DISTINCT l.idlista) as total ' +
+                'FROM lista l ' +
+                'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+                'INNER JOIN pertenece p ON p.lista_idlista = c.lista_idlista ' +
+                'WHERE '+json.tipo+' LIKE ? AND p.etiqueta_idetiqueta = '+ json.idtag +' AND l.deleted <> 1 AND c.deleted <> 1 ' +
+                'ORDER BY '+json.ordenar + ' DESC'
+        }
+
     }
 
     console.log("fallo en la query", query2)
@@ -387,9 +426,9 @@ exports.buscador = function(json, callback){
 
 
 exports.getByIdlist = function(json, callback){
-    console.log("na mas entrar", json)
-    var valuesIds = _.isArray(json) ? json : [json]
-
+    console.log("na mas entrar get by", json)
+    var valuesIds = _.isArray(json.idlistas) ? json.idlistas : [json.idlistas]
+    var order = json.order
     var interrogaciones = ""
     var coma = ","
     for(var i = 0; i < valuesIds.length; i++){
@@ -409,7 +448,7 @@ exports.getByIdlist = function(json, callback){
         'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
         'WHERE l.idlista in ('+interrogaciones+') AND l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
         'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
-        'ORDER BY l.fecha DESC'
+        'order by ' + order + " DESC"
 
     mysql.query(query, valuesIds, function(err,results){
         if(err) {console.error(err);return callback(100010,null)}
@@ -665,21 +704,29 @@ exports.newLists = function(valuesPagina, callback){
  * Query para sacar listas populares por numero de favoritos
  * @param callback
  */
-exports.populares = function(callback){
+exports.populares = function(valuesPagina, callback){
+    var values =  [parseInt(valuesPagina.limit), valuesPagina.offset]
+    // var query =
+    //     'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, l.reproducciones,DATE_FORMAT(l.fecha,"%d/%m/%Y") as fecha, u.nombre as nombreusuario, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+    //     'FROM lista l ' +
+    //     'INNER JOIN usuario u ON l.usuario_id = u.id ' +
+    //     'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
+    //     'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
+    //     'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
+    //     'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
+    //     'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
+    //     'WHERE l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
+    //     'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
+    //     'ORDER BY l.reproducciones DESC'
     var query =
-        'SELECT l.nombre as listanombre, l.usuario_id, l.idlista, u.nombre as nombreusuario, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre, COUNT(f.usuario_id) as numerofavorito ' +
+        'SELECT DISTINCT l.idlista, l.reproducciones ' +
         'FROM lista l ' +
-        'INNER JOIN usuario u ON l.usuario_id = u.id ' +
         'INNER JOIN contiene c ON l.idlista = c.lista_idlista ' +
-        'INNER JOIN pertenece p ON l.idlista = p.lista_idlista ' +
-        'LEFT JOIN favorito f ON l.idlista = f.lista_idlista ' +
-        'INNER JOIN enlace e ON c.enlace_idenlace = e.idenlace ' +
-        'INNER JOIN etiqueta et ON p.etiqueta_idetiqueta = et.idetiqueta ' +
-        'WHERE l.deleted <> 1 AND c.deleted <> 1 AND p.deleted <> 1 ' +
-        'group by listanombre, l.usuario_id, l.idlista, c.artista, c.cancion, e.URL, e.thumbnail, et.nombre ' +
-        'ORDER BY numerofavorito DESC'
+        'WHERE l.deleted <> 1 ' +
+        'ORDER BY l.reproducciones DESC LIMIT ? OFFSET ?;'
 
-    mysql.query(query, function(err,results){
+
+    mysql.query(query, values, function(err,results){
         if(err) {console.error(err);return callback(100010,null)}
         callback(null,results);
     })
@@ -725,7 +772,7 @@ exports.tagCloud = function(callback){
 exports.masEscuchada = function(callback){
     var query =
         'SELECT idlista from lista ' +
-        'where fecha BETWEEN  date_sub(now(),INTERVAL 1 WEEK) and now() ' +
+        'where fecha BETWEEN  date_sub(now(),INTERVAL 1 WEEK) and now() AND deleted <> 1 ' +
         'order by reproducciones desc limit 1'
 
     mysql.query(query,function(err,results){

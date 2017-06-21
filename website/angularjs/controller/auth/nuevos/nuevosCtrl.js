@@ -2,7 +2,7 @@
  * Created by jesus on 21/05/17.
  */
 (function() {
-    function nuevosCtrl($http,$auth,$state,$rootScope, lodash, $stateParams, nuevos, tags){
+    function nuevosCtrl($http,$auth,$state,$rootScope, lodash, $stateParams,$mdToast, nuevos, tags){
         console.log("entro en nuevos")
         var vm = this;
         console.log("los tags", tags.data.data)
@@ -16,6 +16,57 @@
         console.log("la pagina actual", vm.paginaActual)
 
 
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        vm.toastPosition = angular.extend({},last);
+
+        vm.getToastPosition = function() {
+            sanitizePosition();
+
+            return Object.keys(vm.toastPosition)
+                .filter(function(pos) { return vm.toastPosition[pos]; })
+                .join(' ');
+        };
+
+        function sanitizePosition() {
+            var current = vm.toastPosition;
+
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+
+            last = angular.extend({},current);
+        }
+
+        vm.toastFavorito = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Has añadido esta lista a favorito')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+        vm.toastNoFavorito = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Has eliminado esta lista de favoritos')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+
 
         vm.buscar = function(){
             console.log("%"+vm.busqueda+"%")
@@ -23,26 +74,22 @@
 
             console.log("buscador", vm.buscador)
             vm.paginaActual = 1
-            if(!lodash.isUndefined(vm.buscador.busqueda)){
-                vm.buscador.busqueda = "%"+vm.buscador.busqueda+'%'
-                $http.post('/users/search/'+vm.paginaActual, vm.buscador)
-                    .then(function(responseOk){
-                        console.log("datos brutos", responseOk)
-                        console.log("datos busqueda", responseOk.data.data.listas)
-                        //$state.go('main.buscador', {resultado: responseOk.data.data.listas})
-                        vm.nuevos = responseOk.data.data.listas
-                        vm.vacioMensaje =  "No hay ningun resultado"
-                        vm.vacio =  (!responseOk.data.data.listas) ? true : false
-                        vm.paginaMaxima = responseOk.data.data.listas[0].totalListas
-                        vm.posicion = true
+            vm.buscador.busqueda = "%"+vm.buscador.busqueda+'%'
+            $http.post('/users/search/'+vm.paginaActual, vm.buscador)
+                .then(function(responseOk){
+                    console.log("datos brutos", responseOk)
+                    console.log("datos busqueda", responseOk.data.data.listas)
+                    //$state.go('main.buscador', {resultado: responseOk.data.data.listas})
+                    vm.nuevos = responseOk.data.data.listas
+                    vm.vacioMensaje =  "No hay ningun resultado"
+                    vm.vacio =  (!responseOk.data.data.listas) ? true : false
+                    vm.paginaMaxima = responseOk.data.data.listas[0].totalListas
+                    vm.posicion = true
 
-                    }, function(responseFail){
-                        console.log("emptyyyy query", responseFail)
-                    })
-            } else {
-                vm.vacioMensaje =  "No hay ningun resultado"
-                vm.vacio = true
-            }
+                }, function(responseFail){
+                    console.log("emptyyyy query", responseFail)
+                })
+
         }
 
 
@@ -54,18 +101,10 @@
             $http.post('/users/favorito', {favoritoId: vm.favoritoId})
                 .then(function(responseOk){
                     console.log(responseOk)
-                    swal(
-                         '',
-                         'OK',
-                         'success'
-                     )
+                    vm.toastFavorito()
                 }, function(responseFail){
                     console.log(responseFail)
-                    swal(
-                         'Oops...',
-                         'Error',
-                         'error'
-                     )
+
                 })
 
         }
@@ -77,6 +116,7 @@
 
             $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                 .then(function(responseOk){
+                    vm.toastNoFavorito()
                     console.log(responseOk)
                 }, function(responseFail){
                     console.log(responseFail)
@@ -140,6 +180,6 @@
     }
 
     angular.module('proyecto')
-        .controller('nuevosCtrl',['$http','$auth','$state', '$rootScope', 'lodash', '$stateParams', 'nuevos', 'tags', nuevosCtrl]);
+        .controller('nuevosCtrl',['$http','$auth','$state', '$rootScope', 'lodash', '$stateParams', '$mdToast', 'nuevos', 'tags', nuevosCtrl]);
 
 })();

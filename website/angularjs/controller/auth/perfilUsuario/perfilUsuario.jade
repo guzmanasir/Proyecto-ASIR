@@ -48,7 +48,7 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
 
 
                 md-divider
-        ul(uib-pagination, total-items='puct.listas[0].totalListas', items-per-page='9' ng-model='puct.paginaActual', ng-change='puct.siguiente(1,puct.paginaActual)')
+        ul(ng-show="puct.listas[0].totalListas>9" uib-pagination, total-items='puct.listas[0].totalListas', items-per-page='9' ng-model='puct.paginaActual', ng-change='puct.siguiente(1,puct.paginaActual)')
     md-tab(label="Favoritos" md-active="puct.tab2")
 
         md-list(style="padding-left:20%" flex=80)
@@ -91,4 +91,4 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs)
                                         label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
 
-        ul(uib-pagination, total-items='puct.listas[0].totalListas', items-per-page='9' ng-model='puct.paginaActual2', ng-change='puct.siguiente(2,puct.paginaActual2)')
+        ul(ng-show="puct.favoritos[0].totalListas>9" uib-pagination, total-items='puct.favoritos[0].totalListas', items-per-page='9' ng-model='puct.paginaActual2', ng-change='puct.siguiente(2,puct.paginaActual2)')

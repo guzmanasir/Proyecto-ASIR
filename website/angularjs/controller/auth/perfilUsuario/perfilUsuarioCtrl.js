@@ -2,7 +2,7 @@
  * Created by jesus on 17/06/17.
  */
 (function() {
-    function perfilUsuarioCtrl($http,$auth,$state,$rootScope, lodash, $stateParams, listas, favoritos){
+    function perfilUsuarioCtrl($http,$auth,$state,$rootScope, lodash, $stateParams, $mdToast, listas, favoritos){
         var vm = this;
         vm.paginaActual = $stateParams.pagina
         vm.paginaActual2 = $stateParams.pagina2
@@ -12,6 +12,56 @@
         vm.listas = listas.data.data.listas;
         vm.favoritos = favoritos.data.data.listas
 
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        vm.toastPosition = angular.extend({},last);
+
+        vm.getToastPosition = function() {
+            sanitizePosition();
+
+            return Object.keys(vm.toastPosition)
+                .filter(function(pos) { return vm.toastPosition[pos]; })
+                .join(' ');
+        };
+
+        function sanitizePosition() {
+            var current = vm.toastPosition;
+
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+
+            last = angular.extend({},current);
+        }
+
+        vm.toastFavorito = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Has añadido esta lista a favorito')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+        vm.toastNoFavorito = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Has eliminado esta lista de favoritos')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
         vm.favorito = function(listaid){
             vm.favoritoId = listaid
             lodash.find(vm.listas, {listaid: listaid}).isfavorited = true
@@ -20,18 +70,9 @@
             $http.post('/users/favorito', {favoritoId: vm.favoritoId})
                 .then(function(responseOk){
                     console.log(responseOk)
-                    swal(
-                        '',
-                        'OK',
-                        'success'
-                    )
+                    vm.toastFavorito()
                 }, function(responseFail){
                     console.log(responseFail)
-                    swal(
-                        'Oops...',
-                        'Error',
-                        'error'
-                    )
                 })
 
         }
@@ -44,6 +85,7 @@
             $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                 .then(function(responseOk){
                     console.log(responseOk)
+                    vm.toastNoFavorito()
                 }, function(responseFail){
                     console.log(responseFail)
                 })
@@ -93,6 +135,6 @@
     }
 
     angular.module('proyecto')
-        .controller('perfilUsuarioCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','listas','favoritos', perfilUsuarioCtrl]);
+        .controller('perfilUsuarioCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','$mdToast','listas','favoritos', perfilUsuarioCtrl]);
 
 })();

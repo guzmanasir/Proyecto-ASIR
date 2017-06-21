@@ -2,17 +2,18 @@
  * Created by jesus on 21/05/17.
  */
 (function() {
-    function mislistasCtrl($http,$auth,$state,$rootScope, lodash,$stateParams,$mdDialog, listas, favoritos, infoUsuario){
+    function mislistasCtrl($http,$auth,$state,$rootScope, lodash,$stateParams,$mdDialog, $mdToast, listas, favoritos, infoUsuario){
 
         var vm = this;
         vm.paginaActual = $stateParams.pagina
         vm.paginaActual2 = $stateParams.pagina2
+        console.log("listas", listas, "favoritos", favoritos)
         vm.listas = listas.data.data.listas;
         vm.favoritos = favoritos.data.data.listas;
         console.log("mis favoritos", vm.listas)
         vm.infoUsuario = infoUsuario.data.data
-        vm.totalListas = vm.listas[0].totalListas
-        vm.totalFavoritos = vm.favoritos[0].totalListas
+        vm.totalListas = (!lodash.isUndefined(vm.listas)) ? vm.listas[0].totalListas : 0
+        vm.totalFavoritos = (!lodash.isUndefined(vm.favoritos)) ? vm.favoritos[0].totalListas : 0
         vm.abrirInput = false
         vm.nombreCambia = false
         vm.emailCambia = false
@@ -25,6 +26,56 @@
             vm.tab1 = false
             vm.tab2 = true
         }
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        vm.toastPosition = angular.extend({},last);
+
+        vm.getToastPosition = function() {
+            sanitizePosition();
+
+            return Object.keys(vm.toastPosition)
+                .filter(function(pos) { return vm.toastPosition[pos]; })
+                .join(' ');
+        };
+
+        function sanitizePosition() {
+            var current = vm.toastPosition;
+
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+
+            last = angular.extend({},current);
+        }
+
+        vm.toastEliminarLista = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Lista eliminada con éxito')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+        vm.toastNoFavorito = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Has eliminado esta lista de favoritos')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
         vm.showConfirm = function(ev, id) {
             console.log("entrando en dialog")
             // Appending dialog to document.body to cover sidenav in docs app
@@ -61,6 +112,7 @@
             console.log("llamando funcione eliminar", id)
             $http.post('/users/eliminar', {idlista: id})
                 .then(function(responseOk){
+                    vm.toastEliminarLista()
                     console.log("datos brutos", responseOk)
                     cb(null,[])
 
@@ -89,6 +141,7 @@
 
             $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                 .then(function(responseOk){
+                    vm.toastNoFavorito()
                     console.log(responseOk)
                 }, function(responseFail){
                     console.log(responseFail)
@@ -129,6 +182,6 @@
     }
 
     angular.module('proyecto')
-        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','$mdDialog','listas', 'favoritos', 'infoUsuario', mislistasCtrl]);
+        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','$mdDialog', '$mdToast','listas', 'favoritos', 'infoUsuario', mislistasCtrl]);
 
 })();

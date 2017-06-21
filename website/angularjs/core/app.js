@@ -17,5 +17,6 @@ angular.module("proyecto", [
 ]).config(function($mdThemingProvider) {
     $mdThemingProvider.theme('default')
         .primaryPalette('grey')
-        .accentPalette('blue');
+        .accentPalette('blue')
+        .backgroundPalette('blue-grey');
 });

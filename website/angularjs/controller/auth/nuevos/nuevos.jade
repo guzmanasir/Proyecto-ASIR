@@ -46,8 +46,8 @@ div(layout="row" ng-if="!nct.vacio")
                     span(flex)
 
                     md-divider
-            ul(uib-pagination, total-items='nct.paginaMaxima', items-per-page='9' ng-model='nct.paginaActual', ng-change='nct.siguiente(nct.paginaActual)')
-    div(layout="column" style="margin-top: 2%" flex)
+            ul(ng-show="nct.paginaMaxima>9" uib-pagination, total-items='nct.paginaMaxima', items-per-page='9' ng-model='nct.paginaActual', ng-change='nct.siguiente(nct.paginaActual)')
+    div(layout="column" flex)
         md-card()
             p Filtrar listas
             md-input-container

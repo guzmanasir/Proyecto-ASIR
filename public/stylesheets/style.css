@@ -115,3 +115,7 @@ div.logo {
 .tangcloud-item-hidden {
   visibility: hidden;
 }
+
+.md-button {
+  text-transform: none !important;
+}

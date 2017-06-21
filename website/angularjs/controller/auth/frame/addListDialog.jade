@@ -12,11 +12,11 @@ md-dialog(flex=60)
                     .md-dialog-content
                         div(layout='column')
                             md-input-container
-                                label Name
-                                input( ng-model='mc.nombre', type='text',  required)
-                            p {{ mc.nombre }}
+                                label Nombre
+                                input( ng-model='mc.nombre', type='text',  required name="nombre")
+
                             //md-chips(ng-model='mc.tags' placeholder="Añade tags" required)
-                            md-contact-chips(ng-model='mc.tagsSelected', md-contacts='mc.filter($query)', md-contact-name='nombre', md-require-match='true', md-highlight-flags='i', filter-selected='true', placeholder='To')
+                            md-contact-chips(ng-model='mc.tagsSelected', md-contacts='mc.filter($query)', md-contact-name='nombre', md-require-match='true', md-highlight-flags='i', filter-selected='true', placeholder='Etiquetas')
                             div(layout='column')
                                 div(layout='row')
                                     md-input-container
@@ -55,5 +55,5 @@ md-dialog(flex=60)
 
     div(layout="row")
         md-dialog-actions
-            md-button( ng-click="mc.close()") Cancelar
-            md-button( ng-click="mc.answer()") Guardar
+            md-button(type="submit" ng-click="mc.close()") Cancelar
+            md-button(type="submit" ng-disabled="miForm.nombre.$invalid" ng-click="mc.answer()") Guardar

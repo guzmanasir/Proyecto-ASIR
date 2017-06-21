@@ -201,18 +201,18 @@ router.post('/search/:pagina', function(req, res, next) {
     console.log("offset ", req.params.pagina)
     var valuesPagina = {limit: limit, offset: offset, busqueda: json.busqueda, tipo: json.tipo, ordenar: json.ordenar, idtag: json.idtag}
 
-    console.log("ENTRO")
+    console.log("ENTRO valuespagiina", valuesPagina)
 
     query.buscador(valuesPagina,function(err,resultados){
         if(err) return codigos.responseFail(res, err);
 
-        if (!_.isEmpty(resultados)) {
+        if (!_.isEmpty(resultados.idlista)) {
             console.log("valores brutos del buscador", resultados)
             var idlistas = resultados.idlista
             var total = resultados.total
             var idUser = req.idUser
             console.log("los valores del buscador", idlistas, " ", total, " ", idUser)
-            getInfoList(idlistas, total, idUser, function(err, data){
+            getInfoList(idlistas, total, idUser, valuesPagina.ordenar, function(err, data){
 
                 if(err) return codigos.responseFail(res,err)
                 console.log("RESULTAOS FINALES", data)
@@ -339,7 +339,7 @@ router.get('/getLists/:pagina', function(req, res, next) {
         if(err) return codigos.responseFail(res,err)
         var idlistas = data.idlista
         var total = data.total
-        getInfoList(idlistas, total, id, function(err,data){
+        getInfoList(idlistas, total, id, 'l.fecha', function(err,data){
             if(err) return codigos.responseFail(res,err)
 
             codigos.responseOk(res, data)
@@ -393,7 +393,7 @@ router.get('/recomendacionesQuery', function(req, res, next) {
     query.recomendaciones(id, function(err, resultado){
         if(err) return codigos.responseFail(res, err)
         var idlistas = _.uniq(_.map(resultado,'lista_idlista'),'lista_idlista')
-        getInfoList(idlistas, 9, id, function(err,data){
+        getInfoList(idlistas, 9, id, 'l.fecha', function(err,data){
             if(err) return codigos.responseFail(res,err)
             var recomendaciones = {listas: data, artistas: resultado}
             codigos.responseOk(res, recomendaciones)
@@ -455,7 +455,7 @@ router.get('/misFavoritos/:pagina', function(req, res, next) {
         if(err) return codigos.responseFail(res,err)
         var idlistas = data.idlista
         var total = data.total
-        getInfoList(idlistas, total, id, function(err,data){
+        getInfoList(idlistas, total, id, 'l.fecha', function(err,data){
             if(err) return codigos.responseFail(res,err)
 
             codigos.responseOk(res, data)
@@ -501,7 +501,7 @@ router.get('/otrosFavoritos/:idUser/:pagina', function(req, res, next) {
         if(err) return codigos.responseFail(res,err)
         var idlistas = data.idlista
         var total = data.total
-        getInfoList(idlistas, total, id, function(err,data){
+        getInfoList(idlistas, total, id, 'l.fecha', function(err,data){
             if(err) return codigos.responseFail(res,err)
 
             codigos.responseOk(res, data)
@@ -510,13 +510,13 @@ router.get('/otrosFavoritos/:idUser/:pagina', function(req, res, next) {
 
 });
 
-function getInfoList(idlistas, total, idUser, callback){
+function getInfoList(idlistas, total, idUser, order, callback){
 
 
     if(idlistas.length<1)
         return callback(null,[])
-
-    query.getByIdlist(idlistas, function(err,resultado){
+    var values = {idlistas: idlistas, order: order}
+    query.getByIdlist(values, function(err,resultado){
 
 
         if(err) return callback(err, null)
@@ -631,7 +631,7 @@ router.get('/newLists/:pagina?/:limite*?', function(req, res, next) {
         var total = resultado.total
         var idUser = req.idUser
 
-        getInfoList(idlistas, total, idUser, function(err, data){
+        getInfoList(idlistas, total, idUser, 'l.fecha', function(err, data){
 
             if(err) return codigos.responseFail(res,err)
             console.log("RESULTAOS FINALES", data)
@@ -650,62 +650,116 @@ router.get('/populares', function(req, res, next) {
     // var result = {
     //     total: [{nombre:'lista1', urls: [], tags : []}]
     // }
-    query.populares(function(err,resultado){
+    console.log("PAGINA VALE ",req.params.pagina)
+    console.log("LIMITE VALE ",req.params.limite)
+    var limit = ""
+    var offset = ""
+    if((req.params.pagina && parseInt(req.params.pagina)-1 < 0) || (req.params.limite && parseInt(req.params.limite)-1 < 0)  ){
+        limit = 9
+        offset = 0
+        console.log("entroe en el primero")
+    } else {
 
+        if(req.params.pagina && req.params.limite){
+            limit = req.params.limite
+            offset = (parseInt(req.params.pagina)-1) * req.params.limite
+            console.log("entroe en el segundo")
 
+        }else if(req.params.pagina){
+            limit = 9
+            offset = (parseInt(req.params.pagina)-1) * limit
+            console.log("entroe en el tercero")
+
+        }else{
+            limit = 9
+            offset = 0
+            console.log("entroe en el cuarto")
+
+        }
+    }
+
+    console.log("limit ", req.params.limit)
+    console.log("offset ", req.params.pagina)
+    var valuesPagina = {limit: limit, offset: offset}
+
+    console.log("ENTRO")
+    query.populares(valuesPagina, function(err,resultado){
         if(err) return codigos.responseFail(res, err)
-        //console.log("resultado ",resultado)
-        var nuevos = {listas : [
-        ]}
-        var index = 0
-        var idListas = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
+        console.log("RESULTADO POPULARES 2", resultado)
+        var idlistas = _.map(resultado,'idlista')
+        var total = 10000
+        var idUser = req.idUser
 
-        _.forEach(idListas, function(item){
-            nuevos.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
-                listaid: item,
-                isfavorited: false,
-                miusuarioid: req.idUser,
-                numfavoritos:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
-                nombreusuario:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'nombreusuario'))[0],
-                usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
-                //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
-                info:[],
-                tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
-            )
-            //console.log("antes de url")
+        getInfoList(idlistas, total, idUser, 'l.reproducciones', function(err, data){
 
-            var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
-            _.forEach(urls, function(item2){
-                nuevos.listas[index].info.push({url: item2.URL,
-                    artista: item2.artista,
-                    cancion: item2.cancion,
-                    thumbnail: item2.thumbnail
-                })
-            })
-            index++
-            //console.log("urls nuevos",urls)
+            if(err) return codigos.responseFail(res,err)
+            console.log("RESULTAOS FINALES POPULARES", _.sortBy(data, [function(o) { return o.user; }]))
 
+            codigos.responseOk(res, data)
 
         })
-        var id = req.idUser
-
-
-
-        query.favoritos(id, function(err, resultado){
-            console.log(nuevos.listas)
-            var idFavoritos = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
-            _.forEach(idFavoritos, function(item){
-                _.find(nuevos.listas, {listaid: item}).isfavorited = true
-
-            })
-
-            console.log("populares", nuevos)
-            codigos.responseOk(res, nuevos)
-        })
-
-
 
     })
+    // query.populares(function(err,resultado){
+    //
+    //
+    //
+    //     if(err) return codigos.responseFail(res, err)
+    //     //console.log("resultado ",resultado)
+    //     var nuevos = {listas : [
+    //     ]}
+    //     var index = 0
+    //     var idListas = _.map(_.uniqBy(resultado,'idlista' ),'idlista')
+    //
+    //     _.forEach(idListas, function(item){
+    //         nuevos.listas.push({nombre:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'listanombre'))[0],
+    //             listaid: item,
+    //             isfavorited: false,
+    //             miusuarioid: req.idUser,
+    //             numfavoritos:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
+    //             reproducciones:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'reproducciones'))[0] ,
+    //             fecha:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'fecha'))[0] ,
+    //             nombreusuario:_.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'nombreusuario'))[0],
+    //             usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
+    //             //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+    //             info:[],
+    //             tags:[_.uniq(_.map(_.filter(resultado,function(o){return o.idlista == item}),'nombre'))]}
+    //         )
+    //         //console.log("antes de url")
+    //
+    //         var urls = _.uniqBy(_.filter(resultado,function(o){return o.idlista == item}),'URL')
+    //         _.forEach(urls, function(item2){
+    //             nuevos.listas[index].info.push({url: item2.URL,
+    //                 artista: item2.artista,
+    //                 cancion: item2.cancion,
+    //                 thumbnail: item2.thumbnail
+    //             })
+    //         })
+    //         index++
+    //         //console.log("urls nuevos",urls)
+    //
+    //
+    //     })
+    //
+    //
+    //
+    //     var valuesFavorito = {id: req.idUser, limit: 18446744073, offset: 0 }
+    //
+    //     query.favoritos(valuesFavorito, function(err, resultado){
+    //         console.log("favoritos populares", resultado)
+    //         var idFavoritos = resultado.idlista
+    //         _.forEach(idFavoritos, function(item){
+    //             _.find(nuevos.listas, {listaid: item}).isfavorited = true
+    //
+    //         })
+    //
+    //         console.log("populares", nuevos)
+    //         codigos.responseOk(res, nuevos)
+    //     })
+    //
+    //
+    //
+    // })
 
 });
 
@@ -781,7 +835,7 @@ router.get('/perfilUsuario/:id/:pagina', function(req,res,next){
         var idlistas = data.idlista
         var total = data.total
         var idUser = req.idUser
-        getInfoList(idlistas, total, idUser, function(err,data){
+        getInfoList(idlistas, total, idUser, 'l.fecha', function(err,data){
             if(err) return codigos.responseFail(res,err)
 
             codigos.responseOk(res, data)
@@ -799,52 +853,62 @@ router.get('/masEscuchada', function(req, res, next) {
     query.masEscuchada(function(err,resultado){
         if(err) return codigos.responseFail(res, err)
 
-        var json = _.map(resultado,'idlista')
+        var json = {idlistas: _.map(resultado,'idlista'), order: 'l.reproducciones'}
+        getInfoList(json.idlistas, 60, req.idUser, 'l.fecha', function(err,data){
+            if(err) return codigos.responseFail(res,err)
 
-        query.getByIdlist(json, function (err, resultados) {
-            if (err) return codigos.responseFail(res, err);
-            var listas = {
-                listas: []
-            }
-            var index = 0
-            var idListas = _.map(_.uniqBy(resultados, 'idlista'), 'idlista')
-
-            _.forEach(idListas, function (item) {
-                listas.listas.push({
-                        nombre: _.uniq(_.map(_.filter(resultados, function (o) {
-                            return o.idlista == item
-                        }), 'listanombre'))[0],
-                        idlista: item,
-                        nombreusuario: _.uniq(_.map(_.filter(resultados, function (o) {
-                            return o.idlista == item
-                        }), 'nombreUsuario'))[0],
-                        //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
-                        info: [],
-                        tags: [_.uniq(_.map(_.filter(resultados, function (o) {
-                            return o.idlista == item
-                        }), 'nombre'))]
-                    }
-                )
-                //console.log("antes de url")
-
-                var urls = _.uniqBy(_.filter(resultados, function (o) {
-                    return o.idlista == item
-                }), 'URL')
-                _.forEach(urls, function (item2) {
-                    listas.listas[index].info.push({
-                        url: item2.URL,
-                        artista: item2.artista,
-                        cancion: item2.cancion,
-                        thumbnail: item2.thumbnail,
-                        idenlace: item2.idenlace
-                    })
-                })
-                index++
-            })
-
-            console.log("los resultaos la query", listas)
-            codigos.responseOk(res, listas)
+            codigos.responseOk(res, data)
         })
+        // query.getByIdlist(json, function (err, resultados) {
+        //     if (err) return codigos.responseFail(res, err);
+        //     var listas = {
+        //         listas: []
+        //     }
+        //     var index = 0
+        //     var idListas = _.map(_.uniqBy(resultados, 'idlista'), 'idlista')
+        //
+        //     _.forEach(idListas, function (item) {
+        //         listas.listas.push({
+        //                 nombre: _.uniq(_.map(_.filter(resultados, function (o) {
+        //                     return o.idlista == item
+        //                 }), 'listanombre'))[0],
+        //                 idlista: item,
+        //                 reproducciones: _.uniq(_.map(_.filter(resultados, function (o) {
+        //             return o.idlista == item
+        //         }), 'reproducciones'))[0],
+        //                 numfavoritos: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'numerofavorito'))[0] ,
+        //                 fecha: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'fecha'))[0] ,
+        //                 usuarioid: _.uniq( _.map(_.filter(resultado,function(o){return o.idlista == item}),'usuario_id'))[0],
+        //                 nombreusuario: _.uniq(_.map(_.filter(resultados, function (o) {
+        //                     return o.idlista == item
+        //                 }), 'nombreUsuario'))[0],
+        //                 //urls:[_.uniq(_.map(_.filter(resultado,function(o){return o.listanombre == item}),'URL'))],
+        //                 info: [],
+        //                 tags: [_.uniq(_.map(_.filter(resultados, function (o) {
+        //                     return o.idlista == item
+        //                 }), 'nombre'))]
+        //             }
+        //         )
+        //         //console.log("antes de url")
+        //
+        //         var urls = _.uniqBy(_.filter(resultados, function (o) {
+        //             return o.idlista == item
+        //         }), 'URL')
+        //         _.forEach(urls, function (item2) {
+        //             listas.listas[index].info.push({
+        //                 url: item2.URL,
+        //                 artista: item2.artista,
+        //                 cancion: item2.cancion,
+        //                 thumbnail: item2.thumbnail,
+        //                 idenlace: item2.idenlace
+        //             })
+        //         })
+        //         index++
+        //     })
+        //
+        //     console.log("los resultaos la query", listas)
+        //     codigos.responseOk(res, listas)
+        // })
     })
 });
 

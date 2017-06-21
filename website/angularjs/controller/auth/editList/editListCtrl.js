@@ -2,7 +2,7 @@
  * Created by jesus on 30/05/17.
  */
 (function() {
-    function editListCtrl($http,$auth,$state,$rootScope, $stateParams, $mdDialog, lodash){
+    function editListCtrl($http,$auth,$state,$rootScope, $stateParams, $mdDialog, $mdToast, lodash){
         if(lodash.isNull($stateParams.lista)) return $state.go("main.perfil")
         console.log("entreo aqui")
         var vm = this;
@@ -10,6 +10,67 @@
         vm.firstPosition = vm.editList.info.length
         console.log("primera posicion", vm.firstPosition)
         console.log("toda ls lista", $stateParams.lista)
+        var last = {
+            bottom: false,
+            top: true,
+            left: false,
+            right: true
+        };
+
+        vm.toastPosition = angular.extend({},last);
+
+        vm.getToastPosition = function() {
+            sanitizePosition();
+
+            return Object.keys(vm.toastPosition)
+                .filter(function(pos) { return vm.toastPosition[pos]; })
+                .join(' ');
+        };
+
+        function sanitizePosition() {
+            var current = vm.toastPosition;
+
+            if ( current.bottom && last.top ) current.top = false;
+            if ( current.top && last.bottom ) current.bottom = false;
+            if ( current.right && last.left ) current.left = false;
+            if ( current.left && last.right ) current.right = false;
+
+            last = angular.extend({},current);
+        }
+
+        vm.toastEliminarCanciones = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Canciones eliminadas')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+        vm.toastEditarCanciones = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Cancion editada')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
+        vm.toastMeterCanciones = function() {
+            var pinTo = vm.getToastPosition();
+            console.log("entro en toast")
+            $mdToast.show(
+                $mdToast.simple()
+                    .textContent('Canciones añadidas')
+                    .position(pinTo )
+                    .hideDelay(3000)
+            );
+        };
+
 
         vm.eliminar = function(){
             vm.seleccionados = lodash.map(lodash.filter(vm.editList.info,function(o){return o.seleccionado == true}),'idenlace')
@@ -25,6 +86,7 @@
             $http.post('/users/editList', edit)
                 .then(function(responseOk){
                     console.log(responseOk)
+                    vm.toastEliminarCanciones()
                 },
                 function(responseFail){
                     console.log(responseFail)
@@ -138,6 +200,7 @@
                         $http.post('/users/addSongs', dataList)
                             .then(function(responseOk){
                                 console.log(responseOk)
+                                vm.toastMeterCanciones()
                             },function(responseFail){
                                 console.error(responseFail);
                             })
@@ -195,6 +258,7 @@
                     $http.post('/users/songEdit', dataEditSong)
                         .then(function(responseOk){
                             console.log(responseOk)
+                            vm.toastEditarCanciones()
                         }, function(responseFail){
                             console.log(responseFail)
                         })
@@ -206,6 +270,6 @@
     }
 
     angular.module('proyecto')
-        .controller('editListCtrl',['$http','$auth','$state', '$rootScope','$stateParams', '$mdDialog', 'lodash', editListCtrl]);
+        .controller('editListCtrl',['$http','$auth','$state', '$rootScope','$stateParams', '$mdDialog','$mdToast', 'lodash', editListCtrl]);
 
 })();
