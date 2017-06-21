@@ -250,9 +250,7 @@
             vm.player = player
         })
         $scope.$on('playlist', function (event, lista) {
-            //console.log("recibo el evento desde framectrl", event, lista)
-            //event.preventDefault();
-            //$state.go('404');
+
             vm.playlist = lista;
             //vm.reproduciendo = lista[vm.index].artista + "-" + lista[vm.index].cancion
 
@@ -271,7 +269,19 @@
 
         $scope.$on('youtube.player.playing', function(event, player){
                 //vm.index = player.getPlaylistIndex()
-            vm.reproduciendo = vm.playlist[player.getPlaylistIndex()].artista + "-" + vm.playlist[player.getPlaylistIndex()].cancion
+            vm.artista = vm.playlist[player.getPlaylistIndex()].artista.trim()
+            vm.cancion = vm.playlist[player.getPlaylistIndex()].cancion.trim()
+            var url = "/users/lyrics?artista="+vm.artista+"&cancion="+vm.cancion
+            $http.get(url)
+                .then(function(responseOk){
+                    console.log("letraok", responseOk)
+                    vm.letra = (!responseOk.data.data) ? "No hay letra para esta cancion" : responseOk.data.data
+                },function(responseFail){
+                    console.log("letrafail")
+                    vm.letra = "No hay letra para esta cancion"
+                })
+
+            vm.reproduciendo = vm.artista + " - " + vm.cancion
 
 
         })
