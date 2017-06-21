@@ -16,6 +16,19 @@ exports.login = function(datosLogin,callback){
     })
 }
 
+exports.checkUserById = function(id,callback){
+    var query =
+        'SELECT nombre FROM usuario WHERE id = ?';
+
+    var values = [id];
+    mysql.query(query,values,function(err,results){
+        if(err) return callback(err,null)
+        else if(_.isEmpty(results)) return callback({codigo: "no existe"},null)
+        else
+            callback(null,results);
+    })
+}
+
 /**
  * Query para realizar el registro
  * @param datosLogin
@@ -43,6 +56,7 @@ exports.registro = function(datosRegistro,callback){
 exports.addList = function(datosList,callback){
 
     var valuesList = [datosList.nombreServer, datosList.id]
+    console.log("error en query", valuesList)
     var queryList =
         'INSERT INTO lista(nombre,usuario_id) VALUES (?, ?)';
 
@@ -50,7 +64,10 @@ exports.addList = function(datosList,callback){
 
     // ===== Query Insert ====== Lista//
     mysql.query(queryList,valuesList,function(err,result){
-        if(err) {return callback(10005,null)}
+        if(err) {
+            console.log("en el error", err)
+            return callback(10005,null)
+        }
         //callback(null,result)
         listaId = result.insertId
         var interrogaciones = []

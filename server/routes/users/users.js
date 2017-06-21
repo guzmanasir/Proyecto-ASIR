@@ -98,6 +98,7 @@ router.get('/tempEditInfo', function(req, res, next) {
 router.post('/addList', function(req, res, next){
     var json = req.body;
     json.id = req.idUser;
+    console.log("entro add list", json)
     if ( !json.id || json.id <= 0 || _.isUndefined(json.nombreServer)
         || _.isUndefined(json.tagsServer)
         || _.isUndefined(json.urlsServer)
@@ -106,7 +107,9 @@ router.post('/addList', function(req, res, next){
     ////console.log(json);
 
     query.addList(json, function(err,resultado){
-        if(err) return codigos.responseFail(res, err)
+        if(err)
+            console.log("resulraos query",err)
+        return codigos.responseFail(res, err)
         //console.log(resultado)
         codigos.responseOk(res, json)
 
@@ -829,22 +832,26 @@ router.get('/perfilUsuario/:id/:pagina', function(req,res,next){
 
     //console.log("limit ", req.params.limit)
     //console.log("offset ", req.params.pagina)
-    var valuesPagina = {limit: limit, offset: offset, id: id}
+    query.checkUserById(id, function(err,data){
+        if(err){ console.error("no existe el usuario"); return codigos.responseFail(res,err)}
+        var valuesPagina = {limit: limit, offset: offset, id: id}
 
-    //console.log("valuespagina pa la query", valuesPagina)
-    getListById(valuesPagina, function(err,data){
-        if(err) return codigos.responseFail(res,err)
-        var idlistas = data.idlista
-        var total = data.total
-        var idUser = req.idUser
-        getInfoList(idlistas, total, idUser, 'l.fecha', idUser, function(err,data){
+        //console.log("valuespagina pa la query", valuesPagina)
+        getListById(valuesPagina, function(err,data){
             if(err) return codigos.responseFail(res,err)
+            var idlistas = data.idlista
+            var total = data.total
+            var idUser = req.idUser
+            getInfoList(idlistas, total, idUser, 'l.fecha', idUser, function(err,data){
+                if(err) return codigos.responseFail(res,err)
+                //if(_.isEmpty(data)) return codigos.responseFail(res,)
+                console.log("er data", data)
 
-            codigos.responseOk(res, data)
+                codigos.responseOk(res, data)
+            })
+
         })
-
     })
-
 })
 
 

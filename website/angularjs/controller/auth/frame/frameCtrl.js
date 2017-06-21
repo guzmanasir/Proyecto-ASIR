@@ -5,10 +5,12 @@
 
 
 (function() {
-    function frameCtrl($http,$state,$auth, $mdDialog, $mdToast, lodash, tags , $rootScope, $scope, tagCloud) {
+    function frameCtrl($http,$state,$auth, $mdDialog, $mdToast, lodash, tags , $rootScope, $scope, infoUsuario ) {
         var vm = this;
         vm.name = ""
-        vm.words = tagCloud.data.data
+        vm.infoUsuario = infoUsuario
+        console.log("INFO USUARIO",vm.infoUsuario)
+        $rootScope.infoUsuario = vm.infoUsuario.data.data
 
         var last = {
             bottom: false,
@@ -100,13 +102,17 @@
                     }
 
                     vmd.addUrl = function (obj) {
-
-                        vmd.urls.push({
+                        var aux = {
                             thumbnail: obj.snippet.thumbnails.default.url,
                             url: "https://www.youtube.com/watch?v=" + obj.id.videoId,
                             artista: obj.snippet.title.split("-")[0],
                             cancion: _.isUndefined(obj.snippet.title.split("-")[1]) ? "unknown" : obj.snippet.title.split("-")[1]
-                        })
+                        }
+
+                        var check = false
+                        lodash.forEach(vm.urls,function(o){ if(lodash.isEqual(aux,o)) check=true })
+                        if(!check)
+                            vmd.urls.push(aux)
                         //console.log(vmd.urls)
                     }
 
@@ -209,11 +215,13 @@
                         tagsServer: vm.tags,
                         urlsServer: vm.urls
                     }
+                    console.log("entro aqui 2", dataList)
 
                     //console.log(dataList.tagsServer)
                     if (dataList.nombreServer != "" && dataList.tagsServer.length >= 1 && dataList.urlsServer.length >= 1) {
                         $http.post('/users/addList', dataList)
                             .then(function (responseOk) {
+
                                 vm.close()
                                 vm.toastAddList(dataList.nombreServer)
                                 //console.log(responseOk)
@@ -225,13 +233,13 @@
                         console.log("entro",vm.compru)
                         swal(
                             'Oops...',
-                            'Error al registrar la lista. Rellene los campos de nombre, etiqueta y añada enlaces!',
+                            'Error al registrar la lista. Rellene el campo de nombre, añada etiqueta y enlaces!',
                             'error'
                         )
                     }
 
                 }, function () {
-
+                    console.log("entro aqui")
                     //console.log("asdal");
                 });
         };
@@ -316,6 +324,6 @@
     }
 
     angular.module('proyecto')
-        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', '$mdToast', 'lodash', 'tags', '$rootScope', '$scope', 'tagCloud', frameCtrl]);
+        .controller('frameCtrl', ['$http', '$state', '$auth', '$mdDialog', '$mdToast', 'lodash', 'tags', '$rootScope', '$scope', 'infoUsuario', frameCtrl]);
 
 })();

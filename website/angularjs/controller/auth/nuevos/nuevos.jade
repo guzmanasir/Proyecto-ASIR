@@ -1,7 +1,7 @@
 div(ng-if="nct.vacio")
     div {{ nct.vacioMensaje }}
-div(layout="row" ng-if="!nct.vacio")
-    div(flex=75)
+div(layout="row")
+    div(flex=75 ng-if="!nct.vacio")
         md-list(style="padding-left:10%" flex)
             md-list-item(ng-repeat="lista in nct.nuevos track by $index" style="padding-bottom:1%; padding-top: 1%; background-color: white;" layout="row")
                 div(layout="column" flex=70 )
@@ -47,9 +47,10 @@ div(layout="row" ng-if="!nct.vacio")
 
                     md-divider
             ul(ng-show="nct.paginaMaxima>9" uib-pagination, total-items='nct.paginaMaxima', items-per-page='9' ng-model='nct.paginaActual', ng-change='nct.siguiente(nct.paginaActual)')
-    div(layout="column" flex)
+    span(flex)
+    div(layout="column" flex=30)
         md-card()
-            p Filtrar listas
+            p(style="text-align: center; font-height: bold;") Filtrar listas
             md-input-container
                 label Buscar
                 input(ng-model="nct.busqueda")

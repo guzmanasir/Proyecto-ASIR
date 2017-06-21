@@ -4,6 +4,8 @@
 (function() {
     function perfilUsuarioCtrl($http,$auth,$state,$rootScope, lodash, $stateParams, $mdToast, listas, favoritos){
         var vm = this;
+        if(listas.data.codigo.codigo == "no existe")
+            $state.go('main.home')
         vm.paginaActual = $stateParams.pagina
         vm.paginaActual2 = $stateParams.pagina2
 
@@ -175,7 +177,7 @@
                 $stateParams.pagina = index
             else
                 $stateParams.pagina2 = index
-            $state.go($state.current, {pagina: $stateParams.pagina, pagina2: $stateParams.pagina2, tab: pos }, {reload: true});
+            $state.go($state.current, {pagina: $stateParams.pagina, pagina2: $stateParams.pagina2, tab: pos }, {reload: "main.perfilUsuario"});
         }
 
     }

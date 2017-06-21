@@ -2,7 +2,7 @@
  * Created by jesus on 21/05/17.
  */
 (function() {
-    function mislistasCtrl($http,$auth,$state,$rootScope, lodash,$stateParams,$mdDialog, $mdToast, listas, favoritos, infoUsuario){
+    function mislistasCtrl($http,$auth,$state,$rootScope, lodash,$stateParams,$mdDialog, $mdToast, listas, favoritos){
 
         var vm = this;
         vm.paginaActual = $stateParams.pagina
@@ -11,14 +11,15 @@
         vm.listas = listas.data.data.listas;
         vm.favoritos = favoritos.data.data.listas;
         //console.log("mis favoritos", vm.listas)
-        vm.infoUsuario = infoUsuario.data.data
+        vm.infoUsuario = $rootScope.infoUsuario
+        console.log("INFO USUARIO EN PERFIL",vm.infoUsuario)
         vm.totalListas = (!lodash.isUndefined(vm.listas)) ? vm.listas[0].totalListas : 0
         vm.totalFavoritos = (!lodash.isUndefined(vm.favoritos)) ? vm.favoritos[0].totalListas : 0
         vm.abrirInput = false
         vm.nombreCambia = false
         vm.emailCambia = false
         vm.passwordCambia = false
-        //console.log(listas)
+        console.log(listas)
         if($stateParams.tab == 1){
             vm.tab1 = true
             vm.tab2 = false
@@ -127,7 +128,7 @@
                 $stateParams.pagina = index
             else
                 $stateParams.pagina2 = index
-            $state.go($state.current, {pagina: $stateParams.pagina, pagina2: $stateParams.pagina2, tab: pos }, {reload: true});
+            $state.go($state.current, {pagina: $stateParams.pagina, pagina2: $stateParams.pagina2, tab: pos }, {reload: "main.perfil"});
         }
 
 
@@ -182,6 +183,6 @@
     }
 
     angular.module('proyecto')
-        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','$mdDialog', '$mdToast','listas', 'favoritos', 'infoUsuario', mislistasCtrl]);
+        .controller('mislistasCtrl',['$http','$auth','$state', '$rootScope','lodash','$stateParams','$mdDialog', '$mdToast','listas', 'favoritos', mislistasCtrl]);
 
 })();

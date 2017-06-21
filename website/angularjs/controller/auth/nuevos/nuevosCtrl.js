@@ -2,7 +2,7 @@
  * Created by jesus on 21/05/17.
  */
 (function() {
-    function nuevosCtrl($http,$auth,$state,$rootScope, lodash, $stateParams,$mdToast, nuevos, tags){
+    function nuevosCtrl($location,$http,$auth,$state,$rootScope, lodash, $stateParams,$mdToast, nuevos, tags){
         //console.log("entro en nuevos")
         var vm = this;
         //console.log("los tags", tags.data.data)
@@ -159,8 +159,9 @@
 
         vm.siguiente = function(index){
             if(!vm.posicion){
+                // console.log("index vale ",index)
                 $stateParams.pagina = index
-                $state.go($state.current, {pagina: $stateParams.pagina}, {reload: true});
+                $state.go($state.current, {pagina: $stateParams.pagina}, {reload: 'main.nuevos'});
             } else {
                 //console.log("la pagina en el else", vm.paginaActual)
                 $http.post('/users/search/'+vm.paginaActual, vm.buscador)
@@ -180,6 +181,6 @@
     }
 
     angular.module('proyecto')
-        .controller('nuevosCtrl',['$http','$auth','$state', '$rootScope', 'lodash', '$stateParams', '$mdToast', 'nuevos', 'tags', nuevosCtrl]);
+        .controller('nuevosCtrl',['$location','$http','$auth','$state', '$rootScope', 'lodash', '$stateParams', '$mdToast', 'nuevos', 'tags', nuevosCtrl]);
 
 })();

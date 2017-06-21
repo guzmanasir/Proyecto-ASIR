@@ -50,13 +50,11 @@
                                 return response;
                             })
                     }],
-                    tagCloud: ['$http',function($http){
-                        return $http.get('/users/tagCloud')
+                    infoUsuario: ['$http',function($http){
+                        return $http.get('/users/infoUsuario')
                             .then(function(response){
-                                //console.log("query tags")
                                 return response;
                             },function(response) {
-                                //console.log("error query tags")
                                 return response;
                             })
                     }]
@@ -105,7 +103,9 @@
                 templateUrl: '/users/tempNuevos',
                 params: {requireLogin : true, pagina:1},
                 resolve : {
+
                     nuevos: ['$http','$stateParams',function($http,$stateParams){
+                        console.log("entrando en main.nuevos"+$stateParams.pagina)
                         return $http.get('/users/newLists/'+$stateParams.pagina)
                             .then(function(response){
                                // //console.log("er param", $state)
@@ -150,13 +150,14 @@
                 templateUrl: '/users/tempPerfilUsuario',
                 params: {requireLogin : true, pagina: 1, pagina2: 1, tab: 1},
                 resolve : {
-                    listas: ['$http','$stateParams',function($http,$stateParams){
+                    listas: ['$http','$stateParams','$state',function($http,$stateParams,$state){
                         return $http.get('/users/perfilUsuario/'+$stateParams.idUser+"/"+$stateParams.pagina)
                             .then(function(response){
-                                //console.log("response ok ",response)
+                                console.log("response ok ",response)
                                 return response;
                             },function(response) {
                                 console.error("error en response ",response)
+
                                 return response;
                             })
                     }],
@@ -211,15 +212,8 @@
                             },function(response) {
                                 return response;
                             })
-                    }],
-                    infoUsuario: ['$http',function($http){
-                        return $http.get('/users/infoUsuario')
-                            .then(function(response){
-                                return response;
-                            },function(response) {
-                                return response;
-                            })
                     }]
+
                 }
             })
 

@@ -1,4 +1,6 @@
 
+div(layout="row" flex)
+    p(style="font-size: 25px; font-height: bold; padding-top: 2%; padding-left: 25%; text-align: center") {{ hct.nombreUsuario }} bienvenido a Playlisted!
 div(layout="row" style="padding-top: 2%")
     div(flex=70)
         div(layout="row" layout-align="center")
@@ -105,7 +107,7 @@ div(layout="row" style="padding-top: 2%")
                         //md-card-actions(layout='row', layout-align='start center')
                         //    md-card-icon-actions
                         span.md-headline(flex md-truncate) {{ hct.masEscuchada[0].nombre }}
-                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}') {{ hct.masEscuchada[0].nombreusuario }}
+                        a(href='/perfilUsuario?idUser={{lista.usuarioid}}') {{ hct.masEscuchada[0].nombreUsuario }}
                         p Genero: {{ hct.masEscuchada[0].tags[0] }}
 
                         p Fecha: {{ hct.masEscuchada[0].fecha }}

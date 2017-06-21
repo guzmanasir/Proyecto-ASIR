@@ -47,7 +47,7 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs )
                         md-button(ng-click="mlc.showConfirm($event, lista.listaid )") Eliminar Lista
 
                 md-divider
-            ul(ng-show="mlc.totalFavoritos>9" uib-pagination, total-items='mlc.totalListas', items-per-page='9' ng-model='mlc.paginaActual', ng-change='mlc.siguiente(1,mlc.paginaActual)')
+            ul(ng-show="mlc.totalListas>9" uib-pagination, total-items='mlc.totalListas', items-per-page='9' ng-model='mlc.paginaActual', ng-change='mlc.siguiente(1,mlc.paginaActual)')
     md-tab(label="Mis Favoritos" md-active="mlc.tab2")
         md-list(style="padding-left:20%" flex=80)
 
@@ -91,7 +91,7 @@ md-tabs(md-dynamic-height md-border-bottom md-center-tabs )
                                         label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numfavoritos }}
 
 
-            ul(ng-show="mlc.totalFavoritos>9" uib-pagination, total-items='mlc.totalFavoritos', items-per-page='9' ng-model='mlc.paginaActual2', ng-change='mlc.siguiente(2,mlc.paginaActual2)' )
+            ul(ng-show="mlc.totalFavoritos.length>9" uib-pagination, total-items='mlc.totalFavoritos', items-per-page='9' ng-model='mlc.paginaActual2', ng-change='mlc.siguiente(2,mlc.paginaActual2)' )
 
 
 
