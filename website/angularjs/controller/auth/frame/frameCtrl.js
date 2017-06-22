@@ -160,7 +160,7 @@
                         var url = 'https://content.googleapis.com/youtube/v3/search?' +
                             '&key=' + key + '&part=snippet&maxResults=3' +
                             '&q=' + value + '&type=video' +
-                            '&videoEmbeddable=true&pageToken=' + vmd.page
+                            '&videoEmbeddable=true&videoSyndicated=true&pageToken=' + vmd.page
 
 
                         //console.log("primer then")

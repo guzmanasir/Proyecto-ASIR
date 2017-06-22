@@ -31,7 +31,7 @@ div(layout="column" layout-fill)
                     //md-nav-item(md-nav-sref="#")
 
                     i.material-icons.md-48(ng-click="fc.showAdvanced()" class="nav") playlist_add
-                    md-nav-item(md-nav-sref="main.perfil" name="main.perfil") Perfil
+                    md-nav-item(md-nav-sref="main.perfil" name="main.perfil") {{ fc.infoUsuario.data.data.nombre }}
                     md-nav-item(md-nav-sref="main.logout") Cerrar sesion
             div(ng-show="fc.abrirBusqueda")
                 md-nav-bar

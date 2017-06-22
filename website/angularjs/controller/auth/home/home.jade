@@ -72,7 +72,7 @@ div(layout="row" style="padding-top: 2%")
                         div(layout="row" style="padding-top:1%")
                             span.btn-group.btn-group-xs
                                 //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                i.material-icons.btn.btn-default.btn-xs(ng-click="hct.play(lista.info); hct.reproduccion(lista.listaid, 2); $event.stopPropagation();" style="font-size:15px") play_arrow
+                                i.material-icons.btn.btn-default.btn-xs(ng-click="hct.play(lista.info); hct.reproduccion(lista.listaid, 2); $event.stopPropagation()" style="font-size:15px") play_arrow
                                 label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ lista.numreproducciones }}
 
                             span(ng-if="lista.usuarioid != lista.miusuarioid")
@@ -115,7 +115,7 @@ div(layout="row" style="padding-top: 2%")
                         div(layout="row" style="padding-top:1%")
                             span.btn-group.btn-group-xs
                                 //label.btn.btn-default.btn-sm(ng-model='radioModel', uib-btn-radio="'Left'", uncheckable='')
-                                i.material-icons.btn.btn-default.btn-xs(ng-click="hct.play(hct.masEscuchada[0].info); hct.reproduccion(hct.masEscuchada[0].listaid, 3); $event.stopPropagation();" style="font-size:15px") play_arrow
+                                i.material-icons.btn.btn-default.btn-xs(ng-click="hct.play(hct.masEscuchada[0].info); hct.reproduccion(hct.masEscuchada[0].listaid, 3); $event.stopPropagation()" style="font-size:15px") play_arrow
                                 label.btn.btn-default.btn-xs(ng-model='radioModel', uib-btn-radio="'Middle'", uncheckable='' style="font-size:15px") {{ hct.masEscuchada[0].numreproducciones }}
 
                             span(ng-if="hct.masEscuchada[0].usuarioid != hct.masEscuchada[0].miusuarioid")
