@@ -225,13 +225,13 @@ exports.addSongs = function(datosList,callback) {
                 valuesContiene.push(item.url, datosList.idlista, datosList.id, item.cancion, item.artista)
                 interrogaciones.push('(?,?,?,?,?)')
             })
-
+            console.log("los values de contiene", valuesContiene)
             var queryContiene =
                 'INSERT INTO contiene(enlace_idenlace, lista_idlista, lista_usuario_id, cancion, artista) values' + interrogaciones.join(',') + ';'
 
             mysql.query(queryContiene, valuesContiene, function (err, result) {
                 if (err) {
-                    //console.log("error en contiene", err)
+                    console.log("error en contiene", err)
                     return callback(err, null)
                 }
                 callback(null, result)

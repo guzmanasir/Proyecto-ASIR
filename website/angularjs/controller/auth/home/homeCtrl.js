@@ -78,10 +78,6 @@
                 //console.log(vm.favoritoId)
                 lodash.find(vm.nuevosHome , {listaid: listaid}).isfavorited = true
                 lodash.find(vm.nuevosHome , {listaid: listaid}).numfavoritos += 1
-                lodash.find(vm.popularesHome , {listaid: listaid}).isfavorited = true
-                lodash.find(vm.popularesHome , {listaid: listaid}).numfavoritos += 1
-                lodash.find(vm.masEscuchada, {listaid: listaid}).isfavorited = true
-                lodash.find(vm.masEscuchada , {listaid: listaid}).numfavoritos += 1
 
                 $http.post('/users/favorito', {favoritoId: vm.favoritoId})
                     .then(function(responseOk){
@@ -96,10 +92,6 @@
                 //console.log("favoritoid", vm.favoritoId)
                 lodash.find(vm.popularesHome , {listaid: listaid}).isfavorited = true
                 lodash.find(vm.popularesHome , {listaid: listaid}).numfavoritos += 1
-                lodash.find(vm.nuevosHome , {listaid: listaid}).isfavorited = true
-                lodash.find(vm.nuevosHome , {listaid: listaid}).numfavoritos += 1
-                lodash.find(vm.masEscuchada, {listaid: listaid}).isfavorited = true
-                lodash.find(vm.masEscuchada , {listaid: listaid}).numfavoritos += 1
 
                 $http.post('/users/favorito', {favoritoId: vm.favoritoId})
                     .then(function(responseOk){
@@ -114,10 +106,6 @@
                 //console.log("favoritoid", vm.favoritoId)
                 lodash.find(vm.masEscuchada, {listaid: listaid}).isfavorited = true
                 lodash.find(vm.masEscuchada , {listaid: listaid}).numfavoritos += 1
-                lodash.find(vm.nuevosHome , {listaid: listaid}).isfavorited = true
-                lodash.find(vm.nuevosHome , {listaid: listaid}).numfavoritos += 1
-                lodash.find(vm.popularesHome , {listaid: listaid}).isfavorited = true
-                lodash.find(vm.popularesHome , {listaid: listaid}).numfavoritos += 1
 
                 $http.post('/users/favorito', {favoritoId: vm.favoritoId})
                     .then(function(responseOk){
@@ -135,10 +123,6 @@
                 vm.nofavoritoId = listaid
                 lodash.find(vm.nuevosHome , {listaid: listaid}).isfavorited = false
                 lodash.find(vm.nuevosHome , {listaid: listaid}).numfavoritos -= 1
-                lodash.find(vm.popularesHome , {listaid: listaid}).isfavorited = false
-                lodash.find(vm.popularesHome , {listaid: listaid}).numfavoritos -= 1
-                lodash.find(vm.masEscuchada , {listaid: listaid}).isfavorited = false
-                lodash.find(vm.masEscuchada , {listaid: listaid}).numfavoritos -= 1
 
                 $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                     .then(function(responseOk){
@@ -151,10 +135,6 @@
                 vm.nofavoritoId = listaid
                 lodash.find(vm.popularesHome , {listaid: listaid}).isfavorited = false
                 lodash.find(vm.popularesHome , {listaid: listaid}).numfavoritos -= 1
-                lodash.find(vm.nuevosHome , {listaid: listaid}).isfavorited = false
-                lodash.find(vm.nuevosHome , {listaid: listaid}).numfavoritos -= 1
-                lodash.find(vm.masEscuchada , {listaid: listaid}).isfavorited = false
-                lodash.find(vm.masEscuchada , {listaid: listaid}).numfavoritos -= 1
 
                 $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                     .then(function(responseOk){
@@ -166,11 +146,7 @@
             } else {
                 vm.nofavoritoId = listaid
                 lodash.find(vm.masEscuchada , {listaid: listaid}).isfavorited = false
-                lodash.find(vm.masEscuchada , {listaid: listaid}).numfavoritos -= 1
-                lodash.find(vm.popularesHome , {listaid: listaid}).isfavorited = false
-                lodash.find(vm.popularesHome , {listaid: listaid}).numfavoritos -= 1
-                lodash.find(vm.nuevosHome , {listaid: listaid}).isfavorited = false
-                lodash.find(vm.nuevosHome , {listaid: listaid}).numfavoritos -= 1
+                lodash.find(vm.masEscuchada , {listaid: listaid}).numfavoritos -= 11
 
                 $http.post('/users/noFavorito', {noFavoritoId: vm.nofavoritoId})
                     .then(function(responseOk){
@@ -196,8 +172,6 @@
                 //console.log("reproduciendo", id, otro)
                 lodash.find(vm.nuevosHome , {listaid: id}).numreproducciones += 1
                 //Qif(lodas.is)
-                lodash.find(vm.popularesHome , {listaid: id}).numreproducciones += 1
-                lodash.find(vm.masEscuchada , {listaid: id}).numreproducciones += 1
 
 
                 $http.post('/users/reproduccion', {listaid: id})
@@ -211,8 +185,6 @@
             } else if (otro == 2) {
                 //console.log("reproduciendo", id)
                 lodash.find(vm.popularesHome , {listaid: id}).numreproducciones += 1
-                lodash.find(vm.nuevosHome , {listaid: id}).numreproducciones += 1
-                lodash.find(vm.masEscuchada , {listaid: id}).numreproducciones += 1
 
                 $http.post('/users/reproduccion', {listaid: id})
                     .then(function(responseOk){
@@ -226,8 +198,6 @@
                 //console.log("reproduciendo dentro", id, vm.masEscuchada[0].numreproducciones)
 
                 vm.masEscuchada[0].numreproducciones += 1
-                lodash.find(vm.popularesHome , {listaid: id}).numreproducciones += 1
-                lodash.find(vm.nuevosHome , {listaid: id}).numreproducciones += 1
 
                 $http.post('/users/reproduccion', {listaid: id})
                     .then(function(responseOk){
