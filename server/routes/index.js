@@ -5,7 +5,7 @@ var codigos = require('../../private/utils/codewrapper');
 var serviceToken = require('../../private/utils/serviceToken');
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('views/layout', { title: 'Express !' });
+  res.render('views/layout', { title: 'Playlisted' });
 });
 
 router.get('/403', function(req, res, next) {
