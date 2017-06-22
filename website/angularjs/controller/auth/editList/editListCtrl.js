@@ -139,9 +139,11 @@
                         if(index === 0){
                             vmd.page = vmd.pagePrev;
                             //console.log("Vale", vmd.page)
-                        } else {
+                        } else if (index === 1) {
                             vmd.page = vmd.pageNext;
                             //console.log("Vale2", vmd.page)
+                        } else {
+                            vmd.page = ""
                         }
 
                         var key = 'AIzaSyBX1ayzZTlapJWNuhSYZRlkSUhU-NlOrCA'
