@@ -96,18 +96,17 @@ div(layout="row" style="padding-top: 2%")
                 p(style="font-size: 20px; font-height: bold") Lista de la semana
             div(layout="row" layout-align="center")
                 md-content(layout-xs='column' layout='row')
-                    md-card(flex)
-                        div(layout="row" ng-click="hct.verLista(lista)" style="cursor:pointer")
-                            div(layout= "column")
-                                img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[0].thumbnail}}')
-                                img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[1].thumbnail}}')
-                            div(layout= "column")
-                                img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[2].thumbnail}}')
-                                img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[3].thumbnail}}')
+                    md-card(flex )
+                        div(layout= "row" ng-click="hct.verLista(hct.masEscuchada[0])" style="cursor:pointer" )
+                            img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[0].thumbnail}}')
+                            img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[1].thumbnail}}')
+                        div(layout= "row" ng-click="hct.verLista(hct.masEscuchada[0])" style="cursor:pointer" )
+                            img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[2].thumbnail}}')
+                            img.md-card-image(flex= 50, ng-src='{{hct.masEscuchada[0].info[3].thumbnail}}')
 
                         //md-card-actions(layout='row', layout-align='start center')
                         //    md-card-icon-actions
-                        span.md-headline(flex md-truncate ng-click="hct.verLista(lista)") {{ hct.masEscuchada[0].nombre }}
+                        span.md-headline(flex md-truncate ng-click="hct.verLista(hct.masEscuchada[0])" style="cursor:pointer" ) {{ hct.masEscuchada[0].nombre }}
                         a(href='/perfilUsuario?idUser={{lista.usuarioid}}') {{ hct.masEscuchada[0].nombreUsuario }}
                         p Genero: {{ hct.masEscuchada[0].tags[0] }}
 
